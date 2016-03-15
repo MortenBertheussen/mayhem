@@ -5,6 +5,7 @@ control a rocket and try to shoot eachother with rockets."""
 import pygame
 import random
 import cProfile
+<<<<<<< HEAD
 from vectorlib import *
 
 
@@ -14,24 +15,21 @@ SCREEN = (SCREEN_X, SCREEN_Y)
 
 
 
+from gameconstants import *
+from Vector2D import *
+from Movingobjects import *
+
+
 BACKGROUND_FNAME = "sprites/arcadebackground.jpg"
 background = pygame.image.load(BACKGROUND_FNAME)
 background = pygame.transform.scale(background, (SCREEN_X, SCREEN_Y))
 
-RED = (204,0,0)
-BLUE = (0,50,255)
-YELLOW = (230,230,30)
-WHITE = (255,255,255)
-BLACK = (0,0,0)
-
-FPS = 60
-
 class Engine:
 	"""This is the engine class"""
 	def __init__(self):
-		self.rockets = []
+		self.rocket = Rocket()
 		self.rocketshot = []
-
+		self.otherrockets = []
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -42,38 +40,29 @@ class Engine:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_q:
 					exit()
-	def logic(self):
+				if event.key == pygame.K_SPACE:
+					self.rocket.engineOn = True
+			if event.type == pygame.KEYUP:
+				if event.key == pygame.K_SPACE:
+					self.rocket.engineOn = False
+
+	def logic(self, screen):
 		self.eventhandler()
-
-	def wallcollide(self):
-		pass
-		
-class Movingobject:
-	def __init__(self):
-		self.gravity = 5
-
-	def rotate(self):
-		pass
-
-class Rocket(Movingobject): 
-	"""The class for rocket, broombroom"""
-	def __initi__(self):
-		super().__init__(self)
-
+		self.rocket.logic(screen)
 
 def main():
 	pygame.init()
 	pygame.display.set_caption("Mayhem")
-	screen = pygame.display.set_mode((SCREEN),pygame.FULLSCREEN)	#FULLSCREEN
-	#screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
-
+	#screen = pygame.display.set_mode((SCREEN),pygame.FULLSCREEN)	#FULLSCREEN
+	screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
 	clock = pygame.time.Clock()
-	time = clock.tick(FPS)
-	engine = Engine()
+	engine = Engine() #Initialize game engine
 
 	while True:
-		engine.logic()
+		time = clock.tick(FPS)
+
 		screen.blit(background, (0,0))
+		engine.logic(screen)
 		pygame.display.update()
 
 if __name__ == "__main__":
