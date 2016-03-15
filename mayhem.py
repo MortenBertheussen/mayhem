@@ -9,7 +9,6 @@ from gameconstants import *
 from Vector2D import *
 from Movingobjects import *
 
-
 BACKGROUND_FNAME = "sprites/arcadebackground.jpg"
 background = pygame.image.load(BACKGROUND_FNAME)
 background = pygame.transform.scale(background, (SCREEN_X, SCREEN_Y))
@@ -32,6 +31,10 @@ class Engine:
 					exit()
 				if event.key == pygame.K_SPACE:
 					self.rocket.engineOn = True
+				if event.key == pygame.K_LEFT:
+					self.rocket.direction += Vector2D(-1, -1)
+				if event.key == pygame.K_RIGHT:
+					self.rocket.direction += Vector2D(1, 1)
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_SPACE:
 					self.rocket.engineOn = False
