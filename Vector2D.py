@@ -40,8 +40,12 @@ class Vector2D(object):
     def __mul__(self, b):
         """ Multiplication by a scalar """
         try:
-            b = float(b)
-            return Vector2D(self.x * b, self.y * b)
+            #Check if mulitplying with a vector
+            if isinstance(b, Vector2D):
+                return Vector2D(self.x * b.x, self.y * b.y)
+            else:
+                b = float(b)
+                return Vector2D(self.x * b, self.y * b)
         except ValueError:
             print("Oops! Right value must be a float")
             raise
@@ -53,6 +57,9 @@ class Vector2D(object):
         except ValueError:
             print("Scalar must be a float!")
             raise
+
+    def __truediv__(self, b):
+        return Vector2D(self.x/b, self.y/b)
 
     def magnitude(self):
         """ Returns the magnitude of the vector. """
