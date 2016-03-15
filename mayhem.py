@@ -5,20 +5,9 @@ control a rocket and try to shoot eachother with rockets."""
 import pygame
 import random
 import cProfile
-<<<<<<< HEAD
-from vectorlib import *
-
-
-SCREEN_X = 1920
-SCREEN_Y = 1080
-SCREEN = (SCREEN_X, SCREEN_Y)
-
-
-
 from gameconstants import *
 from Vector2D import *
 from Movingobjects import *
-
 
 BACKGROUND_FNAME = "sprites/arcadebackground.jpg"
 background = pygame.image.load(BACKGROUND_FNAME)
