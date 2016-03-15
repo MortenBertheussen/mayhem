@@ -24,7 +24,7 @@ class Rocket(Movingobject):
 		self.engineOn = False
 		self.turnLeft = False
 		self.turnRight = False
-		self.fuel = 100
+		self.fuel = 1000
 		self.angle = 0
 
 
@@ -42,18 +42,24 @@ class Rocket(Movingobject):
 		y = self.direction.x * math.sin(math.radians(-self.angle)) + self.direction.y * math.cos(math.radians(-self.angle))
 		new_speed = Vector2D(x, y)
 
-		if self.engineOn:
+		if self.engineOn and self.fuel>0:
 			self.image = pygame.image.load("sprites/ship_engine_on.png").convert_alpha()
 			self.image = pygame.transform.rotate(self.image, self.angle)
 			self.direction *= 1.3
 			self.pos += new_speed + self.gravity
 			self.rect = (self.pos.x, self.pos.y)
+			self.fuel -=1
+			
+			#set fuel not to go under 0
+			if self.fuel <= 0:
+				self.fuel = 0
 		else:
 			self.image = pygame.image.load("sprites/ship.png").convert_alpha()
 			self.image = pygame.transform.rotate(self.image, self.angle)
 			self.direction /= 1.1
 			self.pos += new_speed + self.gravity
 			self.rect = (self.pos.x, self.pos.y)
+
 
 	def speed_limit(self):
 		if self.direction.magnitude() > self.maxspeed:
