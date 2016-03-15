@@ -46,9 +46,16 @@ class Engine:
 				if event.key == pygame.K_RIGHT:
 					self.rocket.turnRight = False
 
+	def display(self, screen):
+		fuel = "Fuel: %s" % self.rocket.fuel
+		font = pygame.font.SysFont("sans-serif", 30)
+		fuel_text = font.render(fuel, True, WHITE)
+		screen.blit(fuel_text, [20, 15])
+
 	def logic(self, screen):
 		self.sprites.update()
 		self.eventhandler()
+		self.display(screen)
 		self.rocket.logic(screen)
 		self.sprites.draw(screen)
 		pygame.display.update()
