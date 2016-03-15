@@ -30,7 +30,7 @@ class Rocket(Movingobject):
 	def logic(self, screen):
 		self.speed_limit()
 		self.move()
-		#pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,45,45))
+		pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,45,45))
 
 	def move(self):
 		if self.turnLeft:
