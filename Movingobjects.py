@@ -27,6 +27,7 @@ class Rocket(Movingobject):
 		self.fuel = 100
 		self.angle = 0
 
+
 	def logic(self, screen):
 		self.speed_limit()
 		self.move()
