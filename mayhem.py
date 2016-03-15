@@ -32,9 +32,9 @@ class Engine:
 				if event.key == pygame.K_SPACE:
 					self.rocket.engineOn = True
 				if event.key == pygame.K_LEFT:
-					self.rocket.direction += Vector2D(-1, -1)
+					self.rocket.direction += Vector2D(-1, 1)
 				if event.key == pygame.K_RIGHT:
-					self.rocket.direction += Vector2D(1, 1)
+					self.rocket.direction += Vector2D(1, -1)
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_SPACE:
 					self.rocket.engineOn = False

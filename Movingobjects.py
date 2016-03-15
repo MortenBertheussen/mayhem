@@ -12,12 +12,11 @@ class Movingobject:
 	def rotate(self):
 		pass
 
-class Rocket(Movingobject): 
+class Rocket(Movingobject, pygame.sprite.Sprite): 
 	"""The class for rocket, broombroom"""
 	def __init__(self):
 		super().__init__()
-		self.witdh = 20
-		self.height = 40
+		self.side = 40
 		self.engineOn = False
 		self.fule = 100
 
@@ -27,8 +26,10 @@ class Rocket(Movingobject):
 		self.draw(screen)
 
 	def draw(self, screen):
+		pygame.draw.rect(screen, (150,0,0), (self.pos.x, self.pos.y, self.side, self.side), 0)
+		#rect = pygame.transform.rotate(rect, 270)
 		"""Draw the rocket in its current possition."""
-		pygame.draw.rect(screen, (150,0,0), (self.pos.x, self.pos.y, self.witdh, self.height), 0)
+		
 
 	def move(self):
 		if self.engineOn:
