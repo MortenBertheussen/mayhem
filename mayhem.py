@@ -4,6 +4,7 @@ control a rocket and try to shoot eachother with rockets."""
 #!/usr/bin/env python3
 import pygame
 import random
+import math
 import cProfile
 from gameconstants import *
 from Vector2D import *
@@ -19,6 +20,8 @@ class Engine:
 		self.rocket = Rocket()
 		self.rocketshot = []
 		self.otherrockets = []
+		self.sprites = pygame.sprite.Group()
+		self.sprites.add(self.rocket)
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -29,19 +32,26 @@ class Engine:
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_q:
 					exit()
-				if event.key == pygame.K_SPACE:
+				if event.key == pygame.K_UP:
 					self.rocket.engineOn = True
 				if event.key == pygame.K_LEFT:
-					self.rocket.direction += Vector2D(-1, 1)
+					self.rocket.turnLeft = True
 				if event.key == pygame.K_RIGHT:
-					self.rocket.direction += Vector2D(1, -1)
+					self.rocket.turnRight = True
 			if event.type == pygame.KEYUP:
-				if event.key == pygame.K_SPACE:
+				if event.key == pygame.K_UP:
 					self.rocket.engineOn = False
+				if event.key == pygame.K_LEFT:
+					self.rocket.turnLeft = False
+				if event.key == pygame.K_RIGHT:
+					self.rocket.turnRight = False
 
 	def logic(self, screen):
+		self.sprites.update()
 		self.eventhandler()
 		self.rocket.logic(screen)
+		self.sprites.draw(screen)
+		pygame.display.update()
 
 def main():
 	pygame.init()
@@ -53,10 +63,8 @@ def main():
 
 	while True:
 		time = clock.tick(FPS)
-
 		screen.blit(background, (0,0))
 		engine.logic(screen)
-		pygame.display.update()
 
 if __name__ == "__main__":
 	main()
