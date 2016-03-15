@@ -19,7 +19,7 @@ class Rocket(Movingobject):
 		self.witdh = 20
 		self.height = 40
 		self.engineOn = False
-		self.fule = 100
+		self.fuel = 100
 
 	def logic(self, screen):
 		self.speed_limit()
