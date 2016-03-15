@@ -5,7 +5,7 @@ control a rocket and try to shoot eachother with rockets."""
 import pygame
 import random
 import cProfile
-from vectorlib import *
+from Vector2D import *
 
 
 SCREEN_X = 1920
