@@ -19,6 +19,7 @@ class Rocket(Movingobject):
 		self.witdh = 20
 		self.height = 40
 		self.engineOn = False
+		self.fule = 100
 
 	def logic(self, screen):
 		self.speed_limit()
@@ -40,4 +41,10 @@ class Rocket(Movingobject):
 	def speed_limit(self):
 		if self.direction.magnitude() > self.maxspeed:
 			self.direction = self.direction.normalized() * self.maxspeed
+
+	def shoot(self):
+		pass
+
+	def refule(self):
+		pass
 		
