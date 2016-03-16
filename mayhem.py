@@ -47,12 +47,14 @@ class Engine:
 					self.rocket.turnRight = False
 
 	def display(self, screen):
+		"""Display of text on screen"""
 		fuel = "Fuel: %s" % self.rocket.fuel
 		font = pygame.font.SysFont("sans-serif", 30)
 		fuel_text = font.render(fuel, True, WHITE)
 		screen.blit(fuel_text, [20, 15])
 
 	def logic(self, screen):
+		"""Engine logic which run what is needed"""
 		self.sprites.update()
 		self.eventhandler()
 		self.display(screen)
@@ -67,8 +69,8 @@ def main():
 	screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
-
-	while True:
+	
+	while True:	
 		time = clock.tick(FPS)
 		screen.blit(background, (0,0))
 		engine.logic(screen)

@@ -12,7 +12,11 @@ class Movingobject(pygame.sprite.Sprite):
 		self.direction = Vector2D(0,-1)
 
 	def rotate(self):
-		pass
+		x = self.direction.x * math.cos(math.radians(-self.angle)) - self.direction.y * math.sin(math.radians(-self.angle))
+		y = self.direction.x * math.sin(math.radians(-self.angle)) + self.direction.y * math.cos(math.radians(-self.angle))
+		new_speed = Vector2D(x, y)
+
+		return new_speed
 
 class Rocket(Movingobject): 
 	"""The class for rocket, broombroom"""
@@ -38,9 +42,8 @@ class Rocket(Movingobject):
 			self.angle += 4
 		if self.turnRight:
 			self.angle -= 4
-		x = self.direction.x * math.cos(math.radians(-self.angle)) - self.direction.y * math.sin(math.radians(-self.angle))
-		y = self.direction.x * math.sin(math.radians(-self.angle)) + self.direction.y * math.cos(math.radians(-self.angle))
-		new_speed = Vector2D(x, y)
+		
+		new_speed = self.rotate()
 
 		if self.engineOn and self.fuel>0:
 			self.image = pygame.image.load("sprites/ship_engine_on.png").convert_alpha()
@@ -67,7 +70,5 @@ class Rocket(Movingobject):
 
 	def shoot(self):
 		pass
-
 	def refule(self):
 		pass
-		
