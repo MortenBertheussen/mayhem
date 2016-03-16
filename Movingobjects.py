@@ -34,11 +34,14 @@ class Rocket(Movingobject):
 
 
 	def logic(self, screen):
+		"""Logic method of rocket"""
 		self.speed_limit()
 		self.move()
+		self.screen_wrap()
 		#pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,45,45))
 
 	def move(self):
+		"""move method of rocket"""
 		if self.turnLeft:
 			self.angle += 4
 		if self.turnRight:
@@ -68,12 +71,30 @@ class Rocket(Movingobject):
 
 
 	def speed_limit(self):
+		"""Speed_limit method of rocket"""
 		if self.direction.magnitude() > self.maxspeed:
 			self.direction = self.direction.normalized() * self.maxspeed
 
 	def shoot(self):
+		"""Shoot method of rocket"""
 		return Bullet(self.rect, self.rotate())
 		#self.shots.append(Bullet(self.pos, self.rotate()))
+
+	def screen_wrap(self):
+		"""Screen_wrap method of rocket"""
+		##Venstre Vegg
+		if self.pos.x <= 0:
+			self.pos.x = SCREEN_X - 1
+		##Høyre Vegg
+		if self.pos.x >= SCREEN_X:
+			self.pos.x = 1
+		##Nedre Vegg
+		if self.pos.y >= SCREEN_Y:
+			self.pos.y = 1
+		##Øvre Vegg
+		if self.pos.y <= 0:
+			self.pos.y = SCREEN_Y
+
 			
 	def refule(self):
 		pass
