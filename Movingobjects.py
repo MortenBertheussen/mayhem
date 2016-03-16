@@ -6,7 +6,7 @@ import math
 class Movingobject(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.gravity = Vector2D(0,1)
+		self.gravity = Vector2D(0,2)
 		self.maxspeed = 10
 		self.pos = Vector2D(SCREEN_X/2 - 22, SCREEN_Y/2 - 22)
 		self.direction = Vector2D(0,-1)
@@ -30,6 +30,7 @@ class Rocket(Movingobject):
 		self.turnRight = False
 		self.fuel = 1000
 		self.angle = 0
+		self.shots = []
 
 
 	def logic(self, screen):
@@ -69,6 +70,23 @@ class Rocket(Movingobject):
 			self.direction = self.direction.normalized() * self.maxspeed
 
 	def shoot(self):
-		pass
+		self.shots.append(Bullet(self.pos, self.rotate()))
+			
 	def refule(self):
 		pass
+
+class Bullet(Movingobject):
+	"""The bullet class"""
+	def __init__(self, pos, direc):
+		super().__init__()
+		self.radius = 3
+		self.pos = pos + Vector2D(22,22)
+		self.dir = direc
+
+
+	def move(self):
+		self.pos += self.dir.normalized() * 10
+
+	def logic(self, screen):
+		self.move()
+		pygame.draw.circle(screen, RED, (int(self.pos.x),int(self.pos.y)), self.radius)

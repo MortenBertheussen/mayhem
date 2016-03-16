@@ -18,8 +18,8 @@ class Engine:
 	"""This is the engine class"""
 	def __init__(self):
 		self.rocket = Rocket()
-		self.rocketshot = []
 		self.otherrockets = []
+		self.obstacle = []
 		self.sprites = pygame.sprite.Group()
 		self.sprites.add(self.rocket)
 
@@ -38,6 +38,8 @@ class Engine:
 					self.rocket.turnLeft = True
 				if event.key == pygame.K_RIGHT:
 					self.rocket.turnRight = True
+				if event.key == pygame.K_SPACE:
+					self.rocket.shoot()
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_UP:
 					self.rocket.engineOn = False
@@ -60,6 +62,8 @@ class Engine:
 		self.display(screen)
 		self.rocket.logic(screen)
 		self.sprites.draw(screen)
+		for bullet in self.rocket.shots:
+			bullet.logic(screen)	
 		pygame.display.update()
 
 def main():
