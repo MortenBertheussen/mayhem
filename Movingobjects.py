@@ -12,6 +12,7 @@ class Movingobject(pygame.sprite.Sprite):
 		self.direction = Vector2D(0,-1)
 
 	def rotate(self):
+		"""The math behind finding the new direction with an angle"""
 		x = self.direction.x * math.cos(math.radians(-self.angle)) - self.direction.y * math.sin(math.radians(-self.angle))
 		y = self.direction.x * math.sin(math.radians(-self.angle)) + self.direction.y * math.cos(math.radians(-self.angle))
 		new_speed = Vector2D(x, y)
