@@ -7,7 +7,7 @@ class Movingobject(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
 		self.gravity = Vector2D(0,2)
-		self.maxspeed = 10
+		self.maxspeed = 5
 		self.pos = Vector2D(SCREEN_X/2 - 22, SCREEN_Y/2 - 22)
 		self.direction = Vector2D(0,-1)
 
@@ -117,7 +117,7 @@ class Bullet(Movingobject):
 		self.pos.y = rect.center[1]
 
 	def move(self):
-		self.pos += self.dir.normalized() * 1
+		self.pos += self.dir.normalized() * 20
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y
 
