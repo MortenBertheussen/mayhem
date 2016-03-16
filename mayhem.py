@@ -92,7 +92,7 @@ class Engine:
 		for rocket in self.rockets:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
-				if bullet.uid != rocket.uid:
+				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.pos = self.spawn1
 
 
