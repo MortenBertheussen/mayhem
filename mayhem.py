@@ -98,22 +98,23 @@ class Engine:
 
 	def display(self, screen):
 		"""Display of text on screen"""
-		fuel = "Fuel: %s" % self.rocket.fuel
-		font = pygame.font.SysFont("sans-serif", 30)
-		fuel_text = font.render(fuel, True, RED)
-		screen.blit(fuel_text, [20, 15])
-
-		fuel2 = "Fuel: %s" % self.rocket2.fuel
-		font2 = pygame.font.SysFont("sans-serif", 30)
-		fuel2_text = font2.render(fuel2, True, BLUE)
-		screen.blit(fuel2_text, [SCREEN_X-130, 15])
-
+		for rocket in self.rockets:
+			fuel = "Fuel: %s" % rocket.fuel
+			font = pygame.font.SysFont("sans-serif", 30)
+			fuel_text = font.render(fuel, True, RED)
+			
+			if rocket.uid == 1:
+				fuel_text = font.render(fuel, True, RED)
+				screen.blit(fuel_text, [20, 15])
+			else: 
+				fuel_text = font.render(fuel, True, BLUE)
+				screen.blit(fuel_text, [SCREEN_X-130, 15])
 
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""
 		self.sprites.update()
 		self.eventhandler()
-		#self.display(screen)
+		self.display(screen)
 
 		for bullet in self.bullet_sprites:
 			bullet.logic()
