@@ -21,8 +21,9 @@ class Movingobject(pygame.sprite.Sprite):
 
 class Rocket(Movingobject): 
 	"""The class for rocket, broombroom"""
-	def __init__(self):
+	def __init__(self, uid):
 		super().__init__()
+		self.uid = uid
 		self.image = pygame.image.load("sprites/ship.png").convert_alpha()
 		self.rect = self.image.get_rect()
 		self.engineOn = False
@@ -51,9 +52,10 @@ class Rocket(Movingobject):
 
 		if self.engineOn and self.fuel>0:
 			self.image = pygame.image.load("sprites/ship_engine_on.png").convert_alpha()
+			self.image = pygame.transform.scale(self.image,(30,30))
 			self.image = pygame.transform.rotate(self.image, self.angle)
 			self.rect = self.image.get_rect()
-			self.direction *= 1.3
+			self.direction *= 1.5
 			self.pos += new_speed + self.gravity
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
 			self.fuel -=1
@@ -63,10 +65,14 @@ class Rocket(Movingobject):
 				self.fuel = 0
 		else:
 			self.image = pygame.image.load("sprites/ship.png").convert_alpha()
+			self.image = pygame.transform.scale(self.image,(30,30))
 			self.image = pygame.transform.rotate(self.image, self.angle)
 			self.rect = self.image.get_rect()
-			self.direction /= 1.1
-			self.pos += new_speed + self.gravity
+			if self.direction.magnitude() > 0.5:
+				self.direction /= 1.04
+				self.pos += new_speed + self.gravity
+			else:
+				self.pos += self.gravity
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
 
 
@@ -77,7 +83,7 @@ class Rocket(Movingobject):
 
 	def shoot(self):
 		"""Shoot method of rocket"""
-		return Bullet(self.rect, self.rotate())
+		return Bullet(self.rect, self.rotate(), self.uid)
 		#self.shots.append(Bullet(self.pos, self.rotate()))
 
 	def screen_wrap(self):
@@ -101,8 +107,9 @@ class Rocket(Movingobject):
 
 class Bullet(Movingobject):
 	"""The bullet class"""
-	def __init__(self, rect, direc):
+	def __init__(self, rect, direc, uid):
 		super().__init__()
+		self.uid = uid
 		self.dir = direc
 		self.image = pygame.image.load("sprites/bullet.png").convert_alpha()
 		self.rect = self.image.get_rect()

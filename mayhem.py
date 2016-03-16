@@ -17,15 +17,23 @@ background = pygame.transform.scale(background, (SCREEN_X, SCREEN_Y))
 class Engine:
 	"""This is the engine class"""
 	def __init__(self):
-		self.rocket = Rocket()
-		self.rocket2 = Rocket()
-		self.otherrockets = []
+		self.rockets = []
 		self.obstacle = []
+		self.players = 2
+		self.spawn1 = Vector2D(10,SCREEN_Y/2)
+		self.spawn2 = Vector2D(SCREEN_X-10, SCREEN_Y/2)
+
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
 		self.sprites = pygame.sprite.Group()
-		self.sprites.add(self.rocket)
-		self.sprites.add(self.rocket2)
+
+		self.generate_player() #Generate all players
+
+	def generate_player(self):
+		for i in range(1,self.players+1):
+			rocket = Rocket(i)
+			self.rockets.append(rocket)
+			self.sprites.add(rocket)
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -37,61 +45,83 @@ class Engine:
 				if event.key == pygame.K_q:
 					exit()
 				#Player 1
-				if event.key == pygame.K_UP:
-					self.rocket.engineOn = True
-				if event.key == pygame.K_LEFT:
-					self.rocket.turnLeft = True
-				if event.key == pygame.K_RIGHT:
-					self.rocket.turnRight = True
-				if event.key == pygame.K_KP_ENTER:
-					bullet = self.rocket.shoot()
-					self.bullet_sprites.add(bullet)
-					self.sprites.add(bullet)
-
-				#Player 2
-				if event.key == pygame.K_w:
-					self.rocket2.engineOn = True
-				if event.key == pygame.K_a:
-					self.rocket2.turnLeft = True
-				if event.key == pygame.K_d:
-					self.rocket2.turnRight = True
-				if event.key == pygame.K_SPACE:
-					bullet = self.rocket2.shoot()
-					self.bullet_sprites.add(bullet)
-					self.sprites.add(bullet)
+				for rocket in self.rockets:
+					if rocket.uid == 1:
+						if event.key == pygame.K_UP:
+							rocket.engineOn = True
+						if event.key == pygame.K_LEFT:
+							rocket.turnLeft = True
+						if event.key == pygame.K_RIGHT:
+							rocket.turnRight = True
+						if event.key == pygame.K_KP_ENTER:
+							bullet = rocket.shoot()
+							self.bullet_sprites.add(bullet)
+							self.sprites.add(bullet)
+					if rocket.uid == 2:
+						if event.key == pygame.K_w:
+							rocket.engineOn = True
+						if event.key == pygame.K_a:
+							rocket.turnLeft = True
+						if event.key == pygame.K_d:
+							rocket.turnRight = True
+						if event.key == pygame.K_SPACE:
+							bullet = rocket.shoot()
+							self.bullet_sprites.add(bullet)
+							self.sprites.add(bullet)
 
 			if event.type == pygame.KEYUP:
-				#Player 1
-				if event.key == pygame.K_UP:
-					self.rocket.engineOn = False
-				if event.key == pygame.K_LEFT:
-					self.rocket.turnLeft = False
-				if event.key == pygame.K_RIGHT:
-					self.rocket.turnRight = False
-				#Player 2
-				if event.key == pygame.K_w:
-					self.rocket2.engineOn = False
-				if event.key == pygame.K_a:
-					self.rocket2.turnLeft = False
-				if event.key == pygame.K_d:
-					self.rocket2.turnRight = False
+				for rocket in self.rockets:
+					#Player 1
+					if rocket.uid == 1:
+						if event.key == pygame.K_UP:
+							rocket.engineOn = False
+						if event.key == pygame.K_LEFT:
+							rocket.turnLeft = False
+						if event.key == pygame.K_RIGHT:
+							rocket.turnRight = False
+					#Player 2
+					if rocket.uid == 2:
+						if event.key == pygame.K_w:
+							rocket.engineOn = False
+						if event.key == pygame.K_a:
+							rocket.turnLeft = False
+						if event.key == pygame.K_d:
+							rocket.turnRight = False
+
+	def bullet_impact(self):
+		for rocket in self.rockets:
+			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
+			for bullet in collide_rocket:
+				if bullet.uid != rocket.uid:
+					rocket.pos = self.spawn1
+
 
 	def display(self, screen):
 		"""Display of text on screen"""
 		fuel = "Fuel: %s" % self.rocket.fuel
 		font = pygame.font.SysFont("sans-serif", 30)
-		fuel_text = font.render(fuel, True, WHITE)
+		fuel_text = font.render(fuel, True, RED)
 		screen.blit(fuel_text, [20, 15])
+
+		fuel2 = "Fuel: %s" % self.rocket2.fuel
+		font2 = pygame.font.SysFont("sans-serif", 30)
+		fuel2_text = font2.render(fuel2, True, BLUE)
+		screen.blit(fuel2_text, [SCREEN_X-130, 15])
+
 
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""
 		self.sprites.update()
 		self.eventhandler()
-		self.display(screen)
+		#self.display(screen)
+
 		for bullet in self.bullet_sprites:
 			bullet.logic()
-		self.rocket.logic(screen)
-		self.rocket2.logic(screen)
+
+		for rocket in self.rockets:
+			rocket.logic(screen)
+
+		self.bullet_impact()
 		
 		self.sprites.draw(screen)
 		pygame.display.update()
