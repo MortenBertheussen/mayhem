@@ -20,6 +20,8 @@ class Engine:
 		self.rocket = Rocket()
 		self.otherrockets = []
 		self.obstacle = []
+		self.obstacle_sprites = pygame.sprite.Group()
+		self.bullet_sprites = pygame.sprite.Group()
 		self.sprites = pygame.sprite.Group()
 		self.sprites.add(self.rocket)
 
@@ -39,7 +41,8 @@ class Engine:
 				if event.key == pygame.K_RIGHT:
 					self.rocket.turnRight = True
 				if event.key == pygame.K_SPACE:
-					self.rocket.shoot()
+					self.bullet_sprites.add(self.rocket.shoot())
+					self.sprites.add(self.rocket.shoot())
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_UP:
 					self.rocket.engineOn = False

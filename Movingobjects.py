@@ -70,7 +70,8 @@ class Rocket(Movingobject):
 			self.direction = self.direction.normalized() * self.maxspeed
 
 	def shoot(self):
-		self.shots.append(Bullet(self.pos, self.rotate()))
+		return Bullet(self.pos, self.rotate())
+		#self.shots.append(Bullet(self.pos, self.rotate()))
 			
 	def refule(self):
 		pass
