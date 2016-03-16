@@ -10,9 +10,12 @@ from gameconstants import *
 from Vector2D import *
 from Movingobjects import *
 
-BACKGROUND_FNAME = "sprites/arcadebackground.jpg"
-background = pygame.image.load(BACKGROUND_FNAME)
-background = pygame.transform.scale(background, (SCREEN_X, SCREEN_Y))
+class Environment(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
+		self.rect = self.image.get_rect()
+
 
 class Engine:
 	"""This is the engine class"""
@@ -22,6 +25,9 @@ class Engine:
 		self.players = 2
 		self.spawn1 = Vector2D(10,SCREEN_Y/2)
 		self.spawn2 = Vector2D(SCREEN_X-10, SCREEN_Y/2)
+
+		self.environment_sprite = pygame.sprite.Group()
+		self.environment_sprite.add(Environment())
 
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
@@ -90,10 +96,17 @@ class Engine:
 
 	def bullet_impact(self):
 		for rocket in self.rockets:
+			#Bullets
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.pos = self.spawn1
+			environment_collide = pygame.sprite.spritecollide(rocket,self.environment_sprite,False)
+
+			#Environment
+			for env in environment_collide:
+				if pygame.sprite.collide_mask(env,rocket):
+					rocket.pos = self.spawn2
 
 
 	def display(self, screen):
@@ -113,6 +126,7 @@ class Engine:
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""
 		self.sprites.update()
+		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
 		self.eventhandler()
 		self.display(screen)
 
@@ -123,7 +137,9 @@ class Engine:
 			rocket.logic(screen)
 
 		self.bullet_impact()
-		
+
+
+		self.environment_sprite.draw(screen)
 		self.sprites.draw(screen)
 		pygame.display.update()
 
@@ -137,7 +153,6 @@ def main():
 	
 	while True:	
 		time = clock.tick(FPS)
-		screen.blit(background, (0,0))
 		engine.logic(screen)
 
 if __name__ == "__main__":
