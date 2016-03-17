@@ -117,7 +117,7 @@ class Bullet(Movingobject):
 		self.pos.y = rect.center[1]
 
 	def move(self):
-		self.pos += self.dir.normalized() * 20
+		self.pos += self.dir.normalized() * 15
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y
 
