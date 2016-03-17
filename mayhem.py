@@ -140,7 +140,8 @@ class Engine:
 		self.sprites.update()
 		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
 		self.eventhandler()
-		
+		self.environment_sprite.draw(screen)
+		self.display(screen)
 		for bullet in self.bullet_sprites:
 			bullet.logic()
 
@@ -150,7 +151,7 @@ class Engine:
 		self.bullet_impact()
 		self.platform_impact()
 
-		self.environment_sprite.draw(screen)
+		
 		self.sprites.draw(screen)
 
 		self.display(screen)
