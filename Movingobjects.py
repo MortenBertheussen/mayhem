@@ -115,9 +115,9 @@ class Rocket(Movingobject):
 
 			
 	def fule(self):
-		if self.fuel > 1000:
-			self.fuel = 1000
-		if self.refuel and self.fuel < 1000:
+		if self.fuel > self.maxfuel:
+			self.fuel = self.maxfuel
+		if self.refuel and self.fuel < self.maxfuel:
 			self.fuel += 1
 
 class Bullet(Movingobject):
