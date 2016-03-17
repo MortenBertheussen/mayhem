@@ -32,6 +32,12 @@ class Rocket(Movingobject):
 		self.fuel = 1000
 		self.angle = 0
 		self.shots = []
+		if self.uid == 1:
+			self.spawn = Vector2D(300,350)
+			self.pos = self.spawn
+		elif self.uid == 2:
+			self.spawn = Vector2D(1075, 210)
+			self.pos = self.spawn
 
 
 	def logic(self, screen):
@@ -59,6 +65,7 @@ class Rocket(Movingobject):
 			self.pos += new_speed + self.gravity
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
 			self.fuel -=1
+			self.gravity.y = 2
 			
 			#set fuel not to go under 0
 			if self.fuel <= 0:

@@ -9,19 +9,12 @@ import cProfile
 from gameconstants import *
 from Vector2D import *
 from Movingobjects import *
-
-class Environment(pygame.sprite.Sprite):
-	def __init__(self):
-		super().__init__()
-		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
-		self.rect = self.image.get_rect()
-
+from staticobjects import *
 
 class Engine:
 	"""This is the engine class"""
 	def __init__(self):
 		self.rockets = []
-		self.obstacle = []
 		self.players = 2
 		self.spawn1 = Vector2D(10,SCREEN_Y/2)
 		self.spawn2 = Vector2D(SCREEN_X-10, SCREEN_Y/2)
@@ -32,14 +25,22 @@ class Engine:
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
 		self.sprites = pygame.sprite.Group()
+		self.platforms = pygame.sprite.Group()
 
 		self.generate_player() #Generate all players
 
 	def generate_player(self):
+		#Generate ships
 		for i in range(1,self.players+1):
 			rocket = Rocket(i)
 			self.rockets.append(rocket)
 			self.sprites.add(rocket)
+
+		#Generate platform for players
+		for i in range(1,self.players+1):
+			platform = Platform(i)
+			self.platforms.add(platform)
+			self.sprites.add(platform)
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -94,6 +95,16 @@ class Engine:
 						if event.key == pygame.K_d:
 							rocket.turnRight = False
 
+	def platform_impact(self):
+		for rocket in self.rockets:
+			collide_platform = pygame.sprite.spritecollide(rocket,self.platforms,False)
+			for platform in collide_platform:
+				if pygame.sprite.collide_mask(rocket, platform):
+					rocket.pos.y = platform.rect.y - rocket.rect.height
+					rocket.gravity.y = 0
+					rocket.angle = 0
+					rocket.fuel += 1
+
 	def bullet_impact(self):
 		for rocket in self.rockets:
 			#Bullets
@@ -108,7 +119,7 @@ class Engine:
 			
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
-					rocket.pos = self.spawn2
+					rocket.pos = rocket.spawn
 
 	def display(self, screen):
 		"""Display of text on screen"""
@@ -129,8 +140,7 @@ class Engine:
 		self.sprites.update()
 		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
 		self.eventhandler()
-		self.display(screen)
-
+		
 		for bullet in self.bullet_sprites:
 			bullet.logic()
 
@@ -138,10 +148,12 @@ class Engine:
 			rocket.logic(screen)
 
 		self.bullet_impact()
-
+		self.platform_impact()
 
 		self.environment_sprite.draw(screen)
 		self.sprites.draw(screen)
+
+		self.display(screen)
 		pygame.display.update()
 
 def main():
