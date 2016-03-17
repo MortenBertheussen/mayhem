@@ -113,6 +113,7 @@ class Engine:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.pos = self.spawn1
 					self.sprites.remove(bullet)
+					self.bullet_sprites.remove(bullet)
 			
 			#Environment and rocket
 			environment_collide = pygame.sprite.spritecollide(rocket,self.environment_sprite,False)
@@ -120,12 +121,14 @@ class Engine:
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
 					rocket.pos = rocket.spawn
+					rocket.score -= 10
 
 		#Bullets with environment
 		for bullet in self.bullet_sprites:
 			environment_collide = pygame.sprite.spritecollide(bullet,self.environment_sprite,False)
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,bullet):
+					self.bullet_sprites.remove(bullet)
 					self.sprites.remove(bullet)
 
 	def display(self, screen):
@@ -140,7 +143,19 @@ class Engine:
 				screen.blit(fuel_text, [20, 15])
 			else: 
 				fuel_text = font.render(fuel, True, BLUE)
-				screen.blit(fuel_text, [SCREEN_X-130, 15])
+				screen.blit(fuel_text, [SCREEN_X-120, 15])
+
+		for rocket in self.rockets:
+			score = "Score: %s" % rocket.score
+			font = pygame.font.SysFont("sans.serif", 30)
+			score_text = font.render(score, True, RED)
+
+			if rocket.uid == 1:
+				score_text = font.render(score,True,RED)
+				screen.blit(score_text, [20, 45])
+			else:
+				score_text = font.render(score,True,BLUE)
+				screen.blit(score_text, [SCREEN_X -120, 45])
 
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""

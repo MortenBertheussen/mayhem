@@ -32,6 +32,7 @@ class Rocket(Movingobject):
 		self.refuel = False
 		self.fuel = 1000
 		self.maxfuel = 1000
+		self.score = 0
 		self.angle = 0
 		self.shots = []
 		if self.uid == 1:
