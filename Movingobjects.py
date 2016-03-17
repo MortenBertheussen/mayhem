@@ -65,7 +65,8 @@ class Rocket(Movingobject):
 			self.image = pygame.transform.rotate(self.image, self.angle)
 			self.rect = self.image.get_rect()
 			self.direction *= 1.5
-			self.pos += new_speed + self.gravity
+			if self.refuel is False:
+				self.pos += new_speed + self.gravity
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
 			self.refuel = False
 			self.fuel -=1
