@@ -121,6 +121,13 @@ class Engine:
 				if pygame.sprite.collide_mask(env,rocket):
 					rocket.pos = rocket.spawn
 
+		#Bullets with environment
+		for bullet in self.bullet_sprites:
+			environment_collide = pygame.sprite.spritecollide(bullet,self.environment_sprite,False)
+			for env in environment_collide:
+				if pygame.sprite.collide_mask(env,bullet):
+					self.sprites.remove(bullet)
+
 	def display(self, screen):
 		"""Display of text on screen"""
 		for rocket in self.rockets:
