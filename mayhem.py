@@ -104,7 +104,7 @@ class Engine:
 					rocket.gravity.y = 0
 					rocket.angle = 0
 					
-					if rocket.fuel <1000:
+					if rocket.fuel < rocket.maxfuel:
 						rocket.fuel += 1
 
 	def bullet_impact(self):
