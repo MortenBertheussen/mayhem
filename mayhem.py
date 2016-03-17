@@ -100,9 +100,10 @@ class Engine:
 			collide_platform = pygame.sprite.spritecollide(rocket,self.platforms,False)
 			for platform in collide_platform:
 				if pygame.sprite.collide_mask(rocket, platform):
-					rocket.pos.y = platform.rect.y - rocket.rect.height
+					rocket.pos.y = platform.rect.y - rocket.rect.height - 8
 					rocket.gravity.y = 0 # Turn off gravity while on platform
 					rocket.refuel = True
+					rocket.angle = 0
 
 	def bullet_impact(self):
 		for rocket in self.rockets:

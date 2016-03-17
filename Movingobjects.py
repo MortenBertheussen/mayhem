@@ -80,7 +80,7 @@ class Rocket(Movingobject):
 			self.image = pygame.transform.scale(self.image,(30,30))
 			self.image = pygame.transform.rotate(self.image, self.angle)
 			self.rect = self.image.get_rect()
-			if self.direction.magnitude() > 0.5:
+			if self.direction.magnitude() > 0.5 and self.refuel is False:
 				self.direction /= 1.04
 				self.pos += new_speed + self.gravity
 			else:
