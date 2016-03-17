@@ -29,6 +29,7 @@ class Rocket(Movingobject):
 		self.engineOn = False
 		self.turnLeft = False
 		self.turnRight = False
+		self.refuel = False
 		self.fuel = 1000
 		self.angle = 0
 		self.shots = []
@@ -45,6 +46,7 @@ class Rocket(Movingobject):
 		self.speed_limit()
 		self.move()
 		self.screen_wrap()
+		self.fule()
 		#pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,45,45))
 
 	def move(self):
@@ -64,6 +66,7 @@ class Rocket(Movingobject):
 			self.direction *= 1.5
 			self.pos += new_speed + self.gravity
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
+			self.refuel = False
 			self.fuel -=1
 			self.gravity.y = 2
 			
@@ -109,8 +112,11 @@ class Rocket(Movingobject):
 			self.pos.y = SCREEN_Y
 
 			
-	def refule(self):
-		pass
+	def fule(self):
+		if self.fuel > 1000:
+			self.fuel = 1000
+		if self.refuel and self.fuel < 1000:
+			self.fuel += 1
 
 class Bullet(Movingobject):
 	"""The bullet class"""
