@@ -67,7 +67,7 @@ class Rocket(Movingobject):
 			self.rect = self.image.get_rect()
 			self.direction *= 1.5
 			if self.refuel is False:
-				self.pos += new_speed + self.gravity
+				self.pos += new_speed #+ self.gravity/2
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
 			self.refuel = False
 			self.fuel -=1
@@ -87,6 +87,15 @@ class Rocket(Movingobject):
 			else:
 				self.pos += self.gravity
 			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
+
+			#Rotate slowly back to 0 deg if engine is off
+			if 1 < self.angle < -1:
+				self.angle = 0
+			else:
+				if self.angle < 0:
+					self.angle += 0.5
+				if self.angle > 0:
+					self.angle -= 0.5
 
 
 	def speed_limit(self):

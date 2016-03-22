@@ -103,7 +103,6 @@ class Engine:
 					rocket.pos.y = platform.rect.y - rocket.rect.height - 8
 					rocket.gravity.y = 0 # Turn off gravity while on platform
 					rocket.refuel = True
-					rocket.angle = 0
 
 	def bullet_impact(self):
 		for rocket in self.rockets:
