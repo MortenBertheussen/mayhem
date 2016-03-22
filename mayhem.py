@@ -123,6 +123,8 @@ class Engine:
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
 					rocket.pos = rocket.spawn
+					rocket.angle = 0
+					rocket.direction = rocket.direction.normalized()
 					rocket.score -= 50 # Minus points for crashing
 
 		#Bullets with environment
