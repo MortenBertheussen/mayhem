@@ -97,11 +97,10 @@ class Engine:
 
 	def platform_impact(self):
 		for rocket in self.rockets:
-			collide_platform = pygame.sprite.spritecollide(rocket,self.platforms,False)
-			for platform in collide_platform:
-				if pygame.sprite.collide_mask(rocket, platform):
-					rocket.pos.y = platform.rect.y - rocket.rect.height - 8
-					rocket.gravity.y = 0 # Turn off gravity while on platform
+			for platform in self.platforms:
+				hit = pygame.sprite.collide_rect(rocket, platform)
+				if  hit:
+					rocket.pos.y = platform.rect.y - rocket.rect.height/2
 					rocket.refuel = True
 
 	def bullet_impact(self):
@@ -110,7 +109,11 @@ class Engine:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
-					rocket.pos = self.spawn1
+					rocket.pos = rocket.spawn
+					rocket.angle = 0
+					for rocket in self.rockets:
+						if rocket.uid is bullet.uid:
+							rocket.score += 100 #Give the player who got the hit score
 					self.sprites.remove(bullet)
 					self.bullet_sprites.remove(bullet)
 			
@@ -120,7 +123,7 @@ class Engine:
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
 					rocket.pos = rocket.spawn
-					rocket.score -= 10
+					rocket.score -= 50 # Minus points for crashing
 
 		#Bullets with environment
 		for bullet in self.bullet_sprites:

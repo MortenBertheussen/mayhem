@@ -19,6 +19,13 @@ class Movingobject(pygame.sprite.Sprite):
 
 		return new_speed
 
+	def update_sprite(self, img):
+		oldrect = self.rect
+		self.image = pygame.image.load(img).convert_alpha()
+		self.image = pygame.transform.scale(self.image,(30,30))
+		self.image = pygame.transform.rotate(self.image, self.angle)
+		self.rect = self.image.get_rect(center=oldrect.center) # Reposition sprite to its center
+
 class Rocket(Movingobject): 
 	"""The class for rocket, broombroom"""
 	def __init__(self, uid):
@@ -49,54 +56,55 @@ class Rocket(Movingobject):
 		self.move()
 		self.screen_wrap()
 		self.fule()
-		#pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,45,45))
+		#Hitbox for bugtesting
+		#pygame.draw.rect(screen,RED,(self.rect.x,self.rect.y,self.rect.height,self.rect.width))
 
 	def move(self):
 		"""move method of rocket"""
+
 		if self.turnLeft:
 			self.angle += 4
 		if self.turnRight:
 			self.angle -= 4
+
+		#Reset angle if it goes over 360 back to 0
+		if self.angle > 360:
+			self.angle = 0
+		if self.angle < -360:
+			self.angle = 0
 		
 		new_speed = self.rotate()
 
+		#Movement if engine is on
 		if self.engineOn and self.fuel>0:
-			self.image = pygame.image.load("sprites/ship_engine_on.png").convert_alpha()
-			self.image = pygame.transform.scale(self.image,(30,30))
-			self.image = pygame.transform.rotate(self.image, self.angle)
-			self.rect = self.image.get_rect()
+			self.update_sprite("sprites/ship_engine_on.png")
 			self.direction *= 1.5
 			if self.refuel is False:
 				self.pos += new_speed #+ self.gravity/2
-			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
+			self.rect.center = (self.pos.x, self.pos.y)
 			self.refuel = False
 			self.fuel -=1
-			self.gravity.y = 2
 			
 			#set fuel not to go under 0
 			if self.fuel <= 0:
 				self.fuel = 0
 		else:
-			self.image = pygame.image.load("sprites/ship.png").convert_alpha()
-			self.image = pygame.transform.scale(self.image,(30,30))
-			self.image = pygame.transform.rotate(self.image, self.angle)
-			self.rect = self.image.get_rect()
+			self.update_sprite("sprites/ship.png")
 			if self.direction.magnitude() > 0.5 and self.refuel is False:
 				self.direction /= 1.04
 				self.pos += new_speed + self.gravity
 			else:
 				self.pos += self.gravity
-			self.rect.center = (self.pos.x + 22, self.pos.y + 22)
+			self.rect.center = (self.pos.x, self.pos.y)
 
 			#Rotate slowly back to 0 deg if engine is off
 			if 1 < self.angle < -1:
 				self.angle = 0
 			else:
 				if self.angle < 0:
-					self.angle += 0.5
+					self.angle += 1
 				if self.angle > 0:
-					self.angle -= 0.5
-
+					self.angle -= 1
 
 	def speed_limit(self):
 		"""Speed_limit method of rocket"""
@@ -106,24 +114,22 @@ class Rocket(Movingobject):
 	def shoot(self):
 		"""Shoot method of rocket"""
 		return Bullet(self.rect, self.rotate(), self.uid)
-		#self.shots.append(Bullet(self.pos, self.rotate()))
 
 	def screen_wrap(self):
 		"""Screen_wrap method of rocket"""
-		##Venstre Vegg
+		#Left
 		if self.pos.x <= 0:
 			self.pos.x = SCREEN_X - 1
-		##Høyre Vegg
+		#Right
 		if self.pos.x >= SCREEN_X:
 			self.pos.x = 1
-		##Nedre Vegg
+		#Bottom
 		if self.pos.y >= SCREEN_Y:
 			self.pos.y = 1
-		##Øvre Vegg
+		#Top
 		if self.pos.y <= 0:
 			self.pos.y = SCREEN_Y
 
-			
 	def fule(self):
 		if self.fuel > self.maxfuel:
 			self.fuel = self.maxfuel
@@ -148,4 +154,3 @@ class Bullet(Movingobject):
 
 	def logic(self):
 		self.move()
-		#pygame.draw.circle(screen, RED, (int(self.pos.x),int(self.pos.y)), self.radius)
