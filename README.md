@@ -1,7 +1,7 @@
 # Mayhem
 
 ## Run
-    python3 mayhem.py
+    $ python3 mayhem.py
 
 ## Todo list
 * Explotion animation when hit or crashing  
