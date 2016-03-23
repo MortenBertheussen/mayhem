@@ -1,5 +1,8 @@
 # Mayhem
 
+## Run
+   python3 mayhem.py
+
 ## Todo list
 * Explotion animation when hit or crashing  
 * Add timer for respawning  
