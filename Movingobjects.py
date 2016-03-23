@@ -136,7 +136,7 @@ class Rocket(Movingobject):
 		if self.fuel > self.maxfuel:
 			self.fuel = self.maxfuel
 		if self.refuel and self.fuel < self.maxfuel:
-			self.fuel += 1
+			self.fuel += 5
 
 class Bullet(Movingobject):
 	"""The bullet class"""

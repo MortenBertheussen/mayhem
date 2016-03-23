@@ -60,7 +60,7 @@ class Engine:
 							rocket.turnLeft = True
 						if event.key == pygame.K_RIGHT:
 							rocket.turnRight = True
-						if event.key == pygame.K_KP_ENTER:
+						if event.key == pygame.K_RSHIFT:
 							bullet = rocket.shoot()
 							self.bullet_sprites.add(bullet)
 							self.sprites.add(bullet)
@@ -138,7 +138,7 @@ class Engine:
 	def display(self, screen):
 		"""Display of text on screen"""
 		for rocket in self.rockets:
-			fuel = "Fuel: %s" % rocket.fuel
+			fuel = "Fuel: %s" % int(rocket.fuel/10)
 			font = pygame.font.SysFont("sans-serif", 30)
 			fuel_text = font.render(fuel, True, RED)
 			
