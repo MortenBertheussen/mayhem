@@ -110,6 +110,7 @@ class Engine:
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.pos = rocket.spawn
+					rocket.fuel = 1000
 					rocket.angle = 0
 					for rocket in self.rockets:
 						if rocket.uid is bullet.uid:
@@ -123,6 +124,7 @@ class Engine:
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
 					rocket.pos = rocket.spawn
+					rocket.fuel = 1000
 					rocket.angle = 0
 					rocket.direction = rocket.direction.normalized()
 					rocket.score -= 50 # Minus points for crashing
