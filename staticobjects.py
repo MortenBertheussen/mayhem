@@ -62,9 +62,3 @@ class Explotion(pygame.sprite.Sprite):
 				self.index = 11
 				self.kill = True
 			self.image = self.images[self.index]
-
-#class Hud(pygame.sprite.Sprite):
-#	def __init__(self):
-#		super().__init__()
-#		self.image = pygame.image.load("sprites/hud.png").convert_alpha()
-#		self.rect = self.image.get_rect()
