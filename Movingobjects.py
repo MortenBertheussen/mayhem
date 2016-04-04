@@ -40,15 +40,16 @@ class Rocket(Movingobject):
 		self.turnRight = False
 		self.refuel = False
 		self.fuel = 1000
+		self.health = 100
 		self.maxfuel = 1000
 		self.score = 0
 		self.angle = 0
 		self.shots = []
 		if self.uid == 1:
-			self.spawn = Vector2D(325,385) #Calc this from the players platform later, no magic numbers
+			self.spawn = Vector2D(325,310) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
 		elif self.uid == 2:
-			self.spawn = Vector2D(1098, 240) #Calc this from the players platform later, no magic numbers
+			self.spawn = Vector2D(1098, 200) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
 			self.image =  pygame.image.load("sprites/ship_blue.png").convert_alpha()
 
@@ -73,9 +74,9 @@ class Rocket(Movingobject):
 	def move(self):
 		"""Move method of rocket"""
 		if self.turnLeft:
-			self.angle += 4
+			self.angle += 6
 		if self.turnRight:
-			self.angle -= 4
+			self.angle -= 6
 		
 		new_speed = self.rotate()
 
@@ -130,7 +131,7 @@ class Rocket(Movingobject):
 		"""Screen_wrap method of rocket"""
 		#Left
 		if self.pos.x <= 0:
-			self.pos.x = SCREEN_X
+			self.pos.x = SCREEN_X - 1
 		#Right
 		if self.pos.x >= SCREEN_X:
 			self.pos.x = 1
@@ -139,7 +140,7 @@ class Rocket(Movingobject):
 			self.pos.y = 1
 		#Top
 		if self.pos.y <= 0:
-			self.pos.y = SCREEN_Y
+			self.pos.y = SCREEN_Y - 1 
 
 	def fule(self):
 		"""fuel method"""

@@ -7,7 +7,7 @@ class Environment(pygame.sprite.Sprite):
 	"""The environment/background"""
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
+		self.image = pygame.image.load("sprites/bg_and_hud.png").convert_alpha()
 		self.rect = self.image.get_rect()
 
 class Platform(pygame.sprite.Sprite):
@@ -19,7 +19,13 @@ class Platform(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect()
 		if self.uid is 1:
 			self.rect.x = 285
-			self.rect.y = 400
+			self.rect.y = 314
 		elif self.uid is 2:
 			self.rect.x = 1060
-			self.rect.y = 257
+			self.rect.y = 200
+
+#class Hud(pygame.sprite.Sprite):
+#	def __init__(self):
+#		super().__init__()
+#		self.image = pygame.image.load("sprites/hud.png").convert_alpha()
+#		self.rect = self.image.get_rect()

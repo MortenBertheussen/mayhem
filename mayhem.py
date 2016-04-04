@@ -21,6 +21,7 @@ class Engine:
 
 		self.environment_sprite = pygame.sprite.Group()
 		self.environment_sprite.add(Environment())
+		#self.environment_sprite.add(Hud())
 
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
@@ -115,12 +116,15 @@ class Engine:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
-					rocket.pos = rocket.spawn
-					rocket.fuel = 1000
-					rocket.angle = 0
-					for rocket in self.rockets:
-						if rocket.uid is bullet.uid:
-							rocket.score += 100 #Give the player who got the hit score
+					rocket.health -= 25
+					if rocket.health <= 0:
+						rocket.pos = rocket.spawn
+						rocket.fuel = 1000
+						rocket.angle = 0
+						rocket.health = 100
+						for rocket in self.rockets:
+							if rocket.uid is bullet.uid:
+								rocket.score += 100 #Give the player who got the hit score
 					self.sprites.remove(bullet)
 					self.bullet_sprites.remove(bullet)
 			
@@ -145,29 +149,46 @@ class Engine:
 
 	def display(self, screen):
 		"""Display of text on screen"""
+		
+			#FUEL DISPLAY
 		for rocket in self.rockets:
-			fuel = "Fuel: %s" % int(rocket.fuel/10)
-			font = pygame.font.SysFont("sans-serif", 30)
+			fuel = "%s" % int(rocket.fuel/10)
+			font = pygame.font.SysFont("sans-serif", 50)
 			fuel_text = font.render(fuel, True, RED)
 			
 			if rocket.uid == 1:
-				fuel_text = font.render(fuel, True, RED)
-				screen.blit(fuel_text, [20, 15])
+				fuel_text = font.render(fuel, True, WHITE)
+				screen.blit(fuel_text, [300, 715])
 			else: 
-				fuel_text = font.render(fuel, True, BLUE)
-				screen.blit(fuel_text, [SCREEN_X-120, 15])
+				fuel_text = font.render(fuel, True, WHITE)
+				screen.blit(fuel_text, [SCREEN_X-90, 715])
 
+			#SCORE DISPLAY
 		for rocket in self.rockets:
-			score = "Score: %s" % rocket.score
-			font = pygame.font.SysFont("sans.serif", 30)
+			score = "%s" % rocket.score
+			font = pygame.font.SysFont("sans.serif", 50)
 			score_text = font.render(score, True, RED)
 
 			if rocket.uid == 1:
-				score_text = font.render(score,True,RED)
-				screen.blit(score_text, [20, 45])
+				score_text = font.render(score,True,WHITE)
+				screen.blit(score_text, [300, 755])
 			else:
-				score_text = font.render(score,True,BLUE)
-				screen.blit(score_text, [SCREEN_X -120, 45])
+				score_text = font.render(score,True,WHITE)
+				screen.blit(score_text, [SCREEN_X -90, 755])
+
+			#HEALTH DISPLAY
+		for rocket in self.rockets:
+			health = "%s" % rocket.health
+			font = pygame.font.SysFont("sans.serif", 50)
+			health_text = font.render(health, True, WHITE)
+
+			if rocket.uid == 1:
+				health_text = font.render(health, True, WHITE)
+				screen.blit(health_text,[300,675])
+			else:
+				health_text = font.render(health, True, WHITE)
+				screen.blit(health_text, [SCREEN_X-90, 675])
+
 
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""
