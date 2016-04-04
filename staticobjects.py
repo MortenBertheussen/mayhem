@@ -50,9 +50,3 @@ class Explotion(pygame.sprite.Sprite):
 		if self.index >= len(self.images):
 			self.index = 0
 		self.image = self.images[self.index]
-
-#class Hud(pygame.sprite.Sprite):
-#	def __init__(self):
-#		super().__init__()
-#		self.image = pygame.image.load("sprites/hud.png").convert_alpha()
-#		self.rect = self.image.get_rect()
