@@ -61,10 +61,10 @@ class Rocket(Movingobject):
 		self.angle = 0
 		self.shots = []
 		if self.uid == 1:
-			self.spawn = Vector2D(325,310) #Calc this from the players platform later, no magic numbers
+			self.spawn = Vector2D(325,300) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
 		elif self.uid == 2:
-			self.spawn = Vector2D(1098, 200) #Calc this from the players platform later, no magic numbers
+			self.spawn = Vector2D(1098, 190) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
 			self.image =  pygame.image.load("sprites/ship_blue.png").convert_alpha()
 
