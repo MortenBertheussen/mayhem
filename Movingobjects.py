@@ -12,6 +12,21 @@ class Movingobject(pygame.sprite.Sprite):
 		self.pos = Vector2D(SCREEN_X/2 - 22, SCREEN_Y/2 - 22)
 		self.direction = Vector2D(0,-1)
 
+	def screen_wrap(self):
+		"""Make moving objects wrap around if they go out of the screen"""
+		#Left
+		if self.pos.x <= 0:
+			self.pos.x = SCREEN_X - 1
+		#Right
+		if self.pos.x >= SCREEN_X:
+			self.pos.x = 1
+		#Bottom
+		if self.pos.y >= SCREEN_Y:
+			self.pos.y = 1
+		#Top
+		if self.pos.y <= 0:
+			self.pos.y = SCREEN_Y - 1 
+
 	def rotate(self):
 		"""The math behind finding the new direction with an angle"""
 		x = self.direction.x * math.cos(math.radians(-self.angle)) - self.direction.y * math.sin(math.radians(-self.angle))
@@ -137,21 +152,6 @@ class Rocket(Movingobject):
 		self.health = 100
 		self.direction = self.direction.normalized()
 
-	def screen_wrap(self):
-		"""Screen_wrap method of rocket"""
-		#Left
-		if self.pos.x <= 0:
-			self.pos.x = SCREEN_X - 1
-		#Right
-		if self.pos.x >= SCREEN_X:
-			self.pos.x = 1
-		#Bottom
-		if self.pos.y >= SCREEN_Y:
-			self.pos.y = 1
-		#Top
-		if self.pos.y <= 0:
-			self.pos.y = SCREEN_Y - 1 
-
 	def fule(self):
 		"""fuel method"""
 		if self.fuel > self.maxfuel:
@@ -173,8 +173,10 @@ class Bullet(Movingobject):
 	def move(self):
 		"""moves the bullet"""
 		self.pos += self.dir.normalized() * 15
+		self.pos.y += 0.5 #Slight gravity for bullets
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y
 
 	def logic(self):
 		self.move()
+		self.screen_wrap()
