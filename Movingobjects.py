@@ -4,6 +4,7 @@ from Vector2D import *
 import math
 
 class Movingobject(pygame.sprite.Sprite):
+	"""A class for movingobjects"""
 	def __init__(self):
 		super().__init__()
 		self.gravity = Vector2D(0,2)
@@ -20,6 +21,7 @@ class Movingobject(pygame.sprite.Sprite):
 		return new_speed
 
 	def update_sprite(self, img):
+		"""updates the sprites"""
 		oldrect = self.rect
 		self.image = pygame.image.load(img).convert_alpha()
 		self.image = pygame.transform.scale(self.image,(30,30))
@@ -140,6 +142,7 @@ class Rocket(Movingobject):
 			self.pos.y = SCREEN_Y
 
 	def fule(self):
+		"""fuel method"""
 		if self.fuel > self.maxfuel:
 			self.fuel = self.maxfuel
 		if self.refuel and self.fuel < self.maxfuel:
@@ -157,6 +160,7 @@ class Bullet(Movingobject):
 		self.pos.y = rect.center[1]
 
 	def move(self):
+		"""moves the bullet"""
 		self.pos += self.dir.normalized() * 15
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y

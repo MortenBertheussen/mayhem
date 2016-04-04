@@ -30,6 +30,7 @@ class Engine:
 		self.generate_player() #Generate all players
 
 	def generate_player(self):
+		"""generates players"""
 		#Generate ships
 		for i in range(1,self.players+1):
 			rocket = Rocket(i)
@@ -99,6 +100,7 @@ class Engine:
 							rocket.turnRight = False
 
 	def platform_impact(self):
+		"""Checks if rocket collide with platform"""
 		for rocket in self.rockets:
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
@@ -107,6 +109,7 @@ class Engine:
 					rocket.refuel = True
 
 	def bullet_impact(self):
+		"""Checks if sprites collide"""
 		for rocket in self.rockets:
 			#Bullets
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
@@ -178,9 +181,8 @@ class Engine:
 
 		for rocket in self.rockets:
 			rocket.logic(screen)
-
-		self.bullet_impact()
 		self.platform_impact()
+		self.bullet_impact()
 
 		
 		self.sprites.draw(screen)
