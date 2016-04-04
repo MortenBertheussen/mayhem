@@ -16,13 +16,12 @@ class Engine:
 	def __init__(self):
 		self.rockets = []
 		self.players = 2
-		self.spawn1 = Vector2D(10,SCREEN_Y/2)
-		self.spawn2 = Vector2D(SCREEN_X-10, SCREEN_Y/2)
 
 		self.environment_sprite = pygame.sprite.Group()
 		self.environment_sprite.add(Environment())
 		#self.environment_sprite.add(Hud())
 
+		self.explotions = pygame.sprite.Group()
 		self.obstacle_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
 		self.sprites = pygame.sprite.Group()
@@ -131,6 +130,10 @@ class Engine:
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
 					rocket.respawn()
+					#Create explotion
+					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery)
+					self.explotions.add(explotion)
+
 					rocket.score -= 50 # Minus points for crashing
 
 		#Bullets with environment
@@ -186,6 +189,7 @@ class Engine:
 
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""
+		self.explotions.update()
 		self.sprites.update()
 		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
 		self.eventhandler()
@@ -198,9 +202,14 @@ class Engine:
 			rocket.logic(screen)
 		self.platform_impact()
 		self.bullet_impact()
-
 		
 		self.sprites.draw(screen)
+		self.explotions.draw(screen)
+
+		#Remove explotion after a while
+		for explotion in self.explotions:
+			if explotion.timer > 3:
+				self.explotions.remove(explotion)
 
 		self.display(screen)
 		pygame.display.update()

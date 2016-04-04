@@ -140,12 +140,16 @@ class Rocket(Movingobject):
 
 	def shoot(self):
 		"""Shoot method of rocket"""
+		#Create a bullet object with the ships position and user id
 		return Bullet(self.rect, self.rotate(), self.uid)
 
 	def bullet_impact(self):
+		"""Method when ship is hit by a bullet"""
 		self.health -= 25
 
 	def respawn(self):
+		"""Method to respawn the ship.
+		Used when coliding with the environment or when health is 0"""
 		self.pos = self.spawn
 		self.fuel = 1000
 		self.angle = 0
@@ -171,7 +175,7 @@ class Bullet(Movingobject):
 		self.pos.y = rect.center[1]
 
 	def move(self):
-		"""moves the bullet"""
+		"""Moves the bullet"""
 		self.pos += self.dir.normalized() * 15
 		self.pos.y += 0.5 #Slight gravity for bullets
 		self.rect.x = self.pos.x
