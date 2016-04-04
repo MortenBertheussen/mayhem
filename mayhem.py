@@ -54,17 +54,6 @@ class Engine:
 				#Player 1
 				for rocket in self.rockets:
 					if rocket.uid == 1:
-						if event.key == pygame.K_UP:
-							rocket.engineOn = True
-						if event.key == pygame.K_LEFT:
-							rocket.turnLeft = True
-						if event.key == pygame.K_RIGHT:
-							rocket.turnRight = True
-						if event.key == pygame.K_RSHIFT:
-							bullet = rocket.shoot()
-							self.bullet_sprites.add(bullet)
-							self.sprites.add(bullet)
-					if rocket.uid == 2:
 						if event.key == pygame.K_w:
 							rocket.engineOn = True
 						if event.key == pygame.K_a:
@@ -76,23 +65,37 @@ class Engine:
 							self.bullet_sprites.add(bullet)
 							self.sprites.add(bullet)
 
+					if rocket.uid == 2:
+						if event.key == pygame.K_UP:
+							rocket.engineOn = True
+						if event.key == pygame.K_LEFT:
+							rocket.turnLeft = True
+						if event.key == pygame.K_RIGHT:
+							rocket.turnRight = True
+						if event.key == pygame.K_RSHIFT:
+							bullet = rocket.shoot()
+							self.bullet_sprites.add(bullet)
+							self.sprites.add(bullet)
+					
+
 			if event.type == pygame.KEYUP:
 				for rocket in self.rockets:
 					#Player 1
 					if rocket.uid == 1:
-						if event.key == pygame.K_UP:
-							rocket.engineOn = False
-						if event.key == pygame.K_LEFT:
-							rocket.turnLeft = False
-						if event.key == pygame.K_RIGHT:
-							rocket.turnRight = False
-					#Player 2
-					if rocket.uid == 2:
 						if event.key == pygame.K_w:
 							rocket.engineOn = False
 						if event.key == pygame.K_a:
 							rocket.turnLeft = False
 						if event.key == pygame.K_d:
+							rocket.turnRight = False
+
+					#Player 2
+					if rocket.uid == 2:
+						if event.key == pygame.K_UP:
+							rocket.engineOn = False
+						if event.key == pygame.K_LEFT:
+							rocket.turnLeft = False
+						if event.key == pygame.K_RIGHT:
 							rocket.turnRight = False
 
 	def platform_impact(self):

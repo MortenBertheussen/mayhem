@@ -48,6 +48,7 @@ class Rocket(Movingobject):
 		elif self.uid == 2:
 			self.spawn = Vector2D(1098, 240) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
+			self.image =  pygame.image.load("sprites/ship_blue.png").convert_alpha()
 
 
 	def logic(self, screen):
@@ -78,7 +79,10 @@ class Rocket(Movingobject):
 
 		#Movement if engine is on
 		if self.engineOn and self.fuel>0:
-			self.update_sprite("sprites/ship_engine_on.png")	#Update sprite to engine on image
+			if self.uid == 1:
+				self.update_sprite("sprites/ship_engine_on.png")	#Update sprite to engine on image
+			elif self.uid == 2:
+				self.update_sprite("sprites/ship_blue_on.png")
 			self.direction *= 1.5
 			if self.refuel is False:
 				self.pos += new_speed #+ self.gravity/2
@@ -91,7 +95,10 @@ class Rocket(Movingobject):
 				self.fuel = 0
 		#Movement if engine is off
 		else:
-			self.update_sprite("sprites/ship.png")				#Update sprite to engine off image
+			if self.uid == 1:
+				self.update_sprite("sprites/ship.png")				#Update sprite to engine off image
+			elif self.uid == 2:
+				self.update_sprite("sprites/ship_blue.png")
 			#Movement when ship still has big acceleration and not refuling
 			if self.direction.magnitude() > 0.5 and self.refuel is False:
 				self.direction /= 1.04
