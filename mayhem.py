@@ -116,12 +116,9 @@ class Engine:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
-					rocket.health -= 25
+					rocket.bullet_impact()
 					if rocket.health <= 0:
-						rocket.pos = rocket.spawn
-						rocket.fuel = 1000
-						rocket.angle = 0
-						rocket.health = 100
+						rocket.respawn()
 						for rocket in self.rockets:
 							if rocket.uid is bullet.uid:
 								rocket.score += 100 #Give the player who got the hit score
@@ -133,10 +130,7 @@ class Engine:
 			
 			for env in environment_collide:
 				if pygame.sprite.collide_mask(env,rocket):
-					rocket.pos = rocket.spawn
-					rocket.fuel = 1000
-					rocket.angle = 0
-					rocket.direction = rocket.direction.normalized()
+					rocket.respawn()
 					rocket.score -= 50 # Minus points for crashing
 
 		#Bullets with environment

@@ -127,6 +127,16 @@ class Rocket(Movingobject):
 		"""Shoot method of rocket"""
 		return Bullet(self.rect, self.rotate(), self.uid)
 
+	def bullet_impact(self):
+		self.health -= 25
+
+	def respawn(self):
+		self.pos = self.spawn
+		self.fuel = 1000
+		self.angle = 0
+		self.health = 100
+		self.direction = self.direction.normalized()
+
 	def screen_wrap(self):
 		"""Screen_wrap method of rocket"""
 		#Left
