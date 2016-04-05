@@ -50,7 +50,7 @@ class Engine:
 		if len(self.astroids)<6:
 			self.astroids.add(
 					Astroid(
-						random.choice([(-10,SCREEN_Y/2),(SCREEN_X/2, SCREEN_Y+10),(SCREEN_X+10,SCREEN_Y/2),(SCREEN_X/2, -10)]),
+						random.choice([(-10,SCREEN_Y/2),(SCREEN_X/2, SCREEN_Y+10),(300,SCREEN_Y+10),(300,-10)]),
 						random.choice([ASTROID_1, ASTROID_2, ASTROID_3])
 					)
 				)
@@ -77,6 +77,9 @@ class Engine:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				exit()
+
+			if event.type == pygame.USEREVENT:
+				self.generate_astroid()
 			
 			if event.type == pygame.KEYDOWN:
 				#Player 1
@@ -201,7 +204,17 @@ class Engine:
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
 					rocket.respawn()
-		
+			#Astroid collide with astroid
+			for astroid2 in self.astroids:
+				hit = pygame.sprite.collide_rect(astroid, astroid2)
+				if hit and (astroid != astroid2) and (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
+					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
+					explotion2 = Explotion(astroid2.rect.centerx, astroid2.rect.centery, 30)
+					self.explotions.add(explotion)
+					self.explotions.add(explotion2)
+					self.astroids.remove(astroid)
+					self.astroids.remove(astroid2)
+
 		for rocket in self.rockets:
 			#Rocket collide with platform
 			for platform in self.platforms:
@@ -278,7 +291,6 @@ class Engine:
 		self.platform_impact()
 		self.bullet_impact()
 		self.gravity_field()
-		self.generate_astroid()
 		self.environment_impact()
 		self.bullet_out_of_screen()
 
@@ -307,6 +319,8 @@ def main():
 	screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
+	pygame.time.set_timer(pygame.USEREVENT, 3000)#Set a timer for spawning astroids
+
 	
 	while True:	
 		time = clock.tick(FPS)
