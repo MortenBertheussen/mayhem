@@ -231,7 +231,14 @@ class Engine:
 					self.astroids.remove(astroid)
 					self.astroids.remove(astroid2)
 
-	
+			#Astroid collide with platform
+			for platform in self.platforms:
+				hit = pygame.sprite.collide_rect(astroid, platform)
+				if hit and pygame.sprite.collide_mask(astroid, platform):
+					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
+					self.explotions.add(explotion)
+					self.astroids.remove(astroid)
+
 			#Rocket collide with planet
 			for planet in self.planets:
 				hit = pygame.sprite.collide_rect(rocket, planet)
