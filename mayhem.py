@@ -104,7 +104,7 @@ class Engine:
 							rocket.turnLeft = True
 						if event.key == pygame.K_RIGHT:
 							rocket.turnRight = True
-						if event.key == pygame.K_RSHIFT:
+						if event.key == pygame.K_RCTRL:
 							bullet = rocket.shoot()
 							self.bullet_sprites.add(bullet)
 					
@@ -162,9 +162,15 @@ class Engine:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(astroid, bullet)
 				if hit and pygame.sprite.collide_mask(astroid, bullet):
+					astroid.life -=1
 					explotion = Explotion(bullet.rect.centerx, bullet.rect.centery, 20)
 					self.explotions.add(explotion)
 					self.bullet_sprites.remove(bullet)
+					if astroid.life == 0:
+						explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 75)
+						self.explotions.add(explotion)
+						self.astroids.remove(astroid)
+
 
 		#Planet collide with bullet
 		for planet in self.planets:
