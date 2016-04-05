@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from gameconstants import *
+from spritesheet import *
 from Vector2D import *
 import math
 
@@ -20,14 +21,19 @@ class Platform(pygame.sprite.Sprite):
 	def __init__(self, uid):
 		super().__init__()
 		self.uid = uid
-		self.image = pygame.image.load("sprites/platform.png").convert_alpha()
+		if uid is 1:
+			self.spriterect = BLUE_PLATFORM
+		else:
+			self.spriterect = RED_PLATFORM
+		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
 		if self.uid is 1:
-			self.rect.x = 285
-			self.rect.y = 314
+			self.rect.centerx = 150
+			self.rect.centery = SCREEN_Y - 150
 		elif self.uid is 2:
-			self.rect.x = 1060
-			self.rect.y = 200
+			self.rect.centerx = SCREEN_X - 150
+			self.rect.centery = 150
 
 class Explotion(pygame.sprite.Sprite):
 	def __init__(self, x, y, size):

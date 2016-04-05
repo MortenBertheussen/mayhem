@@ -300,8 +300,8 @@ class Engine:
 		#Drawing
 		self.bg.draw(screen)				#Draw background sprite
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
-		self.rockets.draw(screen)			#Draw rocket sprites
 		self.platforms.draw(screen)			#Draw platform sprites
+		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)
 		self.astroids.draw(screen)
 		self.explotions.draw(screen)		#Draw explotions

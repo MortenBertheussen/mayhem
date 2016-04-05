@@ -69,10 +69,10 @@ class Rocket(Movingobject):
 		self.angle = 0
 		self.shots = []
 		if self.uid == 1:
-			self.spawn = Vector2D(325,300) #Calc this from the players platform later, no magic numbers
+			self.spawn = Vector2D(150,SCREEN_Y-120) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
 		elif self.uid == 2:
-			self.spawn = Vector2D(1098, 190) #Calc this from the players platform later, no magic numbers
+			self.spawn = Vector2D(SCREEN_X-150, 180) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
 
 	def update(self):
