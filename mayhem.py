@@ -184,8 +184,7 @@ class Engine:
 		self.rockets.draw(screen)
 		self.platforms.draw(screen)
 		self.explotions.draw(screen)
-		
-		#self.display(screen) #Hud
+		self.display(screen) #Hud
 
 		#Remove explotion after a while
 		for explotion in self.explotions:

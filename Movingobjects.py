@@ -75,7 +75,6 @@ class Rocket(Movingobject):
 		elif self.uid == 2:
 			self.spawn = Vector2D(1098, 190) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
-			self.image =  pygame.image.load("sprites/p2.png").convert_alpha()
 
 	def update(self):
 		self.current_sprite()
@@ -83,7 +82,8 @@ class Rocket(Movingobject):
 		self.angle_fix()
 		self.move()
 		self.screen_wrap()
-		self.fule()
+		if self.refuel:
+			self.fule()
 
 	def angle_fix(self):
 		"""Keeps the angle between 0 and 360 degrees. We dont want negative angles."""
@@ -148,6 +148,7 @@ class Rocket(Movingobject):
 			self.direction *= 1.5
 			self.pos += new_speed
 			self.rect.center = (self.pos.x, self.pos.y)
+			self.refuel = False
 			self.fuel -=1
 			
 			#set fuel not to go under 0
@@ -156,7 +157,7 @@ class Rocket(Movingobject):
 
 		#Movement if engine is off
 		else:
-			if self.direction.magnitude() > 0.5:
+			if self.direction.magnitude() > 0.01:
 				self.direction /= 1.04
 			self.pos += new_speed
 			self.rect.center = (self.pos.x, self.pos.y) #Update the rockets center position
