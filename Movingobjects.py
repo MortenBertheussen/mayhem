@@ -132,14 +132,12 @@ class Rocket(Movingobject):
 
 	def move(self):
 		"""Move method of rocket"""
-		if self.turnLeft:
-			self.angle += 3
-		if self.turnRight:
-			self.angle -= 3
+		if self.turnLeft: self.angle += 3
+		if self.turnRight: self.angle -= 3
 		
 		new_speed = self.rotate()
 
-		#Movement if engine is on
+		#ENGINE ON
 		if self.engineOn and self.fuel>0:
 			self.direction *= 1.5
 			self.pos += new_speed
@@ -147,16 +145,14 @@ class Rocket(Movingobject):
 			self.refuel = False
 			self.fuel -=1
 			
-			#set fuel not to go under 0
-			if self.fuel <= 0:
-				self.fuel = 0
+			if self.fuel <= 0: self.fuel = 0	#Set fuel not to go under 0
 
-		#Movement if engine is off
+		#ENGINE OFF
 		else:
 			if self.direction.magnitude() > 0.01:
 				self.direction /= 1.04
-			self.pos += new_speed
-			self.rect.center = (self.pos.x, self.pos.y) #Update the rockets center position
+				self.pos += new_speed
+			self.rect.center = (self.pos.x, self.pos.y)
 
 	def speed_limit(self):
 		"""Speed_limit method of rocket"""
