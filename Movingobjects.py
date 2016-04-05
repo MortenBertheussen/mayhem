@@ -196,9 +196,9 @@ class Bullet(Movingobject):
 		self.dir = direc
 		self.angle = angle
 		if uid is 1:
-			self.spriterect = BLUE_LASER
-		else:
 			self.spriterect = RED_LASER
+		else:
+			self.spriterect = BLUE_LASER
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
 		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()

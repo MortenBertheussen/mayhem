@@ -151,6 +151,24 @@ class Engine:
 							if rocket.uid is bullet.uid:
 								rocket.score += 100 #Give the player who got the hit score
 					self.bullet_sprites.remove(bullet)
+		
+		#Astroid collide with bullet
+		for astroid in self.astroids:
+			for bullet in self.bullet_sprites:
+				hit = pygame.sprite.collide_rect(astroid, bullet)
+				if hit and pygame.sprite.collide_mask(astroid, bullet):
+					explotion = Explotion(bullet.rect.centerx, bullet.rect.centery, 20)
+					self.explotions.add(explotion)
+					self.bullet_sprites.remove(bullet)
+
+		#Planet collide with bullet
+		for planet in self.planets:
+			for bullet in self.bullet_sprites:
+				hit = pygame.sprite.collide_rect(planet, bullet)
+				if hit and pygame.sprite.collide_mask(planet, bullet):
+					explotion = Explotion(bullet.rect.centerx, bullet.rect.centery, 20)
+					self.explotions.add(explotion)
+					self.bullet_sprites.remove(bullet)
 
 	def bullet_out_of_screen(self):
 		for bullet in self.bullet_sprites:
@@ -167,21 +185,38 @@ class Engine:
 			if bullet.pos.y >= SCREEN_Y:
 				self.bullet_sprites.remove(bullet)
 
-	def astroid_impact(self):
+	def environment_impact(self):
 		for astroid in self.astroids:
+			#Astroid collide with planet
 			for planet in self.planets:
 				hit = pygame.sprite.collide_rect(astroid, planet)
 				if hit and pygame.sprite.collide_mask(astroid, planet):
 					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
 					self.explotions.add(explotion)
 					self.astroids.remove(astroid)
-
+			#Astroid collide with rocket
 			for rocket in self.rockets:
 				hit = pygame.sprite.collide_rect(astroid, rocket)
 				if hit and pygame.sprite.collide_mask(astroid, rocket):
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
 					rocket.respawn()
+		
+		for rocket in self.rockets:
+			#Rocket collide with platform
+			for platform in self.platforms:
+				hit = pygame.sprite.collide_rect(rocket, platform)
+				if hit:
+					rocket.refuel = True
+			#Rocket collide with planet
+			for planet in self.planets:
+				hit = pygame.sprite.collide_rect(rocket, planet)
+				if hit and pygame.sprite.collide_mask(rocket, planet):
+					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
+					self.explotions.add(explotion)
+					rocket.respawn()
+
+
 
 	def display(self, screen):
 		"""Display of text on screen"""
@@ -244,7 +279,7 @@ class Engine:
 		self.bullet_impact()
 		self.gravity_field()
 		self.generate_astroid()
-		self.astroid_impact()
+		self.environment_impact()
 		self.bullet_out_of_screen()
 
 		#Drawing
