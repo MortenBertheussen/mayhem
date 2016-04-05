@@ -19,6 +19,7 @@ class Engine:
 		self.players = 2
 
 		self.bg = pygame.sprite.Group()
+		self.hud = pygame.sprite.Group()
 		self.rockets = pygame.sprite.Group()
 		self.explotions = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
@@ -29,6 +30,7 @@ class Engine:
 		self.generate_player() #Generate all players
 		self.generate_planets()
 		self.bg.add(Background())
+		self.hud.add(Hud())
 
 	def generate_player(self):
 		"""generates players"""
@@ -280,6 +282,7 @@ class Engine:
 
 		#Update
 		self.bg.update()
+		self.hud.update()
 		self.explotions.update()
 		self.rockets.update()
 		self.bullet_sprites.update()
@@ -302,6 +305,7 @@ class Engine:
 		self.planets.draw(screen)
 		self.astroids.draw(screen)
 		self.explotions.draw(screen)		#Draw explotions
+		self.hud.draw(screen)				#Draw background sprite
 		self.display(screen)				#Draw hud
 
 		#Remove explotion when animation is over
