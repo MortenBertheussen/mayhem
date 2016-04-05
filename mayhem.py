@@ -45,8 +45,8 @@ class Engine:
 			self.platforms.add(platform)
 
 	def generate_planets(self):
-		self.planets.add(Planet((200,200),TIGER_PLANET))
-		self.planets.add(Planet((900,500),BLACK_HOLE))
+		self.planets.add(Planet((230,230),TIGER_PLANET))
+		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE))
 		
 	def generate_astroid(self):
 		if len(self.astroids)<6:
@@ -344,7 +344,7 @@ def main():
 	screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
-	pygame.time.set_timer(pygame.USEREVENT, 1500)#Set a timer for spawning astroids
+	pygame.time.set_timer(pygame.USEREVENT, 3000)#Set a timer for spawning astroids
 
 	
 	while True:	
