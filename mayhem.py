@@ -60,19 +60,23 @@ class Engine:
 	def gravity_field(self):
 		for rocket in self.rockets:
 			for planet in self.planets:
-				if (rocket.pos - planet.pos).magnitude() < 200:
-					gravity_vector = Vector2D((planet.pos.x-rocket.pos.x),(planet.pos.y - rocket.pos.y))
-					rocket.pos += gravity_vector/100
+				distance = (rocket.pos - planet.pos).magnitude()
+				if distance < 300:
+					gravity_vector = Vector2D(
+										(planet.pos.x - rocket.pos.x),
+										(planet.pos.y - rocket.pos.y)
+										)
+					rocket.pos += gravity_vector / distance
 
 		for astroid in self.astroids:
 			for planet in self.planets:
 				distance = (astroid.pos - planet.pos).magnitude()
-				if  distance < 300:
+				if  distance < 250:
 					gravity_vector = Vector2D(
 										(planet.pos.x - astroid.pos.x),
 										(planet.pos.y - astroid.pos.y)
 									)
-					astroid.speed += (gravity_vector/35) / distance
+					astroid.speed += (gravity_vector/40) / distance
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -340,7 +344,7 @@ def main():
 	screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
-	pygame.time.set_timer(pygame.USEREVENT, 3000)#Set a timer for spawning astroids
+	pygame.time.set_timer(pygame.USEREVENT, 1500)#Set a timer for spawning astroids
 
 	
 	while True:	
