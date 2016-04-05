@@ -10,6 +10,7 @@ from gameconstants import *
 from Vector2D import *
 from Movingobjects import *
 from staticobjects import *
+from planet import *
 
 class Engine:
 	"""This is the engine class"""
@@ -21,8 +22,10 @@ class Engine:
 		self.explotions = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
 		self.platforms = pygame.sprite.Group()
+		self.planets = pygame.sprite.Group()
 
 		self.generate_player() #Generate all players
+		self.generate_planets()
 		self.bg.add(Background())
 
 	def generate_player(self):
@@ -36,6 +39,10 @@ class Engine:
 		for i in range(1,self.players+1):
 			platform = Platform(i)
 			self.platforms.add(platform)
+
+	def generate_planets(self):
+		self.planets.add(Planet((400,230),TIGER_PLANET))
+		self.planets.add(Planet((700,500),BLACK_HOLE))
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -170,6 +177,7 @@ class Engine:
 		self.rockets.update()
 		self.bullet_sprites.update()
 		self.platforms.update()
+		self.planets.update()
 
 		#Colision detect
 		self.platform_impact()
@@ -180,6 +188,7 @@ class Engine:
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.platforms.draw(screen)			#Draw platform sprites
+		self.planets.draw(screen)
 		self.explotions.draw(screen)		#Draw explotions
 		self.display(screen)				#Draw hud
 
