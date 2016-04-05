@@ -59,6 +59,7 @@ class Explotion(pygame.sprite.Sprite):
 		image = pygame.transform.scale(image,(self.size,self.size))
 		return image
 
+
 	def update(self):
 		self.index += 1
 		self.timer += 1
