@@ -191,6 +191,7 @@ class Engine:
 		pygame.display.update()
 
 def main():
+	"""runs the program"""
 	pygame.init()
 	pygame.display.set_caption("Mayhem")
 	#screen = pygame.display.set_mode((SCREEN),pygame.FULLSCREEN)	#FULLSCREEN

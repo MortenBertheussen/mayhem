@@ -87,10 +87,7 @@ class Rocket(Movingobject):
 
 	def angle_fix(self):
 		"""Keeps the angle between 0 and 360 degrees. We dont want negative angles."""
-		if self.angle > 360:
-			self.angle = 0
-		if self.angle < 0:
-			self.angle = 360
+		self.angle = self.angle % 360
 
 	def current_sprite(self):
 		if self.uid is 1:
