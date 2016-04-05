@@ -114,7 +114,7 @@ class Rocket(Movingobject):
 				elif self.health is 25:
 					pass
 				else:
-					self.new_sprite((0,0,35,35))
+					self.new_sprite(RED_ENGINE_OFF)
 			else:
 				pass
 
