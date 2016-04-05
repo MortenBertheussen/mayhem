@@ -75,7 +75,6 @@ class Rocket(Movingobject):
 		elif self.uid == 2:
 			self.spawn = Vector2D(1098, 190) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
-			self.image =  pygame.image.load("sprites/p2.png").convert_alpha()
 
 	def update(self):
 		self.current_sprite()

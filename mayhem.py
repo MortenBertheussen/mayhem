@@ -44,8 +44,6 @@ class Engine:
 				exit()
 			
 			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_q:
-					exit()
 				#Player 1
 				for rocket in self.rockets:
 					if rocket.uid == 1:
@@ -184,9 +182,8 @@ class Engine:
 		self.rockets.draw(screen)
 		self.platforms.draw(screen)
 		self.explotions.draw(screen)
+		self.display(screen)
 		
-		#self.display(screen) #Hud
-
 		#Remove explotion after a while
 		for explotion in self.explotions:
 			if explotion.kill:
