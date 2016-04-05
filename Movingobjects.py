@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from gameconstants import *
 from Vector2D import *
+from spritesheet import *
 import math
 
 class Movingobject(pygame.sprite.Sprite):
@@ -34,11 +35,19 @@ class Movingobject(pygame.sprite.Sprite):
 
 		return new_speed
 
+	def new_sprite(self, rect):
+		oldrect = self.rect
+		self.image = self.spritesheet.get_image(rect)
+		self.image = pygame.transform.scale(self.image,(35,35))
+		self.image = pygame.transform.rotate(self.image, self.angle)
+		self.rect = self.image.get_rect(center=oldrect.center)
+
+
 	def update_sprite(self, img):
 		"""updates the sprites"""
 		oldrect = self.rect
 		self.image = pygame.image.load(img).convert_alpha()
-		self.image = pygame.transform.scale(self.image,(30,30))
+		self.image = pygame.transform.scale(self.image,(35,35))
 		self.image = pygame.transform.rotate(self.image, self.angle)
 		self.rect = self.image.get_rect(center=oldrect.center) # Reposition sprite to its center
 
@@ -47,7 +56,8 @@ class Rocket(Movingobject):
 	def __init__(self, uid):
 		super().__init__()
 		self.uid = uid
-		self.image = pygame.image.load("sprites/ship.png").convert_alpha()
+		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.image = self.spritesheet.get_image((0,0,30,30))
 		self.rect = self.image.get_rect()
 		self.engineOn = False
 		self.turnLeft = False
@@ -65,9 +75,10 @@ class Rocket(Movingobject):
 		elif self.uid == 2:
 			self.spawn = Vector2D(1098, 190) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
-			self.image =  pygame.image.load("sprites/ship_blue.png").convert_alpha()
+			self.image =  pygame.image.load("sprites/p2.png").convert_alpha()
 
 	def update(self):
+		self.current_sprite()
 		self.speed_limit()
 		self.angle_fix()
 		self.move()
@@ -81,6 +92,32 @@ class Rocket(Movingobject):
 		if self.angle < 0:
 			self.angle = 360
 
+	def current_sprite(self):
+		if self.uid is 1:
+			if self.engineOn:
+				self.new_sprite((35,0,35,35))
+				
+			else:
+				if self.health is 75:
+					self.new_sprite((0,35,35,35))
+				elif self.health is 50:
+					self.new_sprite((35,35,35,35))
+				else:
+					self.new_sprite((0,35,35,35))
+
+		else:
+			if self.engineOn:
+				if self.health is 75:
+					pass
+				elif self.health is 50:
+					pass
+				elif self.health is 25:
+					pass
+				else:
+					self.new_sprite((0,0,35,35))
+			else:
+				pass
+
 	def move(self):
 		"""Move method of rocket"""
 		if self.turnLeft:
@@ -92,10 +129,6 @@ class Rocket(Movingobject):
 
 		#Movement if engine is on
 		if self.engineOn and self.fuel>0:
-			if self.uid == 1:
-				self.update_sprite("sprites/ship_engine_on.png")	#Update sprite to engine on image
-			elif self.uid == 2:
-				self.update_sprite("sprites/ship_blue_on.png")
 			self.direction *= 1.5
 			self.pos += new_speed
 			self.rect.center = (self.pos.x, self.pos.y)
@@ -107,16 +140,9 @@ class Rocket(Movingobject):
 
 		#Movement if engine is off
 		else:
-			if self.uid == 1:
-				self.update_sprite("sprites/ship.png")				#Update sprite to engine off image
-			elif self.uid == 2:
-				self.update_sprite("sprites/ship_blue.png")
-			#Movement when ship still has big acceleration and not refuling
-			
-			self.direction /= 1.04
+			if self.direction.magnitude() > 0.5:
+				self.direction /= 1.04
 			self.pos += new_speed
-			#Movement when ship has very low acceleration or it is refuling
-
 			self.rect.center = (self.pos.x, self.pos.y) #Update the rockets center position
 
 	def speed_limit(self):
