@@ -9,6 +9,12 @@ class Background(pygame.sprite.Sprite):
 		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
 		self.rect = self.image.get_rect()
 
+class Hud(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.image.load("sprites/hud.png").convert_alpha()
+		self.rect = self.image.get_rect()
+
 class Platform(pygame.sprite.Sprite):
 	"""platform station"""
 	def __init__(self, uid):

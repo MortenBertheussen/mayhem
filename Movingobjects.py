@@ -207,8 +207,6 @@ class Bullet(Movingobject):
 
 		self.new_sprite(self.spriterect)
 
-
-
 	def move(self):
 		"""Moves the bullet"""
 		self.pos += self.dir.normalized() * 15
