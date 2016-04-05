@@ -38,7 +38,6 @@ class Movingobject(pygame.sprite.Sprite):
 	def new_sprite(self, rect):
 		oldrect = self.rect
 		self.image = self.spritesheet.get_image(rect)
-		self.image = pygame.transform.scale(self.image,(35,35))
 		self.image = pygame.transform.rotate(self.image, self.angle)
 		self.rect = self.image.get_rect(center=oldrect.center)
 
@@ -167,7 +166,7 @@ class Rocket(Movingobject):
 	def shoot(self):
 		"""Shoot method of rocket"""
 		#Create a bullet object with the ships position and user id
-		return Bullet(self.rect, self.rotate(), self.uid)
+		return Bullet(self.rect, self.rotate(), self.angle, self.uid)
 
 	def bullet_impact(self):
 		"""Method when ship is hit by a bullet"""
@@ -191,14 +190,24 @@ class Rocket(Movingobject):
 
 class Bullet(Movingobject):
 	"""The bullet class"""
-	def __init__(self, rect, direc, uid):
+	def __init__(self, rect, direc, angle, uid):
 		super().__init__()
 		self.uid = uid
 		self.dir = direc
-		self.image = pygame.image.load("sprites/bullet.png").convert_alpha()
+		self.angle = angle
+		if uid is 1:
+			self.spriterect = BLUE_LASER
+		else:
+			self.spriterect = RED_LASER
+		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
-		self.pos.x = rect.center[0] - self.rect.width/2
+		self.pos.x = rect.center[0]
 		self.pos.y = rect.center[1]
+
+		self.new_sprite(self.spriterect)
+
+
 
 	def move(self):
 		"""Moves the bullet"""
