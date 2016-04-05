@@ -239,7 +239,8 @@ class Engine:
 					self.explotions.add(explotion)
 					self.astroids.remove(astroid)
 
-			#Rocket collide with planet
+		#Rocket collide with planet
+		for rocket in self.rockets:
 			for planet in self.planets:
 				hit = pygame.sprite.collide_rect(rocket, planet)
 				if hit and pygame.sprite.collide_mask(rocket, planet):
