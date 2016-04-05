@@ -16,6 +16,7 @@ class Astroid(Movingobject):
 		self.rect = self.image.get_rect()
 		self.angle = 0
 		self.gravity = 10
+		self.life = 3
 		self.speed = Vector2D(random.uniform(0,5), random.uniform(0,5))
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
