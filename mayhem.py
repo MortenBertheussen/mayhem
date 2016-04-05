@@ -10,6 +10,7 @@ from gameconstants import *
 from Vector2D import *
 from Movingobjects import *
 from staticobjects import *
+from astroid import *
 from planet import *
 
 class Engine:
@@ -23,6 +24,7 @@ class Engine:
 		self.bullet_sprites = pygame.sprite.Group()
 		self.platforms = pygame.sprite.Group()
 		self.planets = pygame.sprite.Group()
+		self.astroids = pygame.sprite.Group()
 
 		self.generate_player() #Generate all players
 		self.generate_planets()
@@ -41,8 +43,33 @@ class Engine:
 			self.platforms.add(platform)
 
 	def generate_planets(self):
-		self.planets.add(Planet((400,230),TIGER_PLANET))
-		self.planets.add(Planet((700,500),BLACK_HOLE))
+		#self.planets.add(Planet((200,200),TIGER_PLANET))
+		self.planets.add(Planet((900,500),BLACK_HOLE))
+		
+	def generate_astroid(self):
+		if len(self.astroids)<6:
+			self.astroids.add(
+					Astroid(
+						random.choice([(-10,SCREEN_Y/2),(SCREEN_X/2, SCREEN_Y+10),(SCREEN_X+10,SCREEN_Y/2),(SCREEN_X/2, -10)]),
+						random.choice([ASTROID_1, ASTROID_2, ASTROID_3])
+					)
+				)
+
+	def gravity_field(self):
+		for rocket in self.rockets:
+			for planet in self.planets:
+				if (rocket.pos - planet.pos).magnitude() < 200:
+					gravity_vector = Vector2D((planet.pos.x-rocket.pos.x),(planet.pos.y - rocket.pos.y))
+					rocket.pos += gravity_vector/100
+
+		for astroid in self.astroids:
+			for planet in self.planets:
+				if (astroid.pos - planet.pos).magnitude() < 300:
+					gravity_vector = Vector2D(
+										(planet.pos.x - astroid.pos.x),
+										(planet.pos.y - astroid.pos.y)
+									)
+					astroid.speed += gravity_vector/5500
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -107,7 +134,7 @@ class Engine:
 	def bullet_impact(self):
 		"""Checks if sprites collide"""
 		for rocket in self.rockets:
-			#Bullets
+			#Bullets and rocket
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
@@ -123,6 +150,18 @@ class Engine:
 							if rocket.uid is bullet.uid:
 								rocket.score += 100 #Give the player who got the hit score
 					self.bullet_sprites.remove(bullet)
+
+	def astroid_impact(self):
+		for astroid in self.astroids:
+			for planet in self.planets:
+				hit = pygame.sprite.collide_rect(astroid, planet)
+				if hit and pygame.sprite.collide_mask(astroid, planet):
+					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
+					self.explotions.add(explotion)
+					self.astroids.remove(astroid)
+
+				
+
 
 	def display(self, screen):
 		"""Display of text on screen"""
@@ -178,10 +217,14 @@ class Engine:
 		self.bullet_sprites.update()
 		self.platforms.update()
 		self.planets.update()
+		self.astroids.update()
 
 		#Colision detect
 		self.platform_impact()
 		self.bullet_impact()
+		self.gravity_field()
+		self.generate_astroid()
+		self.astroid_impact()
 
 		#Drawing
 		self.bg.draw(screen)				#Draw background sprite
@@ -189,6 +232,7 @@ class Engine:
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.platforms.draw(screen)			#Draw platform sprites
 		self.planets.draw(screen)
+		self.astroids.draw(screen)
 		self.explotions.draw(screen)		#Draw explotions
 		self.display(screen)				#Draw hud
 
