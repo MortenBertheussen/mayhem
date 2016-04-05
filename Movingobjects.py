@@ -95,28 +95,44 @@ class Rocket(Movingobject):
 	def current_sprite(self):
 		if self.uid is 1:
 			if self.engineOn:
-				self.new_sprite((35,0,35,35))
+				if self.health is 75:
+					self.new_sprite(RED_ENGINE_ON_75)
+				elif self.health is 50:
+					self.new_sprite(RED_ENGINE_ON_50)
+				elif self.health is 25:
+					self.new_sprite(RED_ENGINE_ON_25)
+				else:
+					self.new_sprite(RED_ENGINE_ON)
 				
 			else:
 				if self.health is 75:
-					self.new_sprite((0,35,35,35))
+					self.new_sprite(RED_ENGINE_OFF_75)
 				elif self.health is 50:
-					self.new_sprite((35,35,35,35))
+					self.new_sprite(RED_ENGINE_OFF_50)
+				elif self.health is 25:
+					self.new_sprite(RED_ENGINE_OFF_25)
 				else:
-					self.new_sprite((0,35,35,35))
+					self.new_sprite(RED_ENGINE_OFF)
 
 		else:
 			if self.engineOn:
 				if self.health is 75:
-					pass
+					self.new_sprite(BLUE_ENGINE_ON_75)
 				elif self.health is 50:
-					pass
+					self.new_sprite(BLUE_ENGINE_ON_50)
 				elif self.health is 25:
-					pass
+					self.new_sprite(BLUE_ENGINE_ON_25)
 				else:
-					self.new_sprite(RED_ENGINE_OFF)
+					self.new_sprite(BLUE_ENGINE_ON)
 			else:
-				pass
+				if self.health is 75:
+					self.new_sprite(BLUE_ENGINE_OFF_75)
+				elif self.health is 50:
+					self.new_sprite(BLUE_ENGINE_OFF_50)
+				elif self.health is 25:
+					self.new_sprite(BLUE_ENGINE_OFF_25)
+				else:
+					self.new_sprite(BLUE_ENGINE_OFF)
 
 	def move(self):
 		"""Move method of rocket"""
