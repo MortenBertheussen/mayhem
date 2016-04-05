@@ -152,6 +152,21 @@ class Engine:
 								rocket.score += 100 #Give the player who got the hit score
 					self.bullet_sprites.remove(bullet)
 
+	def bullet_out_of_screen(self):
+		for bullet in self.bullet_sprites:
+			#Venstre vegg	
+			if bullet.pos.x <= 0:
+				self.bullet_sprites.remove(bullet)
+			#Høyre vegg
+			if bullet.pos.x >= SCREEN_X:
+				self.bullet_sprites.remove(bullet)
+			#Tak
+			if bullet.pos.y <= 0:
+				self.bullet_sprites.remove(bullet)
+			#Bunn
+			if bullet.pos.y >= SCREEN_Y:
+				self.bullet_sprites.remove(bullet)
+
 	def astroid_impact(self):
 		for astroid in self.astroids:
 			for planet in self.planets:
@@ -230,6 +245,7 @@ class Engine:
 		self.gravity_field()
 		self.generate_astroid()
 		self.astroid_impact()
+		self.bullet_out_of_screen()
 
 		#Drawing
 		self.bg.draw(screen)				#Draw background sprite

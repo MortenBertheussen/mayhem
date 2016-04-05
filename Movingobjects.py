@@ -208,4 +208,4 @@ class Bullet(Movingobject):
 
 	def update(self):
 		self.move()
-		self.screen_wrap()
+
