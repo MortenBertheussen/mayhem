@@ -16,12 +16,14 @@ class Engine:
 	def __init__(self):
 		self.players = 2
 
+		self.bg = pygame.sprite.Group()
 		self.rockets = pygame.sprite.Group()
 		self.explotions = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
 		self.platforms = pygame.sprite.Group()
 
 		self.generate_player() #Generate all players
+		self.bg.add(Background())
 
 	def generate_player(self):
 		"""generates players"""
@@ -94,7 +96,7 @@ class Engine:
 		for rocket in self.rockets:
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
-				if  hit:
+				if hit:
 					rocket.refuel = True
 
 	def bullet_impact(self):
@@ -162,6 +164,7 @@ class Engine:
 		self.eventhandler()
 
 		#Update
+		self.bg.update()
 		self.explotions.update()
 		self.rockets.update()
 		self.bullet_sprites.update()
@@ -172,7 +175,8 @@ class Engine:
 		self.bullet_impact()
 
 		#Drawing
-		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
+		#pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
+		self.bg.draw(screen)
 		self.bullet_sprites.draw(screen)
 		self.rockets.draw(screen)
 		self.platforms.draw(screen)

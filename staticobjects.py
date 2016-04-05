@@ -3,6 +3,12 @@ from gameconstants import *
 from Vector2D import *
 import math
 
+class Background(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
+		self.rect = self.image.get_rect()
+
 class Platform(pygame.sprite.Sprite):
 	"""platform station"""
 	def __init__(self, uid):
