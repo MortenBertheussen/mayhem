@@ -64,12 +64,13 @@ class Engine:
 
 		for astroid in self.astroids:
 			for planet in self.planets:
-				if (astroid.pos - planet.pos).magnitude() < 300:
+				distance = (astroid.pos - planet.pos).magnitude()
+				if  distance < 300:
 					gravity_vector = Vector2D(
 										(planet.pos.x - astroid.pos.x),
 										(planet.pos.y - astroid.pos.y)
 									)
-					astroid.speed += gravity_vector/5500
+					astroid.speed += (gravity_vector/35) / distance
 
 	def eventhandler(self):
 		"""The eventhandler"""
