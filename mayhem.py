@@ -239,41 +239,41 @@ class Engine:
 			#FUEL DISPLAY
 		for rocket in self.rockets:
 			fuel = "%s" % int(rocket.fuel/10)
-			font = pygame.font.SysFont("sans-serif", 50)
+			font = pygame.font.SysFont("sans-serif", 22)
 			fuel_text = font.render(fuel, True, RED)
 			
 			if rocket.uid == 1:
 				fuel_text = font.render(fuel, True, WHITE)
-				screen.blit(fuel_text, [300, 715])
+				screen.blit(fuel_text, [105, 30])
 			else: 
 				fuel_text = font.render(fuel, True, WHITE)
-				screen.blit(fuel_text, [SCREEN_X-90, 715])
+				screen.blit(fuel_text, [SCREEN_X-155, 30])
 
 			#SCORE DISPLAY
 		for rocket in self.rockets:
 			score = "%s" % rocket.score
-			font = pygame.font.SysFont("sans.serif", 50)
+			font = pygame.font.SysFont("sans.serif", 22)
 			score_text = font.render(score, True, RED)
 
 			if rocket.uid == 1:
 				score_text = font.render(score,True,WHITE)
-				screen.blit(score_text, [300, 755])
+				screen.blit(score_text, [200, 30])
 			else:
 				score_text = font.render(score,True,WHITE)
-				screen.blit(score_text, [SCREEN_X -90, 755])
+				screen.blit(score_text, [SCREEN_X - 60, 30])
 
 			#HEALTH DISPLAY
 		for rocket in self.rockets:
 			health = "%s" % rocket.health
-			font = pygame.font.SysFont("sans.serif", 50)
+			font = pygame.font.SysFont("sans.serif", 22)
 			health_text = font.render(health, True, WHITE)
 
 			if rocket.uid == 1:
 				health_text = font.render(health, True, WHITE)
-				screen.blit(health_text,[300,675])
+				screen.blit(health_text,[20,30])
 			else:
 				health_text = font.render(health, True, WHITE)
-				screen.blit(health_text, [SCREEN_X-90, 675])
+				screen.blit(health_text, [SCREEN_X-240, 30])
 
 
 	def logic(self, screen):
