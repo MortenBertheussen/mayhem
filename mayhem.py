@@ -43,7 +43,7 @@ class Engine:
 			self.platforms.add(platform)
 
 	def generate_planets(self):
-		#self.planets.add(Planet((200,200),TIGER_PLANET))
+		self.planets.add(Planet((200,200),TIGER_PLANET))
 		self.planets.add(Planet((900,500),BLACK_HOLE))
 		
 	def generate_astroid(self):
@@ -161,8 +161,12 @@ class Engine:
 					self.explotions.add(explotion)
 					self.astroids.remove(astroid)
 
-				
-
+			for rocket in self.rockets:
+				hit = pygame.sprite.collide_rect(astroid, rocket)
+				if hit and pygame.sprite.collide_mask(astroid, rocket):
+					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
+					self.explotions.add(explotion)
+					rocket.respawn()
 
 	def display(self, screen):
 		"""Display of text on screen"""
