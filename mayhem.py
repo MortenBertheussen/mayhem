@@ -176,15 +176,14 @@ class Engine:
 		self.bullet_impact()
 
 		#Drawing
-		#pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
-		self.bg.draw(screen)
-		self.bullet_sprites.draw(screen)
-		self.rockets.draw(screen)
-		self.platforms.draw(screen)
-		self.explotions.draw(screen)
-		self.display(screen) #Hud
+		self.bg.draw(screen)				#Draw background sprite
+		self.bullet_sprites.draw(screen)	#Draw bullet sprites
+		self.rockets.draw(screen)			#Draw rocket sprites
+		self.platforms.draw(screen)			#Draw platform sprites
+		self.explotions.draw(screen)		#Draw explotions
+		self.display(screen)				#Draw hud
 
-		#Remove explotion after a while
+		#Remove explotion when animation is over
 		for explotion in self.explotions:
 			if explotion.kill:
 				self.explotions.remove(explotion)
