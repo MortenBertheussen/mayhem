@@ -19,6 +19,7 @@ class Engine:
 		self.players = 2
 
 		self.bg = pygame.sprite.Group()
+		self.hud = pygame.sprite.Group()
 		self.rockets = pygame.sprite.Group()
 		self.explotions = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
@@ -29,6 +30,7 @@ class Engine:
 		self.generate_player() #Generate all players
 		self.generate_planets()
 		self.bg.add(Background())
+		self.hud.add(Hud())
 
 	def generate_player(self):
 		"""generates players"""
@@ -50,7 +52,7 @@ class Engine:
 		if len(self.astroids)<6:
 			self.astroids.add(
 					Astroid(
-						random.choice([(-10,SCREEN_Y/2),(SCREEN_X/2, SCREEN_Y+10),(SCREEN_X+10,SCREEN_Y/2),(SCREEN_X/2, -10)]),
+						random.choice([(-10,SCREEN_Y/2),(SCREEN_X/2, SCREEN_Y+10),(300,SCREEN_Y+10),(300,-10)]),
 						random.choice([ASTROID_1, ASTROID_2, ASTROID_3])
 					)
 				)
@@ -77,6 +79,9 @@ class Engine:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				exit()
+
+			if event.type == pygame.USEREVENT:
+				self.generate_astroid()
 			
 			if event.type == pygame.KEYDOWN:
 				#Player 1
@@ -201,7 +206,17 @@ class Engine:
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
 					rocket.respawn()
-		
+			#Astroid collide with astroid
+			for astroid2 in self.astroids:
+				hit = pygame.sprite.collide_rect(astroid, astroid2)
+				if hit and (astroid != astroid2) and (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
+					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
+					explotion2 = Explotion(astroid2.rect.centerx, astroid2.rect.centery, 30)
+					self.explotions.add(explotion)
+					self.explotions.add(explotion2)
+					self.astroids.remove(astroid)
+					self.astroids.remove(astroid2)
+
 		for rocket in self.rockets:
 			#Rocket collide with platform
 			for platform in self.platforms:
@@ -224,41 +239,41 @@ class Engine:
 			#FUEL DISPLAY
 		for rocket in self.rockets:
 			fuel = "%s" % int(rocket.fuel/10)
-			font = pygame.font.SysFont("sans-serif", 50)
+			font = pygame.font.SysFont("sans-serif", 22)
 			fuel_text = font.render(fuel, True, RED)
 			
 			if rocket.uid == 1:
 				fuel_text = font.render(fuel, True, WHITE)
-				screen.blit(fuel_text, [300, 715])
+				screen.blit(fuel_text, [105, 30])
 			else: 
 				fuel_text = font.render(fuel, True, WHITE)
-				screen.blit(fuel_text, [SCREEN_X-90, 715])
+				screen.blit(fuel_text, [SCREEN_X-155, 30])
 
 			#SCORE DISPLAY
 		for rocket in self.rockets:
 			score = "%s" % rocket.score
-			font = pygame.font.SysFont("sans.serif", 50)
+			font = pygame.font.SysFont("sans.serif", 22)
 			score_text = font.render(score, True, RED)
 
 			if rocket.uid == 1:
 				score_text = font.render(score,True,WHITE)
-				screen.blit(score_text, [300, 755])
+				screen.blit(score_text, [200, 30])
 			else:
 				score_text = font.render(score,True,WHITE)
-				screen.blit(score_text, [SCREEN_X -90, 755])
+				screen.blit(score_text, [SCREEN_X - 60, 30])
 
 			#HEALTH DISPLAY
 		for rocket in self.rockets:
 			health = "%s" % rocket.health
-			font = pygame.font.SysFont("sans.serif", 50)
+			font = pygame.font.SysFont("sans.serif", 22)
 			health_text = font.render(health, True, WHITE)
 
 			if rocket.uid == 1:
 				health_text = font.render(health, True, WHITE)
-				screen.blit(health_text,[300,675])
+				screen.blit(health_text,[20,30])
 			else:
 				health_text = font.render(health, True, WHITE)
-				screen.blit(health_text, [SCREEN_X-90, 675])
+				screen.blit(health_text, [SCREEN_X-240, 30])
 
 
 	def logic(self, screen):
@@ -267,6 +282,7 @@ class Engine:
 
 		#Update
 		self.bg.update()
+		self.hud.update()
 		self.explotions.update()
 		self.rockets.update()
 		self.bullet_sprites.update()
@@ -278,7 +294,6 @@ class Engine:
 		self.platform_impact()
 		self.bullet_impact()
 		self.gravity_field()
-		self.generate_astroid()
 		self.environment_impact()
 		self.bullet_out_of_screen()
 
@@ -290,6 +305,7 @@ class Engine:
 		self.planets.draw(screen)
 		self.astroids.draw(screen)
 		self.explotions.draw(screen)		#Draw explotions
+		self.hud.draw(screen)				#Draw background sprite
 		self.display(screen)				#Draw hud
 
 		#Remove explotion when animation is over
@@ -307,6 +323,8 @@ def main():
 	screen = pygame.display.set_mode((SCREEN), 0, 32 )				#WINDOWED
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
+	pygame.time.set_timer(pygame.USEREVENT, 3000)#Set a timer for spawning astroids
+
 	
 	while True:	
 		time = clock.tick(FPS)
