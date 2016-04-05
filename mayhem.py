@@ -134,9 +134,9 @@ class Engine:
 		for rocket in self.rockets:
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
-				if hit:
+				if hit and (platform.uid == rocket.uid):
 					rocket.refuel = True
-
+			
 	def bullet_impact(self):
 		"""Checks if sprites collide"""
 		for rocket in self.rockets:
@@ -177,6 +177,14 @@ class Engine:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(planet, bullet)
 				if hit and pygame.sprite.collide_mask(planet, bullet):
+					explotion = Explotion(bullet.rect.centerx, bullet.rect.centery, 20)
+					self.explotions.add(explotion)
+					self.bullet_sprites.remove(bullet)
+
+		for platform in self.platforms:
+			for bullet in self.bullet_sprites:
+				hit = pygame.sprite.collide_rect(platform, bullet)
+				if hit and  pygame.sprite.collide_mask(platform, bullet) and bullet.uid != platform.uid:
 					explotion = Explotion(bullet.rect.centerx, bullet.rect.centery, 20)
 					self.explotions.add(explotion)
 					self.bullet_sprites.remove(bullet)
@@ -223,12 +231,7 @@ class Engine:
 					self.astroids.remove(astroid)
 					self.astroids.remove(astroid2)
 
-		for rocket in self.rockets:
-			#Rocket collide with platform
-			for platform in self.platforms:
-				hit = pygame.sprite.collide_rect(rocket, platform)
-				if hit:
-					rocket.refuel = True
+	
 			#Rocket collide with planet
 			for planet in self.planets:
 				hit = pygame.sprite.collide_rect(rocket, planet)
@@ -305,8 +308,8 @@ class Engine:
 
 		#Drawing
 		self.bg.draw(screen)				#Draw background sprite
-		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.platforms.draw(screen)			#Draw platform sprites
+		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)
 		self.astroids.draw(screen)
