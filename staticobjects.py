@@ -24,8 +24,9 @@ class Platform(pygame.sprite.Sprite):
 			self.rect.y = 200
 
 class Explotion(pygame.sprite.Sprite):
-	def __init__(self, x, y):
+	def __init__(self, x, y, size):
 		super().__init__()
+		self.size = size
 		self.images = []
 		self.images.append(self.handle_img("sprites/explotions/exp1.png"))
 		self.images.append(self.handle_img("sprites/explotions/exp2.png"))
@@ -41,6 +42,7 @@ class Explotion(pygame.sprite.Sprite):
 		self.images.append(self.handle_img("sprites/explotions/exp12.png"))
 		
 		self.index = 0
+		
 		self.image = self.images[self.index]
 		self.rect = self.image.get_rect()
 		self.rect.centerx = x
@@ -50,7 +52,7 @@ class Explotion(pygame.sprite.Sprite):
 
 	def handle_img(self, path):
 		image = pygame.image.load(path).convert_alpha()
-		image = pygame.transform.scale(image,(70,70))
+		image = pygame.transform.scale(image,(self.size,self.size))
 		return image
 
 	def update(self):

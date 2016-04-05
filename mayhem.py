@@ -107,8 +107,11 @@ class Engine:
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.bullet_impact()
+					#Mini explotion
+					explotion = Explotion(bullet.rect.centerx, bullet.rect.centery, 30)
+					self.explotions.add(explotion)
 					if rocket.health <= 0:
-						explotion = Explotion(rocket.rect.centerx, rocket.rect.centery)
+						explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 75)
 						self.explotions.add(explotion)
 						rocket.respawn()
 						for rocket in self.rockets:

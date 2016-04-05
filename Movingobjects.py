@@ -137,9 +137,9 @@ class Rocket(Movingobject):
 	def move(self):
 		"""Move method of rocket"""
 		if self.turnLeft:
-			self.angle += 6
+			self.angle += 3
 		if self.turnRight:
-			self.angle -= 6
+			self.angle -= 3
 		
 		new_speed = self.rotate()
 
