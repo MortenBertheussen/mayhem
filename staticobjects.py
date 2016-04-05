@@ -21,19 +21,13 @@ class Platform(pygame.sprite.Sprite):
 	def __init__(self, uid):
 		super().__init__()
 		self.uid = uid
-		if uid is 1:
-			self.spriterect = BLUE_PLATFORM
-		else:
-			self.spriterect = RED_PLATFORM
+		if uid is 1:	self.spriterect = BLUE_PLATFORM
+		else:			self.spriterect = RED_PLATFORM
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
 		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
-		if self.uid is 1:
-			self.rect.centerx = 150
-			self.rect.centery = SCREEN_Y - 150
-		elif self.uid is 2:
-			self.rect.centerx = SCREEN_X - 150
-			self.rect.centery = 150
+		if self.uid is 1:	self.rect.center = (150, SCREEN_Y - 150)
+		elif self.uid is 2: self.rect.center = (SCREEN_X - 150, 150)
 
 class Explotion(pygame.sprite.Sprite):
 	def __init__(self, x, y, size):
@@ -52,9 +46,7 @@ class Explotion(pygame.sprite.Sprite):
 		self.images.append(self.handle_img("sprites/explotions/exp10.png"))
 		self.images.append(self.handle_img("sprites/explotions/exp11.png"))
 		self.images.append(self.handle_img("sprites/explotions/exp12.png"))
-		
 		self.index = 0
-		
 		self.image = self.images[self.index]
 		self.rect = self.image.get_rect()
 		self.rect.centerx = x

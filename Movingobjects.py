@@ -14,41 +14,24 @@ class Movingobject(pygame.sprite.Sprite):
 
 	def screen_wrap(self):
 		"""Make moving objects wrap around if they go out of the screen"""
-		#Left
-		if self.pos.x <= 0:
-			self.pos.x = SCREEN_X - 1
-		#Right
-		if self.pos.x >= SCREEN_X:
-			self.pos.x = 1
-		#Bottom
-		if self.pos.y >= SCREEN_Y:
-			self.pos.y = 1
-		#Top
-		if self.pos.y <= 0:
-			self.pos.y = SCREEN_Y - 1 
+		if self.pos.x <= 0: 		self.pos.x = SCREEN_X - 1	#Left
+		if self.pos.x >= SCREEN_X:	self.pos.x = 1				#Right
+		if self.pos.y >= SCREEN_Y:	self.pos.y = 1				#Bottom
+		if self.pos.y <= 0:			self.pos.y = SCREEN_Y - 1 	#Top
 
 	def rotate(self):
 		"""The math behind finding the new direction with an angle"""
 		x = self.direction.x * math.cos(math.radians(-self.angle)) - self.direction.y * math.sin(math.radians(-self.angle))
 		y = self.direction.x * math.sin(math.radians(-self.angle)) + self.direction.y * math.cos(math.radians(-self.angle))
 		new_speed = Vector2D(x, y)
-
 		return new_speed
 
 	def new_sprite(self, rect):
+		"""Fetches a new sprite from the spritesheet and keep its rotation"""
 		oldrect = self.rect
 		self.image = self.spritesheet.get_image(rect)
 		self.image = pygame.transform.rotate(self.image, self.angle)
 		self.rect = self.image.get_rect(center=oldrect.center)
-
-
-	def update_sprite(self, img):
-		"""updates the sprites"""
-		oldrect = self.rect
-		self.image = pygame.image.load(img).convert_alpha()
-		self.image = pygame.transform.scale(self.image,(35,35))
-		self.image = pygame.transform.rotate(self.image, self.angle)
-		self.rect = self.image.get_rect(center=oldrect.center) # Reposition sprite to its center
 
 class Rocket(Movingobject): 
 	"""The class for rocket, broombroom"""
@@ -67,7 +50,6 @@ class Rocket(Movingobject):
 		self.maxfuel = 1000
 		self.score = 0
 		self.angle = 0
-		self.shots = []
 		if self.uid == 1:
 			self.spawn = Vector2D(150,SCREEN_Y-120) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
@@ -82,7 +64,7 @@ class Rocket(Movingobject):
 		self.move()
 		self.screen_wrap()
 		if self.refuel:
-			self.fule()
+			self.fuel_up()
 
 	def angle_fix(self):
 		"""Keeps the angle between 0 and 360 degrees. We dont want negative angles."""
@@ -90,45 +72,32 @@ class Rocket(Movingobject):
 
 	def current_sprite(self):
 		if self.uid is 1:
+			#ENGINE ON SPRITES (PLAYER1)
 			if self.engineOn:
-				if self.health is 75:
-					self.new_sprite(RED_ENGINE_ON_75)
-				elif self.health is 50:
-					self.new_sprite(RED_ENGINE_ON_50)
-				elif self.health is 25:
-					self.new_sprite(RED_ENGINE_ON_25)
-				else:
-					self.new_sprite(RED_ENGINE_ON)
-				
+				if self.health is 75:	self.new_sprite(RED_ENGINE_ON_75)
+				elif self.health is 50:	self.new_sprite(RED_ENGINE_ON_50)
+				elif self.health is 25:	self.new_sprite(RED_ENGINE_ON_25)
+				else:					self.new_sprite(RED_ENGINE_ON)
+			#ENGINE OFF SPRITES (PLAYER1)
 			else:
-				if self.health is 75:
-					self.new_sprite(RED_ENGINE_OFF_75)
-				elif self.health is 50:
-					self.new_sprite(RED_ENGINE_OFF_50)
-				elif self.health is 25:
-					self.new_sprite(RED_ENGINE_OFF_25)
-				else:
-					self.new_sprite(RED_ENGINE_OFF)
+				if self.health is 75:	self.new_sprite(RED_ENGINE_OFF_75)
+				elif self.health is 50:	self.new_sprite(RED_ENGINE_OFF_50)
+				elif self.health is 25:	self.new_sprite(RED_ENGINE_OFF_25)
+				else:					self.new_sprite(RED_ENGINE_OFF)
 
 		else:
+			#ENGINE ON SPRITES (PLAYER2)
 			if self.engineOn:
-				if self.health is 75:
-					self.new_sprite(BLUE_ENGINE_ON_75)
-				elif self.health is 50:
-					self.new_sprite(BLUE_ENGINE_ON_50)
-				elif self.health is 25:
-					self.new_sprite(BLUE_ENGINE_ON_25)
-				else:
-					self.new_sprite(BLUE_ENGINE_ON)
+				if self.health is 75:	self.new_sprite(BLUE_ENGINE_ON_75)
+				elif self.health is 50:	self.new_sprite(BLUE_ENGINE_ON_50)
+				elif self.health is 25:	self.new_sprite(BLUE_ENGINE_ON_25)
+				else:					self.new_sprite(BLUE_ENGINE_ON)
+			#ENGINE OFF SPRITES (PLAYER2)
 			else:
-				if self.health is 75:
-					self.new_sprite(BLUE_ENGINE_OFF_75)
-				elif self.health is 50:
-					self.new_sprite(BLUE_ENGINE_OFF_50)
-				elif self.health is 25:
-					self.new_sprite(BLUE_ENGINE_OFF_25)
-				else:
-					self.new_sprite(BLUE_ENGINE_OFF)
+				if self.health is 75:	self.new_sprite(BLUE_ENGINE_OFF_75)
+				elif self.health is 50:	self.new_sprite(BLUE_ENGINE_OFF_50)
+				elif self.health is 25:	self.new_sprite(BLUE_ENGINE_OFF_25)
+				else:					self.new_sprite(BLUE_ENGINE_OFF)
 
 	def move(self):
 		"""Move method of rocket"""
@@ -177,7 +146,7 @@ class Rocket(Movingobject):
 		self.health = 100
 		self.direction = self.direction.normalized()
 
-	def fule(self):
+	def fuel_up(self):
 		"""fuel method"""
 		if self.fuel > self.maxfuel:
 			self.fuel = self.maxfuel
@@ -191,24 +160,17 @@ class Bullet(Movingobject):
 		self.uid = uid
 		self.dir = direc
 		self.angle = angle
-		if uid is 1:
-			self.spriterect = RED_LASER
-		else:
-			self.spriterect = BLUE_LASER
+		if uid is 1:	self.spriterect = RED_LASER
+		else:			self.spriterect = BLUE_LASER
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
 		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
-		self.pos.x = rect.center[0]
-		self.pos.y = rect.center[1]
+		self.pos.x = rect.centerx
+		self.pos.y = rect.centery
 
 		self.new_sprite(self.spriterect)
 
-	def move(self):
-		"""Moves the bullet"""
+	def update(self):
 		self.pos += self.dir.normalized() * 15
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y
-
-	def update(self):
-		self.move()
-

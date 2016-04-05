@@ -21,6 +21,7 @@ class Astroid(Movingobject):
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
 		self.maxspeed = 3
+		
 	def update(self):
 		self.angle += 0.5
 		self.new_sprite(self.image_pos)
