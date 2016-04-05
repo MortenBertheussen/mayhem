@@ -3,13 +3,6 @@ from gameconstants import *
 from Vector2D import *
 import math
 
-class Environment(pygame.sprite.Sprite):
-	"""The environment/background"""
-	def __init__(self):
-		super().__init__()
-		self.image = pygame.image.load("sprites/bg_and_hud.png").convert_alpha()
-		self.rect = self.image.get_rect()
-
 class Platform(pygame.sprite.Sprite):
 	"""platform station"""
 	def __init__(self, uid):
@@ -57,7 +50,7 @@ class Explotion(pygame.sprite.Sprite):
 	def update(self):
 		self.index += 1
 		self.timer += 1
-		if self.timer % 2 == 0:
+		if self.timer % 1 == 0:
 			if self.index is len(self.images):
 				self.index = 11
 				self.kill = True

@@ -7,7 +7,6 @@ class Movingobject(pygame.sprite.Sprite):
 	"""A class for movingobjects"""
 	def __init__(self):
 		super().__init__()
-		self.gravity = Vector2D(0,2)
 		self.maxspeed = 5
 		self.pos = Vector2D(SCREEN_X/2 - 22, SCREEN_Y/2 - 22)
 		self.direction = Vector2D(0,-1)
@@ -68,16 +67,12 @@ class Rocket(Movingobject):
 			self.pos = self.spawn
 			self.image =  pygame.image.load("sprites/ship_blue.png").convert_alpha()
 
-
-	def logic(self, screen):
-		"""Logic method of rocket"""
+	def update(self):
 		self.speed_limit()
 		self.angle_fix()
 		self.move()
 		self.screen_wrap()
 		self.fule()
-		#Hitbox for bugtesting
-		#pygame.draw.rect(screen,RED,(self.rect.x,self.rect.y,self.rect.height,self.rect.width))
 
 	def angle_fix(self):
 		"""Keeps the angle between 0 and 360 degrees. We dont want negative angles."""
@@ -102,15 +97,14 @@ class Rocket(Movingobject):
 			elif self.uid == 2:
 				self.update_sprite("sprites/ship_blue_on.png")
 			self.direction *= 1.5
-			if self.refuel is False:
-				self.pos += new_speed #+ self.gravity/2
+			self.pos += new_speed
 			self.rect.center = (self.pos.x, self.pos.y)
-			self.refuel = False
 			self.fuel -=1
 			
 			#set fuel not to go under 0
 			if self.fuel <= 0:
 				self.fuel = 0
+
 		#Movement if engine is off
 		else:
 			if self.uid == 1:
@@ -118,20 +112,12 @@ class Rocket(Movingobject):
 			elif self.uid == 2:
 				self.update_sprite("sprites/ship_blue.png")
 			#Movement when ship still has big acceleration and not refuling
-			if self.direction.magnitude() > 0.5 and self.refuel is False:
-				self.direction /= 1.04
-				self.pos += new_speed + self.gravity
+			
+			self.direction /= 1.04
+			self.pos += new_speed
 			#Movement when ship has very low acceleration or it is refuling
-			else:
-				self.pos += self.gravity	#Only gravity works on the rockets position
 
 			self.rect.center = (self.pos.x, self.pos.y) #Update the rockets center position
-
-			#Rotate slowly back to 0 deg if engine is off (Looks like gravity is pulling the rockets center of mass downwards)
-			if self.angle != 0 and self.angle > 180:	#If the angle is bigger than 180 deg we increase it towards 360(same as 0deg)
-				self.angle += 1
-			if self.angle !=0 and self.angle < 180:		#If the angle is smaller than 180 deg we decrease it towards 0
-				self.angle -= 1
 
 	def speed_limit(self):
 		"""Speed_limit method of rocket"""
@@ -177,10 +163,9 @@ class Bullet(Movingobject):
 	def move(self):
 		"""Moves the bullet"""
 		self.pos += self.dir.normalized() * 15
-		self.pos.y += 0.5 #Slight gravity for bullets
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y
 
-	def logic(self):
+	def update(self):
 		self.move()
 		self.screen_wrap()

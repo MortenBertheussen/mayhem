@@ -14,17 +14,11 @@ from staticobjects import *
 class Engine:
 	"""This is the engine class"""
 	def __init__(self):
-		self.rockets = []
 		self.players = 2
 
-		self.environment_sprite = pygame.sprite.Group()
-		self.environment_sprite.add(Environment())
-		#self.environment_sprite.add(Hud())
-
+		self.rockets = pygame.sprite.Group()
 		self.explotions = pygame.sprite.Group()
-		self.obstacle_sprites = pygame.sprite.Group()
 		self.bullet_sprites = pygame.sprite.Group()
-		self.sprites = pygame.sprite.Group()
 		self.platforms = pygame.sprite.Group()
 
 		self.generate_player() #Generate all players
@@ -34,14 +28,12 @@ class Engine:
 		#Generate ships
 		for i in range(1,self.players+1):
 			rocket = Rocket(i)
-			self.rockets.append(rocket)
-			self.sprites.add(rocket)
+			self.rockets.add(rocket)
 
 		#Generate platform for players
 		for i in range(1,self.players+1):
 			platform = Platform(i)
 			self.platforms.add(platform)
-			self.sprites.add(platform)
 
 	def eventhandler(self):
 		"""The eventhandler"""
@@ -64,7 +56,6 @@ class Engine:
 						if event.key == pygame.K_SPACE:
 							bullet = rocket.shoot()
 							self.bullet_sprites.add(bullet)
-							self.sprites.add(bullet)
 
 					if rocket.uid == 2:
 						if event.key == pygame.K_UP:
@@ -76,7 +67,6 @@ class Engine:
 						if event.key == pygame.K_RSHIFT:
 							bullet = rocket.shoot()
 							self.bullet_sprites.add(bullet)
-							self.sprites.add(bullet)
 					
 
 			if event.type == pygame.KEYUP:
@@ -105,7 +95,6 @@ class Engine:
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
 				if  hit:
-					rocket.pos.y = platform.rect.y - rocket.rect.height/2
 					rocket.refuel = True
 
 	def bullet_impact(self):
@@ -123,28 +112,7 @@ class Engine:
 						for rocket in self.rockets:
 							if rocket.uid is bullet.uid:
 								rocket.score += 100 #Give the player who got the hit score
-					self.sprites.remove(bullet)
 					self.bullet_sprites.remove(bullet)
-			
-			#Environment and rocket
-			environment_collide = pygame.sprite.spritecollide(rocket,self.environment_sprite,False)
-			
-			for env in environment_collide:
-				if pygame.sprite.collide_mask(env,rocket):
-					rocket.respawn()
-					#Create explotion
-					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery)
-					self.explotions.add(explotion)
-
-					rocket.score -= 50 # Minus points for crashing
-
-		#Bullets with environment
-		for bullet in self.bullet_sprites:
-			environment_collide = pygame.sprite.spritecollide(bullet,self.environment_sprite,False)
-			for env in environment_collide:
-				if pygame.sprite.collide_mask(env,bullet):
-					self.bullet_sprites.remove(bullet)
-					self.sprites.remove(bullet)
 
 	def display(self, screen):
 		"""Display of text on screen"""
@@ -191,29 +159,32 @@ class Engine:
 
 	def logic(self, screen):
 		"""Engine logic which run what is needed"""
-		self.explotions.update()
-		self.sprites.update()
-		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
 		self.eventhandler()
-		self.environment_sprite.draw(screen)
-		self.display(screen)
-		for bullet in self.bullet_sprites:
-			bullet.logic()
 
-		for rocket in self.rockets:
-			rocket.logic(screen)
+		#Update
+		self.explotions.update()
+		self.rockets.update()
+		self.bullet_sprites.update()
+		self.platforms.update()
+
+		#Colision detect
 		self.platform_impact()
 		self.bullet_impact()
-		
-		self.sprites.draw(screen)
+
+		#Drawing
+		pygame.draw.rect(screen, BLACK, (0,0,SCREEN_X,SCREEN_Y))
+		self.bullet_sprites.draw(screen)
+		self.rockets.draw(screen)
+		self.platforms.draw(screen)
 		self.explotions.draw(screen)
+		
+		#self.display(screen) #Hud
 
 		#Remove explotion after a while
 		for explotion in self.explotions:
 			if explotion.kill:
 				self.explotions.remove(explotion)
 
-		self.display(screen)
 		pygame.display.update()
 
 def main():
