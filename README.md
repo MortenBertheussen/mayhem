@@ -12,4 +12,4 @@
 	Player 2:
 		Up arrow -> Engine on rocket turns on
 		Left and Right arrow -> Rotate Rocket
-		
+		Period -> Shoot bullet
