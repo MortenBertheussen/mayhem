@@ -191,6 +191,7 @@ class Engine:
 				if hit and pygame.sprite.collide_mask(astroid, rocket):
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
+					rocket.score -= 50
 					rocket.respawn()
 			#ASTROID WITH ASTROID
 			for astroid2 in self.astroids:
@@ -217,6 +218,7 @@ class Engine:
 				if hit and pygame.sprite.collide_mask(rocket, planet):
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
+					rocket.score -= 50
 					rocket.respawn()
 			#ROCKET WITH PLATFORM
 			for platform in self.platforms:
