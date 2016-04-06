@@ -34,7 +34,7 @@ class Movingobject(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(center=oldrect.center)
 
 class Rocket(Movingobject): 
-	"""The class for rocket, broombroom"""
+	"""The class for rocket"""
 	def __init__(self, uid):
 		super().__init__()
 		self.uid = uid
@@ -58,6 +58,7 @@ class Rocket(Movingobject):
 			self.pos = self.spawn
 
 	def update(self):
+		"""Runs what is needed for the class"""
 		self.current_sprite()
 		self.speed_limit()
 		self.angle_fix()
@@ -67,10 +68,11 @@ class Rocket(Movingobject):
 			self.fuel_up()
 
 	def angle_fix(self):
-		"""Keeps the angle between 0 and 360 degrees. We dont want negative angles."""
+		"""Keeps the angle between 0 and 360 degrees."""
 		self.angle = self.angle % 360
 
 	def current_sprite(self):
+		"""Set image to right sprite from the spritesheet"""
 		if self.uid is 1:
 			#ENGINE ON SPRITES (PLAYER1)
 			if self.engineOn:
@@ -171,6 +173,7 @@ class Bullet(Movingobject):
 		self.new_sprite(self.spriterect)
 
 	def update(self):
+		"""Runs what is needed for the class"""
 		self.pos += self.dir.normalized() * 15
 		self.rect.x = self.pos.x
 		self.rect.y = self.pos.y

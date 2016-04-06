@@ -3,10 +3,13 @@
 ## Run
     $ python3 mayhem.py
 
-## Todo list
-* Explotion animation when hit or crashing  
-* Add timer for respawning  
-* Add moving obstacles and enemies that shoot
-* Big map that scrolls with the players movement  
-* Networking for multiplayer  
-* Startscreen to select offline/online game mode  
+##Controls
+	Player 1:
+		W -> Engine on rocket turns on
+		A and D -> Rotate rocket
+		SPACE -> Shoot bullet
+
+	Player 2:
+		Up arrow -> Engine on rocket turns on
+		Left and Right arrow -> Rotate Rocket
+		

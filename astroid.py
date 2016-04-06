@@ -7,6 +7,7 @@ import math
 import random
 
 class Astroid(Movingobject):
+	"""This is the astroid class"""
 	def __init__(self, pos, rect):
 		super().__init__()
 		self.pos = Vector2D(pos[0], pos[1])
@@ -23,6 +24,7 @@ class Astroid(Movingobject):
 		self.maxspeed = 3
 		
 	def update(self):
+		"""Runs what is needed for the class"""
 		self.angle += 0.5
 		self.new_sprite(self.image_pos)
 		self.move()
@@ -30,11 +32,13 @@ class Astroid(Movingobject):
 		self.screen_wrap()
 
 	def move(self):
+		"""Controls the movement of the astroid"""
 		self.pos += self.speed
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
 
 	def new_sprite(self, rect):
+		"""Fetches a new sprite from the spritesheet and keep its rotation"""
 		oldrect = self.rect
 		self.image = self.spritesheet.get_image(rect)
 		self.image = pygame.transform.rotate(self.image, self.angle)

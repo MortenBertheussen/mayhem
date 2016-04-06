@@ -1,5 +1,5 @@
 """This is a 2 player arcade shooting game where both players 
-control a rocket and try to shoot eachother with rockets."""
+control a rocket and try to shoot eachother with bullets."""
 
 #!/usr/bin/env python3
 import pygame
@@ -57,10 +57,10 @@ class Engine:
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)			#Draw planets
-		self.astroids.draw(screen)
+		self.astroids.draw(screen)			#Draw astroids
 		self.explotions.draw(screen)		#Draw explotions
-		self.hud.draw(screen)				#Draw background sprite
-		self.display(screen)				#Draw hud
+		self.hud.draw(screen)				#Draw hud background
+		self.display(screen)				#Draw stats 
 
 		#Remove explotion when animation is over
 		for explotion in self.explotions:
@@ -74,6 +74,7 @@ class Engine:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT: exit()
 
+			#Set a timer to 3 seconds to spawn astroid
 			if event.type == pygame.USEREVENT: self.spawn_astroid()
 			
 			if event.type == pygame.KEYDOWN:
@@ -91,7 +92,7 @@ class Engine:
 						if event.key == pygame.K_UP:	rocket.engineOn = True
 						if event.key == pygame.K_LEFT:	rocket.turnLeft = True
 						if event.key == pygame.K_RIGHT:	rocket.turnRight = True
-						if event.key == pygame.K_RCTRL:
+						if event.key == pygame.K_PERIOD:
 							bullet = rocket.shoot()
 							self.bullet_sprites.add(bullet)
 
@@ -109,7 +110,6 @@ class Engine:
 						if event.key == pygame.K_LEFT: rocket.turnLeft = False
 						if event.key == pygame.K_RIGHT: rocket.turnRight = False
 
-	### GRAVITY FIELD ###
 	def gravity_field(self):
 		"""Controls virtual gravity from planets. Working on astroids and rockets"""
 		#Rocket gravity
@@ -167,6 +167,7 @@ class Engine:
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
 
+		#PLATFORM AND BULLET
 		for platform in self.platforms:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(platform, bullet)
@@ -241,12 +242,12 @@ class Engine:
 
 	def generate_player(self):
 		"""Generates players and platforms for them"""
-		#Generate ships
+		#Generate ships with id
 		for i in range(1,self.players+1):
 			rocket = Rocket(i)
 			self.rockets.add(rocket)
 
-		#Generate platform for players
+		#Generate platform for players with id
 		for i in range(1,self.players+1):
 			platform = Platform(i)
 			self.platforms.add(platform)
@@ -312,7 +313,7 @@ def main():
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
 
-	pygame.time.set_timer(pygame.USEREVENT, 3000)#Set a timer for spawning astroids
+	pygame.time.set_timer(pygame.USEREVENT, 3000) #Set a timer for spawning astroids
 
 	while True:	
 		time = clock.tick(FPS)

@@ -5,12 +5,14 @@ from Vector2D import *
 import math
 
 class Background(pygame.sprite.Sprite):
+	"""The class for background"""
 	def __init__(self):
 		super().__init__()
 		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
 		self.rect = self.image.get_rect()
 
 class Hud(pygame.sprite.Sprite):
+	"""The class for the hud"""
 	def __init__(self):
 		super().__init__()
 		self.image = pygame.image.load("sprites/hud.png").convert_alpha()
@@ -30,6 +32,7 @@ class Platform(pygame.sprite.Sprite):
 		elif self.uid is 2: self.rect.center = (SCREEN_X - 150, 150)
 
 class Explotion(pygame.sprite.Sprite):
+	"""The class for the explotion"""
 	def __init__(self, x, y, size):
 		super().__init__()
 		self.size = size
