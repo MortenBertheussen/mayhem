@@ -49,7 +49,7 @@ class Engine:
 		self.bullet_sprites.update()
 		self.platforms.update()
 		self.planets.update()
-		#self.astroids.update()
+		self.astroids.update()
 
 		#Colision detect
 		self.gravity_field()
@@ -61,14 +61,10 @@ class Engine:
 		#Drawing
 		self.bg.draw(screen)				#Draw background sprite
 		self.platforms.draw(screen)			#Draw platform sprites
-		#for rocket in self.rockets:
-		#	pygame.draw.rect(screen,RED,rocket.rect)
-		#for bullet in self.bullet_sprites:
-		#	pygame.draw.rect(screen,YELLOW,(bullet.pos.x,bullet.pos.y, 5,5))
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)			#Draw planets
-		#self.astroids.draw(screen)			#Draw astroids
+		self.astroids.draw(screen)			#Draw astroids
 		self.explotions.draw(screen)		#Draw explotions
 		self.hud.draw(screen)				#Draw hud background
 		self.display(screen)				#Draw stats 
@@ -94,7 +90,7 @@ class Engine:
 			if event.type == pygame.QUIT: exit()
 
 			#Set a timer to 3 seconds to spawn astroid
-			#if event.type == ASTROID_SPAWN: self.spawn_astroid()
+			if event.type == ASTROID_SPAWN: self.spawn_astroid()
 			if event.type == RESPAWN_TIMER: self.respawn_ships()
 			
 			if event.type == pygame.KEYDOWN:
@@ -360,7 +356,7 @@ def main():
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
 
-	pygame.time.set_timer(ASTROID_SPAWN, 3000) #Set a timer for spawning astroids
+	pygame.time.set_timer(ASTROID_SPAWN, 1500) #Set a timer for spawning astroids
 
 	while True:	
 		time = clock.tick(FPS)
