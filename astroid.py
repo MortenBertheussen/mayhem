@@ -16,6 +16,7 @@ class Astroid(Movingobject):
 		self.image_pos = rect
 		self.rect = self.image.get_rect()
 		self.angle = 0
+		self.spin = random.uniform(0,5)
 		self.gravity = 10
 		if speed is None:	self.speed = Vector2D(random.uniform(-3,3), random.uniform(-3,3))
 		else:				self.speed = speed
@@ -44,7 +45,7 @@ class Astroid(Movingobject):
 
 	def update(self):
 		"""Runs what is needed for the class"""
-		self.angle += 0.5
+		self.angle += self.spin
 		self.new_sprite(self.image_pos)
 		self.move()
 		self.speed_limit()

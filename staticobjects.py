@@ -16,9 +16,9 @@ class Background(pygame.sprite.Sprite):
 
 	def update(self):
 		if self.moveleft:
-			self.paralax -= 0.3
+			self.paralax -= 0.1
 		else:
-			self.paralax += 0.3
+			self.paralax += 0.1
 		if self.paralax < -50:
 			self.moveleft = False
 		if self.paralax > 0:
