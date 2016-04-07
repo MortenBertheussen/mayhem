@@ -352,7 +352,7 @@ class Engine:
 		
 	def spawn_astroid(self):
 		"""Spawn astroid if we havent reached the limit"""
-		if len(self.astroids) < 12:
+		if len(self.astroids) < 10:
 			self.astroids.add(
 				Astroid(
 						ASTROID_SPAWNS[random.randint(0,7)],
@@ -364,14 +364,14 @@ class Engine:
 	### HUD TEXT ###
 	def display(self, screen):
 		"""Display of text on screen"""
-		
+		font = pygame.font.SysFont("sans-serif", 22)
+
 		#FUEL DISPLAY
 		for rocket in self.rockets:
 			fuel = "%s" % int(rocket.fuel/10)
-			font = pygame.font.SysFont("sans-serif", 22)
 			fuel_text = font.render(fuel, True, RED)
 			
-			if rocket.uid == 1:
+			if rocket.uid is 1:
 				fuel_text = font.render(fuel, True, WHITE)
 				screen.blit(fuel_text, [105, 30])
 			else: 
@@ -381,10 +381,9 @@ class Engine:
 		#SCORE DISPLAY
 		for rocket in self.rockets:
 			score = "%s" % rocket.score
-			font = pygame.font.SysFont("sans.serif", 22)
 			score_text = font.render(score, True, RED)
 
-			if rocket.uid == 1:
+			if rocket.uid is 1:
 				score_text = font.render(score,True,WHITE)
 				screen.blit(score_text, [200, 30])
 			else:
@@ -394,10 +393,9 @@ class Engine:
 		#HEALTH DISPLAY
 		for rocket in self.rockets:
 			health = "%s" % rocket.health
-			font = pygame.font.SysFont("sans.serif", 22)
 			health_text = font.render(health, True, WHITE)
 
-			if rocket.uid == 1:
+			if rocket.uid is 1:
 				health_text = font.render(health, True, WHITE)
 				screen.blit(health_text,[20,30])
 			else:
