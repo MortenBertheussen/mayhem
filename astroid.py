@@ -2,7 +2,7 @@
 from gameconstants import *
 from Vector2D import *
 from spritesheet import *
-from Movingobjects import *
+from movingobject import *
 import math
 import random
 
@@ -21,7 +21,10 @@ class Astroid(Movingobject):
 		self.speed = Vector2D(random.uniform(0,5), random.uniform(0,5))
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
-		self.maxspeed = 3
+		self.maxspeed = 5
+		if rect is ASTROID_1: self.mass = 25
+		if rect is ASTROID_2: self.mass = 20
+		if rect is ASTROID_3: self.mass = 5
 		
 	def update(self):
 		"""Runs what is needed for the class"""

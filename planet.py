@@ -2,7 +2,7 @@
 from gameconstants import *
 from Vector2D import *
 from spritesheet import *
-from Movingobjects import *
+from movingobject import *
 import math
 
 class Planet(Movingobject):
@@ -18,6 +18,7 @@ class Planet(Movingobject):
 		self.gravity = 10 
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
+		self.mass = 100
 
 	def update(self):
 		"""Runs what is needed for the class"""

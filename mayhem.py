@@ -8,10 +8,15 @@ import math
 import cProfile
 from gameconstants import *
 from Vector2D import *
-from Movingobjects import *
+from movingobject import *
 from staticobjects import *
 from astroid import *
 from planet import *
+from rocket import *
+from bullet import *
+
+ASTROID_SPAWN = pygame.USEREVENT + 1
+RESPAWN_TIMER = pygame.USEREVENT + 2
 
 class Engine:
 	"""This is the engine class"""
@@ -51,9 +56,14 @@ class Engine:
 		self.environment_impact()
 		self.bullet_out_of_screen()
 
+
 		#Drawing
 		self.bg.draw(screen)				#Draw background sprite
 		self.platforms.draw(screen)			#Draw platform sprites
+		#for rocket in self.rockets:
+		#	pygame.draw.rect(screen,RED,rocket.rect)
+		#for bullet in self.bullet_sprites:
+		#	pygame.draw.rect(screen,YELLOW,(bullet.pos.x,bullet.pos.y, 5,5))
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)			#Draw planets
@@ -62,6 +72,8 @@ class Engine:
 		self.hud.draw(screen)				#Draw hud background
 		self.display(screen)				#Draw stats 
 
+
+
 		#Remove explotion when animation is over
 		for explotion in self.explotions:
 			if explotion.kill:
@@ -69,32 +81,49 @@ class Engine:
 
 		pygame.display.update()
 
+	def respawn_ships(self):
+		"""Method to respawn ship if destroyed"""
+		for rocket in self.rockets:
+			if rocket.invisible:
+				rocket.respawn()
+
 	def eventhandler(self):
 		"""The eventhandler"""
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT: exit()
 
 			#Set a timer to 3 seconds to spawn astroid
-			if event.type == pygame.USEREVENT: self.spawn_astroid()
+			if event.type == ASTROID_SPAWN: self.spawn_astroid()
+			if event.type == RESPAWN_TIMER: self.respawn_ships()
 			
 			if event.type == pygame.KEYDOWN:
 				for rocket in self.rockets:
+					#Dont allow movement if rocket is dead
+		
 					#Player 1
 					if rocket.uid == 1:
-						if event.key == pygame.K_w:	rocket.engineOn = True
-						if event.key == pygame.K_a: rocket.turnLeft = True
-						if event.key == pygame.K_d: rocket.turnRight = True
-						if event.key == pygame.K_SPACE:
-							bullet = rocket.shoot()
-							self.bullet_sprites.add(bullet)
+						if rocket.invisible is False:
+							if event.key == pygame.K_w:	rocket.engineOn = True
+							if event.key == pygame.K_a: rocket.turnLeft = True
+							if event.key == pygame.K_d: rocket.turnRight = True
+							if event.key == pygame.K_s: rocket.speedBreak = True
+							if event.key == pygame.K_SPACE:
+								bullet1 = rocket.shoot(1)
+								bullet2 = rocket.shoot(2)
+								self.bullet_sprites.add(bullet1)
+								self.bullet_sprites.add(bullet2)
 					#Player 2
 					if rocket.uid == 2:
-						if event.key == pygame.K_UP:	rocket.engineOn = True
-						if event.key == pygame.K_LEFT:	rocket.turnLeft = True
-						if event.key == pygame.K_RIGHT:	rocket.turnRight = True
-						if event.key == pygame.K_PERIOD:
-							bullet = rocket.shoot()
-							self.bullet_sprites.add(bullet)
+						if rocket.invisible is False:
+							if event.key == pygame.K_UP:	rocket.engineOn = True
+							if event.key == pygame.K_LEFT:	rocket.turnLeft = True
+							if event.key == pygame.K_RIGHT:	rocket.turnRight = True
+							if event.key == pygame.K_DOWN: rocket.speedBreak = True
+							if event.key == pygame.K_PERIOD:
+								bullet1 = rocket.shoot(1)
+								bullet2 = rocket.shoot(2)
+								self.bullet_sprites.add(bullet1)
+								self.bullet_sprites.add(bullet2)
 
 			if event.type == pygame.KEYUP:
 				for rocket in self.rockets:
@@ -103,12 +132,19 @@ class Engine:
 						if event.key == pygame.K_w: rocket.engineOn = False
 						if event.key == pygame.K_a: rocket.turnLeft = False
 						if event.key == pygame.K_d: rocket.turnRight = False
+						if event.key == pygame.K_s: rocket.speedBreak = False
 
 					#Player 2
 					if rocket.uid == 2:
 						if event.key == pygame.K_UP: rocket.engineOn = False
 						if event.key == pygame.K_LEFT: rocket.turnLeft = False
 						if event.key == pygame.K_RIGHT: rocket.turnRight = False
+						if event.key == pygame.K_DOWN: rocket.speedBreak = False
+
+	def gravity_force(self, object1, object2):
+		distance = (object1.pos - object2.pos).magnitude()
+		f = (object1.mass * object2.mass) / (distance ** 2)
+		return f
 
 	def gravity_field(self):
 		"""Controls virtual gravity from planets. Working on astroids and rockets"""
@@ -116,17 +152,20 @@ class Engine:
 		for rocket in self.rockets:
 			for planet in self.planets:
 				distance = (rocket.pos - planet.pos).magnitude()
-				if distance < 300:
-					gravity_vector = Vector2D((planet.pos.x - rocket.pos.x),(planet.pos.y - rocket.pos.y))
-					rocket.pos += gravity_vector / distance
+				if distance < 500:
+					gravity_direction = Vector2D((planet.pos.x - rocket.pos.x),(planet.pos.y - rocket.pos.y)).normalized()
+					gravity_force = gravity_direction * self.gravity_force(rocket, planet)
+					rocket.speed += gravity_force
+					rocket.calc_angle()
 
 		#Astroid gravity
 		for astroid in self.astroids:
 			for planet in self.planets:
 				distance = (astroid.pos - planet.pos).magnitude()
-				if  distance < 250:
-					gravity_vector = Vector2D((planet.pos.x - astroid.pos.x), (planet.pos.y - astroid.pos.y))
-					astroid.speed += (gravity_vector/40) / distance
+				if  distance < 800:
+					gravity_direction = Vector2D((planet.pos.x - astroid.pos.x),(planet.pos.y - astroid.pos.y)).normalized()
+					gravity_force = gravity_direction * self.gravity_force(astroid, planet)
+					astroid.speed += gravity_force
 			
 	def bullet_impact(self):
 		"""Check if bullet collides with diffrent obstacles"""
@@ -135,12 +174,12 @@ class Engine:
 		for rocket in self.rockets:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
-				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
+				if bullet.uid != rocket.uid: #and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.bullet_impact()
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 30) )
 					if rocket.health <= 0:
 						self.explotions.add( Explotion(rocket.rect.centerx, rocket.rect.centery, 75) )
-						rocket.respawn()
+						rocket.dead = True
 						for rocket in self.rockets:
 							if rocket.uid is bullet.uid:
 								rocket.score += 100 #Give the player who got the hit score
@@ -150,7 +189,7 @@ class Engine:
 		for astroid in self.astroids:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(astroid, bullet)
-				if hit and pygame.sprite.collide_mask(astroid, bullet):
+				if hit:# and pygame.sprite.collide_mask(astroid, bullet):
 					astroid.life -=1
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
@@ -163,7 +202,7 @@ class Engine:
 		for planet in self.planets:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(planet, bullet)
-				if hit and pygame.sprite.collide_mask(planet, bullet):
+				if hit:# and pygame.sprite.collide_mask(planet, bullet):
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
 
@@ -171,7 +210,7 @@ class Engine:
 		for platform in self.platforms:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(platform, bullet)
-				if hit and  pygame.sprite.collide_mask(platform, bullet) and bullet.uid != platform.uid:
+				if hit and bullet.uid != platform.uid:# and pygame.sprite.collide_mask(platform, bullet):
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
 
@@ -192,7 +231,7 @@ class Engine:
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
 					rocket.score -= 50
-					rocket.respawn()
+					rocket.dead = True
 			#ASTROID WITH ASTROID
 			for astroid2 in self.astroids:
 				hit = pygame.sprite.collide_rect(astroid, astroid2)
@@ -201,8 +240,12 @@ class Engine:
 					explotion2 = Explotion(astroid2.rect.centerx, astroid2.rect.centery, 30)
 					self.explotions.add(explotion)
 					self.explotions.add(explotion2)
-					self.astroids.remove(astroid)
-					self.astroids.remove(astroid2)
+					if astroid.mass > astroid2.mass: self.astroids.remove(astroid2)
+					elif astroid.mass < astroid2.mass: self.astroids.remove(astroid)
+					else:
+						self.astroids.remove(astroid)
+						self.astroids.remove(astroid2)
+					
 			#ASTROID WITH PLATFORM
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(astroid, platform)
@@ -219,7 +262,7 @@ class Engine:
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
 					rocket.score -= 50
-					rocket.respawn()
+					rocket.dead = True
 			#ROCKET WITH PLATFORM
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
@@ -256,13 +299,14 @@ class Engine:
 
 	def generate_planets(self):
 		"""Generate planets for the map"""
-		self.planets.add(Planet((230,230),TIGER_PLANET))
+		#self.planets.add(Planet((230,230),TIGER_PLANET))
 		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE))
 		
 	def spawn_astroid(self):
 		"""Spawn astroid if we havent reached the limit"""
 		if len(self.astroids) < 6:
-			self.astroids.add(Astroid( random.choice( [(-10,SCREEN_Y/2), (SCREEN_X/2, SCREEN_Y+10), (300,SCREEN_Y+10), (300,-10)]), random.choice([ASTROID_1, ASTROID_2, ASTROID_3])) )
+			#self.astroids.add(Astroid( random.choice( [(-10,SCREEN_Y/2), (SCREEN_X/2, SCREEN_Y+10), (300,SCREEN_Y+10), (300,-10)]), random.choice([ASTROID_1, ASTROID_2, ASTROID_3])) )
+			self.astroids.add(Astroid( (random.uniform(0,SCREEN_X),random.uniform(0,SCREEN_Y)), random.choice([ASTROID_1, ASTROID_2, ASTROID_3])) )
 
 	### HUD TEXT ###
 	def display(self, screen):
@@ -315,7 +359,7 @@ def main():
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
 
-	pygame.time.set_timer(pygame.USEREVENT, 3000) #Set a timer for spawning astroids
+	pygame.time.set_timer(ASTROID_SPAWN, 1000) #Set a timer for spawning astroids
 
 	while True:	
 		time = clock.tick(FPS)
