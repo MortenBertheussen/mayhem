@@ -170,9 +170,10 @@ class Engine:
 		#ROCKET AND BULLET
 		for rocket in self.rockets:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
+			
 			for bullet in collide_rocket:
 				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
-					rocket.bullet_impact()
+					rocket.bullet_impact()	#Reduce health of rocket
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 30) )
 					if rocket.health <= 0:
 						self.explotions.add( Explotion(rocket.rect.centerx, rocket.rect.centery, 75) )
@@ -304,6 +305,17 @@ class Engine:
 				hit = pygame.sprite.collide_rect(rocket, platform)
 				if hit and (platform.uid == rocket.uid):
 					rocket.refuel = True
+			#ROCKET WITH ROCKET
+			for rocket2 in self.rockets:
+				if rocket != rocket2:
+					hit = pygame.sprite.collide_rect(rocket, rocket2)
+					if hit and pygame.sprite.collide_mask(rocket,rocket2):
+						explotion1 = Explotion(rocket.rect.centerx, rocket.rect.centery, 50)
+						explotion2 = Explotion(rocket2.rect.centerx, rocket2.rect.centery, 50)
+						self.explotions.add(explotion1)
+						self.explotions.add(explotion2)
+						rocket.dead = True
+						rocket2.dead = True
 
 	def bullet_out_of_screen(self):
 		"""Removed bullets when they exit the screen"""
