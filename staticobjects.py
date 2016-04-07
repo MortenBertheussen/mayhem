@@ -9,7 +9,22 @@ class Background(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
 		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
+		self.image = pygame.transform.scale(self.image, (1400, 1000))
 		self.rect = self.image.get_rect()
+		self.paralax = 0
+		self.moveleft = True
+
+	def update(self):
+		if self.moveleft:
+			self.paralax -= 0.3
+		else:
+			self.paralax += 0.3
+		if self.paralax < -50:
+			self.moveleft = False
+		if self.paralax > 0:
+			self.moveleft = True
+		self.rect.x = self.paralax
+		self.rect.y = self.paralax
 
 class Hud(pygame.sprite.Sprite):
 	"""The class for the hud"""

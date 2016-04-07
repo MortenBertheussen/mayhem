@@ -8,7 +8,7 @@ import random
 
 class Astroid(Movingobject):
 	"""This is the astroid class"""
-	def __init__(self, pos, rect, spritesheet):
+	def __init__(self, pos, rect, spritesheet, speed = None):
 		super().__init__()
 		self.pos = Vector2D(pos[0], pos[1])
 		self.spritesheet = spritesheet
@@ -17,15 +17,31 @@ class Astroid(Movingobject):
 		self.rect = self.image.get_rect()
 		self.angle = 0
 		self.gravity = 10
-		self.life = 3
-		self.speed = Vector2D(random.uniform(0,5), random.uniform(0,5))
+		if speed is None:	self.speed = Vector2D(random.uniform(-3,3), random.uniform(-3,3))
+		else:				self.speed = speed
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
-		self.maxspeed = 5
-		if rect is ASTROID_1: self.mass = 25
-		if rect is ASTROID_2: self.mass = 20
-		if rect is ASTROID_3: self.mass = 5
-		
+		self.maxspeed = 3
+		if rect is ASTROID_1:
+			self.mass = 20
+			self.type = 1
+			self.life = 3
+		if rect is ASTROID_2:
+			self.mass = 10
+			self.type = 2
+			self.life = 2
+		if rect is ASTROID_3:
+			self.mass = 5
+			self.type = 3
+			self.life = 1
+	
+	def screen_wrap(self):
+		"""Custom screenwrap for astroids"""
+		if self.pos.x <= -100: 				self.pos.x = SCREEN_X + 50				#Left
+		if self.pos.x >= SCREEN_X + 100:	self.pos.x = -50						#Right
+		if self.pos.y >= SCREEN_Y + 100:	self.pos.y = -50						#Bottom
+		if self.pos.y <= -100:				self.pos.y = SCREEN_Y + 50 				#Top
+
 	def update(self):
 		"""Runs what is needed for the class"""
 		self.angle += 0.5

@@ -21,10 +21,10 @@ class Bullet(Movingobject):
 		#self.pos.y = position.centery
 		self.center = Vector2D(position.centerx, position.centery)
 		if wing is 1:
-			point = Vector2D(position.centerx-15, position.centery-10)
+			point = Vector2D(position.centerx-7, position.centery-10)
 			self.pos = self.rotate_point(point, self.center, angle)
 		else:
-			point = Vector2D(position.centerx+15, position.centery-10)
+			point = Vector2D(position.centerx+7, position.centery-10)
 			self.pos = self.rotate_point(point, self.center, angle)
 
 		self.new_sprite(self.spriterect)

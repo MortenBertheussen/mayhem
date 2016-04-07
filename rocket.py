@@ -89,7 +89,7 @@ class Rocket(Movingobject):
 
 		#ENGINE ON
 		if self.engineOn and self.fuel>0:
-			self.speed *= 1.5
+			self.speed *= 1.25
 			self.pos += self.speed
 			self.rect.center = (self.pos.x, self.pos.y)
 			self.refuel = False
@@ -129,7 +129,7 @@ class Rocket(Movingobject):
 		self.pos = self.spawn
 		self.fuel = 1000
 		self.angle = 0
-		self.health = 100
+		if self.health <= 0: self.health = 100
 		self.speed = Vector2D(0,-1)
 		self.invisible = False
 
