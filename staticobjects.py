@@ -20,12 +20,12 @@ class Hud(pygame.sprite.Sprite):
 
 class Platform(pygame.sprite.Sprite):
 	"""platform station"""
-	def __init__(self, uid):
+	def __init__(self, uid, spritesheet):
 		super().__init__()
 		self.uid = uid
 		if uid is 1:	self.spriterect = BLUE_PLATFORM
 		else:			self.spriterect = RED_PLATFORM
-		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
 		if self.uid is 1:	self.rect.center = (150, SCREEN_Y - 150)

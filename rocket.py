@@ -8,10 +8,10 @@ import math
 
 class Rocket(Movingobject): 
 	"""The class for rocket"""
-	def __init__(self, uid):
+	def __init__(self, uid, spritesheet):
 		super().__init__()
 		self.uid = uid
-		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((0,0,30,30))
 		self.rect = self.image.get_rect()
 		self.engineOn = False

@@ -30,6 +30,7 @@ class Engine:
 		self.platforms = pygame.sprite.Group()		#Platform sprites
 		self.planets = pygame.sprite.Group()		#Planet sprites
 		self.astroids = pygame.sprite.Group()		#Astroid sprites
+		self.spritesheet = Spritesheet("sprites/spritesheet.png")
 
 		self.generate_player()						#Generate all players
 		self.generate_planets()						#Genereate all planets
@@ -108,8 +109,8 @@ class Engine:
 							if event.key == pygame.K_d: rocket.turnRight = True
 							if event.key == pygame.K_s: rocket.speedBreak = True
 							if event.key == pygame.K_SPACE:
-								bullet1 = rocket.shoot(1)
-								bullet2 = rocket.shoot(2)
+								bullet1 = Bullet(rocket.rect, rocket.speed, rocket.angle, rocket.uid, 1, self.spritesheet)
+								bullet2 = Bullet(rocket.rect, rocket.speed, rocket.angle, rocket.uid, 2, self.spritesheet)
 								self.bullet_sprites.add(bullet1)
 								self.bullet_sprites.add(bullet2)
 					#Player 2
@@ -120,8 +121,8 @@ class Engine:
 							if event.key == pygame.K_RIGHT:	rocket.turnRight = True
 							if event.key == pygame.K_DOWN: rocket.speedBreak = True
 							if event.key == pygame.K_PERIOD:
-								bullet1 = rocket.shoot(1)
-								bullet2 = rocket.shoot(2)
+								bullet1 = Bullet(rocket.rect, rocket.speed, rocket.angle, rocket.uid, 1, self.spritesheet)
+								bullet2 = Bullet(rocket.rect, rocket.speed, rocket.angle, rocket.uid, 2, self.spritesheet)
 								self.bullet_sprites.add(bullet1)
 								self.bullet_sprites.add(bullet2)
 
@@ -289,24 +290,24 @@ class Engine:
 		"""Generates players and platforms for them"""
 		#Generate ships with id
 		for i in range(1,self.players+1):
-			rocket = Rocket(i)
+			rocket = Rocket(i, self.spritesheet)
 			self.rockets.add(rocket)
 
 		#Generate platform for players with id
 		for i in range(1,self.players+1):
-			platform = Platform(i)
+			platform = Platform(i, self.spritesheet)
 			self.platforms.add(platform)
 
 	def generate_planets(self):
 		"""Generate planets for the map"""
 		#self.planets.add(Planet((230,230),TIGER_PLANET))
-		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE))
+		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE,self.spritesheet))
 		
 	def spawn_astroid(self):
 		"""Spawn astroid if we havent reached the limit"""
-		if len(self.astroids) < 6:
+		if len(self.astroids) < 10:
 			#self.astroids.add(Astroid( random.choice( [(-10,SCREEN_Y/2), (SCREEN_X/2, SCREEN_Y+10), (300,SCREEN_Y+10), (300,-10)]), random.choice([ASTROID_1, ASTROID_2, ASTROID_3])) )
-			self.astroids.add(Astroid( (random.uniform(0,SCREEN_X),random.uniform(0,SCREEN_Y)), random.choice([ASTROID_1, ASTROID_2, ASTROID_3])) )
+			self.astroids.add(Astroid((random.uniform(0,SCREEN_X),random.uniform(0,SCREEN_Y)),random.choice([ASTROID_1, ASTROID_2, ASTROID_3]), self.spritesheet))
 
 	### HUD TEXT ###
 	def display(self, screen):
@@ -359,7 +360,7 @@ def main():
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
 
-	pygame.time.set_timer(ASTROID_SPAWN, 1000) #Set a timer for spawning astroids
+	pygame.time.set_timer(ASTROID_SPAWN, 300) #Set a timer for spawning astroids
 
 	while True:	
 		time = clock.tick(FPS)

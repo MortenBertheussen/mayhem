@@ -7,14 +7,14 @@ import math
 
 class Bullet(Movingobject):
 	"""The bullet class"""
-	def __init__(self, position, speed, angle, uid, wing):
+	def __init__(self, position, speed, angle, uid, wing, spritesheet):
 		super().__init__()
 		self.uid = uid
 		self.speed = speed
 		self.angle = angle
 		if uid is 1:	self.spriterect = RED_LASER
 		else:			self.spriterect = BLUE_LASER
-		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
 		#self.pos.x = position.centerx
@@ -26,9 +26,6 @@ class Bullet(Movingobject):
 		else:
 			point = Vector2D(position.centerx+15, position.centery-10)
 			self.pos = self.rotate_point(point, self.center, angle)
-		print (position.centerx)
-		print (position.centery)
-
 
 		self.new_sprite(self.spriterect)
 

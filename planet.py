@@ -7,10 +7,10 @@ import math
 
 class Planet(Movingobject):
 	"""The class for planet"""
-	def __init__(self, pos, rect):
+	def __init__(self, pos, rect, spritesheet):
 		super().__init__()
 		self.pos = Vector2D(pos[0], pos[1])
-		self.spritesheet = Spritesheet("sprites/spritesheet.png")
+		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((rect))
 		self.image_pos = rect
 		self.rect = self.image.get_rect()
