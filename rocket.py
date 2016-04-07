@@ -117,13 +117,15 @@ class Rocket(Movingobject):
 	def despawn(self):
 		self.invisible = True
 		self.dead = False
+		self.speed = Vector2D(0,-1)
+		self.pos = self.spawn
+
 		self.new_sprite(BLANK_SPRITE)
 		pygame.time.set_timer(RESPAWN_TIMER, 1500)
 
 	def respawn(self):
 		"""Method to respawn the ship.
 		Used when coliding with the environment or when health is 0"""
-		self.pos = self.spawn
 		self.pos = self.spawn
 		self.fuel = 1000
 		self.angle = 0

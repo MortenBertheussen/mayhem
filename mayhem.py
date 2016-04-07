@@ -49,7 +49,7 @@ class Engine:
 		self.bullet_sprites.update()
 		self.platforms.update()
 		self.planets.update()
-		self.astroids.update()
+		#self.astroids.update()
 
 		#Colision detect
 		self.gravity_field()
@@ -68,7 +68,7 @@ class Engine:
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)			#Draw planets
-		self.astroids.draw(screen)			#Draw astroids
+		#self.astroids.draw(screen)			#Draw astroids
 		self.explotions.draw(screen)		#Draw explotions
 		self.hud.draw(screen)				#Draw hud background
 		self.display(screen)				#Draw stats 
@@ -94,7 +94,7 @@ class Engine:
 			if event.type == pygame.QUIT: exit()
 
 			#Set a timer to 3 seconds to spawn astroid
-			if event.type == ASTROID_SPAWN: self.spawn_astroid()
+			#if event.type == ASTROID_SPAWN: self.spawn_astroid()
 			if event.type == RESPAWN_TIMER: self.respawn_ships()
 			
 			if event.type == pygame.KEYDOWN:
@@ -175,7 +175,7 @@ class Engine:
 		for rocket in self.rockets:
 			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
 			for bullet in collide_rocket:
-				if bullet.uid != rocket.uid: #and pygame.sprite.collide_mask(rocket, bullet):
+				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
 					rocket.bullet_impact()
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 30) )
 					if rocket.health <= 0:
@@ -190,7 +190,7 @@ class Engine:
 		for astroid in self.astroids:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(astroid, bullet)
-				if hit:# and pygame.sprite.collide_mask(astroid, bullet):
+				if hit and pygame.sprite.collide_mask(astroid, bullet):
 					astroid.life -=1
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
@@ -203,7 +203,7 @@ class Engine:
 		for planet in self.planets:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(planet, bullet)
-				if hit:# and pygame.sprite.collide_mask(planet, bullet):
+				if hit and pygame.sprite.collide_mask(planet, bullet):
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
 
@@ -211,7 +211,7 @@ class Engine:
 		for platform in self.platforms:
 			for bullet in self.bullet_sprites:
 				hit = pygame.sprite.collide_rect(platform, bullet)
-				if hit and bullet.uid != platform.uid:# and pygame.sprite.collide_mask(platform, bullet):
+				if hit and bullet.uid != platform.uid and pygame.sprite.collide_mask(platform, bullet):
 					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
 					self.bullet_sprites.remove(bullet)
 
@@ -360,7 +360,7 @@ def main():
 	clock = pygame.time.Clock()
 	engine = Engine() #Initialize game engine
 
-	pygame.time.set_timer(ASTROID_SPAWN, 300) #Set a timer for spawning astroids
+	pygame.time.set_timer(ASTROID_SPAWN, 3000) #Set a timer for spawning astroids
 
 	while True:	
 		time = clock.tick(FPS)
