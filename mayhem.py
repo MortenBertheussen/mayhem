@@ -361,47 +361,28 @@ class Engine:
 					)
 				)
 
+	def render_text(self, screen, pos, message):
+		font = pygame.font.SysFont("sans-serif", 22)
+		text = font.render(message, True, WHITE)
+		screen.blit(text, pos)
+
 	### HUD TEXT ###
 	def display(self, screen):
-		"""Display of text on screen"""
-		font = pygame.font.SysFont("sans-serif", 22)
-
-		#FUEL DISPLAY
+		"""Display of text on the hud"""
 		for rocket in self.rockets:
-			fuel = "%s" % int(rocket.fuel/10)
-			fuel_text = font.render(fuel, True, RED)
-			
-			if rocket.uid is 1:
-				fuel_text = font.render(fuel, True, WHITE)
-				screen.blit(fuel_text, [105, 30])
-			else: 
-				fuel_text = font.render(fuel, True, WHITE)
-				screen.blit(fuel_text, [SCREEN_X-155, 30])
-
-		#SCORE DISPLAY
-		for rocket in self.rockets:
-			score = "%s" % rocket.score
-			score_text = font.render(score, True, RED)
+			fuel = "%s" % int(rocket.fuel/10)						#TEXT FOR FUEL
+			score = "%s" % rocket.score 							#TEXT FOR SCORE
+			health = "%s" % rocket.health 							#TEXT FOR HEALTH
 
 			if rocket.uid is 1:
-				score_text = font.render(score,True,WHITE)
-				screen.blit(score_text, [200, 30])
+				self.render_text(screen, (105,30), fuel)			#FUEL
+				self.render_text(screen, (200,30), score)			#SCORE
+				self.render_text(screen, (20,30), health)			#HEALTH
 			else:
-				score_text = font.render(score,True,WHITE)
-				screen.blit(score_text, [SCREEN_X - 60, 30])
+				self.render_text(screen, (SCREEN_X-155,30), fuel)	#FUEL
+				self.render_text(screen, (SCREEN_X-60,30), score)	#SCORE
+				self.render_text(screen, (SCREEN_X-240,30), health)	#HEALTH
 
-		#HEALTH DISPLAY
-		for rocket in self.rockets:
-			health = "%s" % rocket.health
-			health_text = font.render(health, True, WHITE)
-
-			if rocket.uid is 1:
-				health_text = font.render(health, True, WHITE)
-				screen.blit(health_text,[20,30])
-			else:
-				health_text = font.render(health, True, WHITE)
-				screen.blit(health_text, [SCREEN_X-240, 30])
-	
 def main():
 	"""runs the program"""
 	pygame.init()
