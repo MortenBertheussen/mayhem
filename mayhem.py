@@ -394,7 +394,7 @@ def main():
 	pygame.time.set_timer(ASTROID_SPAWN, 500) #Set a timer for spawning astroids
 
 	while True:	
-		time = clock.tick(FPS)
+		clock.tick(FPS)
 		engine.logic(screen)
 
 if __name__ == "__main__":
