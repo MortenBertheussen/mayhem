@@ -283,10 +283,11 @@ class Engine:
 								self.astroids.remove(astroid)
 								self.astroids.add(new_astroid)
 								self.astroids.add(new_astroid2)
+							#Collision between big and smallest
 							if astroid2.type is 3:
 								astroid.speed *= ENERGY_LOSS_SMALL
 								self.astroids.remove(astroid2)
-
+						#Collision between smaller and smallest
 						if astroid.type is 2 and astroid2.type is 3:
 							new_astroid = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS)
 							new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS*-1)
@@ -296,11 +297,13 @@ class Engine:
 							self.astroids.add(new_astroid2)
 
 					else:
+						#Collision between big and big
 						if astroid.type is 1:
 							new_astroid1 = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_2, self.spritesheet, astroid.speed*ENERGY_LOSS )
 							new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_2, self.spritesheet, astroid.speed*ENERGY_LOSS*-1 )
 							self.astroids.add(new_astroid1)
 							self.astroids.add(new_astroid2)
+						#Collision between smaller and smaller
 						elif astroid.type is 2:
 							new_astroid1 = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS)
 							new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS*-1)
