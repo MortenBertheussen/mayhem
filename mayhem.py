@@ -343,7 +343,7 @@ class Engine:
 			for powerup in self.powerups:
 				hit = pygame.sprite.collide_rect(rocket,powerup)
 				if hit:
-					rocket.health = rocket.maxhealth
+					rocket.health += 100
 					self.powerups.remove(powerup)
 
 	def bullet_out_of_screen(self):

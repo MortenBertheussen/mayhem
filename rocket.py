@@ -21,7 +21,6 @@ class Rocket(Movingobject):
 		self.refuel = False
 		self.fuel = 1000
 		self.health = 100
-		self.maxhealth = 200
 		self.maxfuel = 1000
 		self.invisible = False
 		self.speedBreak = False
