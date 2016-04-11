@@ -6,9 +6,9 @@ from movingobject import *
 import random
 
 class Powerup(Movingobject):
-	def __init__(self, rect, spritesheet):
+	def __init__(self, pos, rect, spritesheet):
 		super().__init__()
-		self.pos = Vector2D(random.uniform(100,1100), random.uniform(100,700))
+		self.pos =  Vector2D(pos[0], pos[1])
 		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((rect))
 		self.image_pos = rect
