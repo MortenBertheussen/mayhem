@@ -14,6 +14,7 @@ from astroid import *
 from planet import *
 from rocket import *
 from bullet import *
+from powerup import *
 
 ASTROID_SPAWN = pygame.USEREVENT + 1
 RESPAWN_TIMER = pygame.USEREVENT + 2
@@ -30,6 +31,7 @@ class Engine:
 		self.explotions = pygame.sprite.Group()		#Explotion sprites
 		self.bullet_sprites = pygame.sprite.Group()	#Bullet sprites
 		self.platforms = pygame.sprite.Group()		#Platform sprites
+		self.powerup = pygame.sprite.Group()		#Powerup sprites
 		self.planets = pygame.sprite.Group()		#Planet sprites
 		self.astroids = pygame.sprite.Group()		#Astroid sprites
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
@@ -56,6 +58,7 @@ class Engine:
 		self.platforms.update()
 		self.planets.update()
 		self.astroids.update()
+		self.powerup.update()
 
 		#Collision detection and misc methods
 		self.gravity_field()
@@ -67,6 +70,7 @@ class Engine:
 		self.bg.draw(screen)				#Draw background sprite
 		self.platforms.draw(screen)			#Draw platform sprites
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
+		self.powerup.draw(screen)			#Draw powerup sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)			#Draw planets
 		self.astroids.draw(screen)			#Draw astroids
@@ -360,6 +364,7 @@ class Engine:
 		Generate planets for the map.
 		"""
 		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE,self.spritesheet))
+		self.powerup.add(Powerup(SHIELD_BUFF, self.spritesheet))
 		
 	def spawn_astroid(self):
 		"""
