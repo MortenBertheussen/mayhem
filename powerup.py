@@ -17,10 +17,3 @@ class Powerup(Movingobject):
 		self.gravity = 10
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
-
-	def move(self):
-		self.pos += self.gravity
-		self.rect.center = (self.pos.x, self.pos.y)
-
-	def logic(self):
-		self.move()
