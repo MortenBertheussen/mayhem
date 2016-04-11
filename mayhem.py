@@ -38,6 +38,7 @@ class Engine:
 
 		self.generate_player()						#Generate all players
 		self.generate_planets()						#Genereate all planets
+		self.spawn_powerups()						#Generate powerup
 		self.bg.add(Background())					#Add background
 		self.hud.add(Hud())							#Add hud
 
@@ -364,7 +365,6 @@ class Engine:
 		Generate planets for the map.
 		"""
 		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE,self.spritesheet))
-		self.powerup.add(Powerup(SHIELD_BUFF, self.spritesheet))
 		
 	def spawn_astroid(self):
 		"""
@@ -375,6 +375,9 @@ class Engine:
 								random.choice([ASTROID_1, ASTROID_2, ASTROID_3]),
 								self.spritesheet  )
 			self.astroids.add(astroid)
+	def spawn_powerups(self):
+		self.powerup.add(Powerup(SHIELD_BUFF, self.spritesheet))
+
 
 	def render_text(self, screen, pos, message):
 		"""
