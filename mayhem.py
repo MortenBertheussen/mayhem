@@ -396,10 +396,10 @@ class Engine:
 	
 	def spawn_powerups(self):
 		"""
-		Spawns powerups 30s. When a powerup is taken, a new one spawns 30s later.
+		Spawns powerups 20s. When a powerup is taken, a new one spawns 20s later.
 		"""
 		if len(self.powerups) == 0: 
-			pygame.time.set_timer(POWERUP_SPAWN, 5000)
+			pygame.time.set_timer(POWERUP_SPAWN, 20000)
 
 
 	def render_text(self, screen, pos, message):
