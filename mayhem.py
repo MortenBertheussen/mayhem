@@ -18,6 +18,7 @@ from powerup import *
 
 ASTROID_SPAWN = pygame.USEREVENT + 1
 RESPAWN_TIMER = pygame.USEREVENT + 2
+POWERUP_SPAWN = pygame.USEREVENT + 3
 
 class Engine:
 	"""
@@ -102,6 +103,8 @@ class Engine:
 			if event.type == pygame.QUIT: exit()					#Exit when clicking to close window			if event.type == ASTROID_SPAWN: self.spawn_astroid()	#EVENT FOR SPAWNING NEW ASTROIDS
 			if event.type == RESPAWN_TIMER: self.respawn_ships()	#Event for respawning dead ships
 			if event.type == ASTROID_SPAWN: self.spawn_astroid()	#Event for respawning dead ships
+			
+			if event.type == POWERUP_SPAWN and len(self.powerups)==0: self.powerups.add(Powerup(SHIELD_BUFF, self.spritesheet))
 			if event.type == pygame.KEYDOWN:
 				for rocket in self.rockets:
 					#Player 1
@@ -384,7 +387,11 @@ class Engine:
 			self.astroids.add(astroid)
 	
 	def spawn_powerups(self):
-		self.powerups.add(Powerup(SHIELD_BUFF, self.spritesheet))
+		"""
+		Spawns powerups 30s. When a powerup is taken, a new one spawns 30s later.
+		"""
+		if len(self.powerups) == 0: 
+			pygame.time.set_timer(POWERUP_SPAWN, 30000)
 
 
 	def render_text(self, screen, pos, message):

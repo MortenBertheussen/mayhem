@@ -13,7 +13,5 @@ class Powerup(Movingobject):
 		self.image = self.spritesheet.get_image((rect))
 		self.image_pos = rect
 		self.rect = self.image.get_rect()
-		self.angle = 0
-		self.gravity = 10
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
