@@ -31,7 +31,7 @@ class Engine:
 		self.explotions = pygame.sprite.Group()		#Explotion sprites
 		self.bullet_sprites = pygame.sprite.Group()	#Bullet sprites
 		self.platforms = pygame.sprite.Group()		#Platform sprites
-		self.powerup = pygame.sprite.Group()		#Powerup sprites
+		self.powerups = pygame.sprite.Group()		#Powerup sprites
 		self.planets = pygame.sprite.Group()		#Planet sprites
 		self.astroids = pygame.sprite.Group()		#Astroid sprites
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
@@ -59,7 +59,6 @@ class Engine:
 		self.platforms.update()
 		self.planets.update()
 		self.astroids.update()
-		self.powerup.update()
 
 		#Collision detection and misc methods
 		self.gravity_field()
@@ -71,7 +70,7 @@ class Engine:
 		self.bg.draw(screen)				#Draw background sprite
 		self.platforms.draw(screen)			#Draw platform sprites
 		self.bullet_sprites.draw(screen)	#Draw bullet sprites
-		self.powerup.draw(screen)			#Draw powerup sprites
+		self.powerups.draw(screen)			#Draw powerup sprites
 		self.rockets.draw(screen)			#Draw rocket sprites
 		self.planets.draw(screen)			#Draw planets
 		self.astroids.draw(screen)			#Draw astroids
@@ -252,6 +251,7 @@ class Engine:
 					self.explotions.add(explotion)
 					rocket.score -= 10
 					rocket.dead = True
+					rocket.health = 100
 			#Astroid -> Astroid
 			for astroid2 in self.astroids:
 				hit = pygame.sprite.collide_rect(astroid, astroid2)
@@ -318,6 +318,7 @@ class Engine:
 					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
 					self.explotions.add(explotion)
 					rocket.score -= 20
+					rocket.health = 100
 					rocket.dead = True
 			#Ship -> Platform
 			for platform in self.platforms:
@@ -335,6 +336,12 @@ class Engine:
 						self.explotions.add(explotion2)
 						rocket.dead = True
 						rocket2.dead = True
+			#Ship -> Powerup
+			for powerup in self.powerups:
+				hit = pygame.sprite.collide_rect(rocket,powerup)
+				if hit:
+					rocket.health = rocket.maxhealth
+					self.powerups.remove(powerup)
 
 	def bullet_out_of_screen(self):
 		"""
@@ -375,8 +382,9 @@ class Engine:
 								random.choice([ASTROID_1, ASTROID_2, ASTROID_3]),
 								self.spritesheet  )
 			self.astroids.add(astroid)
+	
 	def spawn_powerups(self):
-		self.powerup.add(Powerup(SHIELD_BUFF, self.spritesheet))
+		self.powerups.add(Powerup(SHIELD_BUFF, self.spritesheet))
 
 
 	def render_text(self, screen, pos, message):

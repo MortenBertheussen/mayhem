@@ -21,6 +21,7 @@ class Rocket(Movingobject):
 		self.refuel = False
 		self.fuel = 1000
 		self.health = 100
+		self.maxhealth = 200
 		self.maxfuel = 1000
 		self.invisible = False
 		self.speedBreak = False
@@ -119,6 +120,7 @@ class Rocket(Movingobject):
 		self.dead = False
 		self.speed = Vector2D(0,-1)
 		self.pos = self.spawn
+		self.health = 0
 
 		self.new_sprite(BLANK_SPRITE)
 		pygame.time.set_timer(RESPAWN_TIMER, 1500)
@@ -129,7 +131,7 @@ class Rocket(Movingobject):
 		self.pos = self.spawn
 		self.fuel = 1000
 		self.angle = 0
-		if self.health <= 0: self.health = 100
+		self.health = 100
 		self.speed = Vector2D(0,-1)
 		self.invisible = False
 
