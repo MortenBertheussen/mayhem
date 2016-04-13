@@ -64,4 +64,3 @@ class Missile(Bullet):
 	def update_target(self, pos):
 		self.target = pos
 		print ("Got target")
-

@@ -24,6 +24,7 @@ class Engine:
 	"""
 	Engine class to iniziale all game assets and variables.
 	"""
+
 	def __init__(self):
 		self.players = 2
 		self.bg = pygame.sprite.Group()				#Background sprite
@@ -37,7 +38,13 @@ class Engine:
 		self.astroids = pygame.sprite.Group()		#Astroid sprites
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
 
-		self.generate_player()						#Generate all players
+		#Create players
+		self.player1 = Rocket(1, self.spritesheet)
+		self.player2 = Rocket(2, self.spritesheet)
+		self.rockets.add(self.player1)
+		self.rockets.add(self.player2)
+
+		self.generate_platforms()					#Generate platforms
 		self.generate_planets()						#Genereate all planets
 		self.spawn_powerups()						#Generate powerup
 		self.bg.add(Background())					#Add background
@@ -93,9 +100,8 @@ class Engine:
 		Method to respawn rocket if destroyed.
 		Will run on custom userevent to respawn a rocket that has been destroyed.
 		"""
-		for rocket in self.rockets:
-			if rocket.invisible:
-				rocket.respawn()
+		if self.player1.invisible: self.player1.respawn()
+		if self.player2.invisible: self.player2.respawn()
 
 	def eventhandler(self):
 		"""
@@ -109,73 +115,58 @@ class Engine:
 			if event.type == POWERUP_SPAWN and len(self.powerups) < 2:
 				poweruptype = random.choice(list(POWERUP_TYPES.keys()))
 				powerup_rect = POWERUP_TYPES[poweruptype]
-				self.powerups.add(
-					PowerUp (poweruptype, POWERUP_SPAWNS[random.randint(0,7)], powerup_rect, self.spritesheet)
-					)
-
+				self.powerups.add( PowerUp(poweruptype, POWERUP_SPAWNS[random.randint(0,7)], powerup_rect, self.spritesheet) )
 
 			if event.type == pygame.KEYDOWN:
-				for rocket in self.rockets:
-					#Player 1
-					if rocket.uid == 1:
-						if rocket.invisible is False:
-							if event.key == pygame.K_w:	rocket.engineOn = True
-							if event.key == pygame.K_a: rocket.turnLeft = True
-							if event.key == pygame.K_d: rocket.turnRight = True
-							if event.key == pygame.K_s: rocket.speedBreak = True
-							if event.key == pygame.K_SPACE:
-								if rocket.missiles > 0:
-									bullet = rocket.shoot(1)
-									self.bullet_sprites.add(bullet)
-								else:
-									bullet1 = rocket.shoot(1)
-									bullet2 = rocket.shoot(2)
-									self.bullet_sprites.add(bullet1)
-									self.bullet_sprites.add(bullet2)
-					#Player 2
-					if rocket.uid == 2:
-						if rocket.invisible is False:
-							if event.key == pygame.K_UP:	rocket.engineOn = True
-							if event.key == pygame.K_LEFT:	rocket.turnLeft = True
-							if event.key == pygame.K_RIGHT:	rocket.turnRight = True
-							if event.key == pygame.K_DOWN: rocket.speedBreak = True
-							if event.key == pygame.K_PERIOD:
-								if rocket.missiles > 0:
-									bullet = rocket.shoot(1)
-									self.bullet_sprites.add(bullet)
-								else:
-									bullet1 = rocket.shoot(1)
-									bullet2 = rocket.shoot(2)
-									self.bullet_sprites.add(bullet1)
-									self.bullet_sprites.add(bullet2)
+				#Player 1
+				if self.player1.invisible is False:
+					if event.key == pygame.K_w: self.player1.engineOn = True
+					if event.key == pygame.K_a: self.player1.turnLeft = True
+					if event.key == pygame.K_d: self.player1.turnRight = True
+					if event.key == pygame.K_s: self.player1.speedBreak = True
+					if event.key == pygame.K_SPACE:
+						if self.player1.missiles > 0:
+							bullet = self.player1.shoot(1)
+							self.bullet_sprites.add(bullet)
+						else:
+							bullet1 = self.player1.shoot(1)
+							bullet2 = self.player1.shoot(2)
+							self.bullet_sprites.add(bullet1)
+							self.bullet_sprites.add(bullet2)
+				#Player 2
+				if self.player2.invisible is False:
+					if event.key == pygame.K_UP:	self.player2.engineOn = True
+					if event.key == pygame.K_LEFT:	self.player2.turnLeft = True
+					if event.key == pygame.K_RIGHT:	self.player2.turnRight = True
+					if event.key == pygame.K_DOWN: self.player2.speedBreak = True
+					if event.key == pygame.K_PERIOD:
+						if self.player2.missiles > 0:
+							bullet = self.player2.shoot(1)
+							self.bullet_sprites.add(bullet)
+						else:
+							bullet1 = self.player2.shoot(1)
+							bullet2 = self.player2.shoot(2)
+							self.bullet_sprites.add(bullet1)
+							self.bullet_sprites.add(bullet2)
 
 			if event.type == pygame.KEYUP:
-				for rocket in self.rockets:
-					#Player 1
-					if rocket.uid == 1:
-						if event.key == pygame.K_w: rocket.engineOn = False
-						if event.key == pygame.K_a: rocket.turnLeft = False
-						if event.key == pygame.K_d: rocket.turnRight = False
-						if event.key == pygame.K_s: rocket.speedBreak = False
+				if event.key == pygame.K_w: self.player1.engineOn = False
+				if event.key == pygame.K_a: self.player1.turnLeft = False
+				if event.key == pygame.K_d: self.player1.turnRight = False
+				if event.key == pygame.K_s: self.player1.speedBreak = False
 
-					#Player 2
-					if rocket.uid == 2:
-						if event.key == pygame.K_UP: rocket.engineOn = False
-						if event.key == pygame.K_LEFT: rocket.turnLeft = False
-						if event.key == pygame.K_RIGHT: rocket.turnRight = False
-						if event.key == pygame.K_DOWN: rocket.speedBreak = False
+				if event.key == pygame.K_UP: self.player2.engineOn = False
+				if event.key == pygame.K_LEFT: self.player2.turnLeft = False
+				if event.key == pygame.K_RIGHT: self.player2.turnRight = False
+				if event.key == pygame.K_DOWN: self.player2.speedBreak = False
 
 	def missile_guidance(self):
 		for bullet in self.bullet_sprites:
 			if bullet.type is "missile":
 				if bullet.uid is 1:
-					for rocket in self.rockets:
-						if rocket.uid is 2:
-							bullet.target = rocket.pos
+					bullet.target = self.player2.pos
 				if bullet.uid is 2:
-					for rocket in self.rockets:
-						if rocket.uid is 1:
-							bullet.target = rocket.pos
+					bullet.target = self.player1.pos
 
 	def gravity_force(self, object1, object2):
 		"""
@@ -183,8 +174,8 @@ class Engine:
 		A simplified version of Newton's Law of Universal Gravitation.
 		"""
 		distance = (object1.pos - object2.pos).magnitude()
-		f = (object1.mass * object2.mass) / (distance ** 2)
-		return f
+		force = (object1.mass * object2.mass) / (distance ** 2)
+		return force
 
 	def gravity_field(self):
 		"""
@@ -214,55 +205,52 @@ class Engine:
 		"""
 		Check if any bullet has collided with a rocket, platform, planet or a astroid.
 		"""
-
-		#Rocket
-		for rocket in self.rockets:
-			collide_rocket = pygame.sprite.spritecollide(rocket,self.bullet_sprites,False)
-			
-			for bullet in collide_rocket:
-				if bullet.uid != rocket.uid and pygame.sprite.collide_mask(rocket, bullet):
-					if rocket.shield is False:
-						rocket.bullet_impact()	#Reduce health of rocket
-					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 30) )
+		for bullet in self.bullet_sprites:
+			#Rocket
+			for rocket in self.rockets:
+				if pygame.sprite.collide_mask(rocket, bullet) and bullet.uid != rocket.uid:
+					if rocket.shield is False: rocket.bullet_impact() #No shield, so take damage
+					self.kill_object(bullet, 30)
 					if rocket.health <= 0:
-						self.explotions.add( Explotion(rocket.rect.centerx, rocket.rect.centery, 75) )
-						rocket.dead = True
-						for rocket in self.rockets:
-							if rocket.uid is bullet.uid:
-								rocket.score += 100 #Give the player who got the hit score
-					self.bullet_sprites.remove(bullet)
-		
-		#Astroid
-		for astroid in self.astroids:
-			for bullet in self.bullet_sprites:
-				hit = pygame.sprite.collide_rect(astroid, bullet)
-				if hit and pygame.sprite.collide_mask(astroid, bullet):
+						self.kill_player(rocket, 75)
+						self.give_score(bullet.uid, 100)
+
+			#Astroid
+			for astroid in self.astroids:
+				if pygame.sprite.collide_mask(bullet, astroid):
 					astroid.life -=1
-					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
-					self.bullet_sprites.remove(bullet)
-					if astroid.life == 0:
-						for rocket in self.rockets:
-							if rocket.uid is bullet.uid:
-								rocket.score += 10
-						self.explotions.add( Explotion(astroid.rect.centerx, astroid.rect.centery, 75) )
+					self.kill_object(bullet, 30)
+					if astroid.life is 0: #Astroid is killed
+						self.give_score(bullet.uid, 10)
+						self.kill_object(astroid, 75)
 						self.astroids.remove(astroid)
+			#Planet
+			for planet in self.planets:
+				if pygame.sprite.collide_mask(planet, bullet):
+					self.kill_object(bullet, 30)
 
+			for platform in self.platforms:
+				if pygame.sprite.collide_mask(platform, bullet) and bullet.uid is not platform.uid:
+					self.kill_object(bullet, 20)
 
-		#Planet
-		for planet in self.planets:
-			for bullet in self.bullet_sprites:
-				hit = pygame.sprite.collide_rect(planet, bullet)
-				if hit and pygame.sprite.collide_mask(planet, bullet):
-					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
-					self.bullet_sprites.remove(bullet)
+	def kill_player(self, player, size, score = 0):
+		"""Adds a explotion to the position of the object."""
+		self.explotions.add( Explotion(player.rect.centerx, player.rect.centery, size) )
+		player.score += score
+		player.dead = True
 
-		#Platform
-		for platform in self.platforms:
-			for bullet in self.bullet_sprites:
-				hit = pygame.sprite.collide_rect(platform, bullet)
-				if hit and bullet.uid != platform.uid and pygame.sprite.collide_mask(platform, bullet):
-					self.explotions.add( Explotion(bullet.rect.centerx, bullet.rect.centery, 20) )
-					self.bullet_sprites.remove(bullet)
+	def explode(self, obj, size):
+		"""Adds a explotion to the objects position"""
+		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
+
+	def kill_object(self, obj, size):
+		"""Adds a explotion and removes it from its groups."""
+		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
+		obj.kill()
+
+	def give_score(self, player, score):
+		if player is 1: self.player1.score += score
+		if player is 2: self.player2.score += score
 
 	def environment_impact(self):
 		"""
@@ -271,36 +259,25 @@ class Engine:
 		for astroid in self.astroids:
 			#Astroid -> Planet
 			for planet in self.planets:
-				hit = pygame.sprite.collide_rect(astroid, planet)
-				if hit and pygame.sprite.collide_mask(astroid, planet):
-					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
-					self.explotions.add(explotion)
-					self.astroids.remove(astroid)
+				if pygame.sprite.collide_mask(astroid, planet):
+					self.kill_object(astroid, 30)
+
 			#Astroid -> Ship
 			for rocket in self.rockets:
-				hit = pygame.sprite.collide_rect(astroid, rocket)
-				if hit and pygame.sprite.collide_mask(astroid, rocket):
-					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
-					self.explotions.add(explotion)
-					if rocket.shield is False:
-						rocket.score -= 10
-						rocket.dead = True
-						rocket.health = 100
-					else:
-						self.astroids.remove(astroid)
+				if pygame.sprite.collide_mask(astroid, rocket):
+					if rocket.shield is False:	self.kill_player(rocket, 30, -10)
+					else:						self.kill_object(astroid, 30)
+
 			#Astroid -> Astroid
 			for astroid2 in self.astroids:
-				hit = pygame.sprite.collide_rect(astroid, astroid2)
-				if hit and (astroid != astroid2) and (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
+				if (astroid != astroid2) and (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
 					if astroid.type is 1:
-						explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 60)
+						self.kill_object(astroid, 60)
 					elif astroid.type is 2:
-						explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 40)
+						self.kill_object(astroid, 40)
 					else:
-						explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
-					explotion2 = Explotion(astroid2.rect.centerx, astroid2.rect.centery, 30)
-					self.explotions.add(explotion)
-					self.explotions.add(explotion2)
+						self.kill_object(astroid, 30)
+						self.kill_object(astroid, 30)
 					if astroid.type != astroid2.type:
 						#Collision between big astroid and smaller
 						if astroid.type is 1:
@@ -404,18 +381,14 @@ class Engine:
 			if bullet.pos.y <= 0:			self.bullet_sprites.remove(bullet)	#Roof
 			if bullet.pos.y >= SCREEN_Y:	self.bullet_sprites.remove(bullet)	#Floor
 
-	def generate_player(self):
+	def generate_platforms(self):
 		"""
-		Generates players and their platform.
+		Generates platforms.
 		"""
-		#Generate ships with id
-		for i in range(1,self.players+1):
-			rocket = Rocket(i, self.spritesheet)
-			self.rockets.add(rocket)
 
 		#Generate platform for players with id
-		for i in range(1,self.players+1):
-			platform = Platform(i, self.spritesheet)
+		for rocket in self.rockets:
+			platform = Platform(rocket.uid, self.spritesheet)
 			self.platforms.add(platform)
 
 	def generate_planets(self):

@@ -28,8 +28,9 @@ class Movingobject(pygame.sprite.Sprite):
 
 	def rotate_point(self, point, center, angle):
 		"""
-		Rotate a point with a set angle around a center point. Returns a vector for the new point.
- 		Usage: newpoint = rotate_point( (Vector2D)oldpoint, (Vector2D)centerpoint, (int)angle)
+		Rotate a point with a set angle around a center point.
+ 		Usage: rotate_point( (Vector2D)oldpoint, (Vector2D)centerpoint, (int)angle)
+ 		Returns a vector for the new point.
 		"""
 		ang = math.radians(-angle)
 		x1 = point.x - center.x
