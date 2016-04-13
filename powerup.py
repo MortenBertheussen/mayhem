@@ -5,13 +5,18 @@ from spritesheet import *
 from movingobject import *
 import random
 
-class Powerup(Movingobject):
-	def __init__(self, pos, rect, spritesheet):
+class PowerUp(Movingobject):
+	def __init__(self,powertype,pos,rect,spritesheet):
 		super().__init__()
-		self.pos =  Vector2D(pos[0], pos[1])
+		self.type = powertype
+		self.pos =  Vector2D(pos[0],pos[1])
 		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((rect))
-		self.image_pos = rect
+		self.resize_sprite(20,20)
 		self.rect = self.image.get_rect()
+		self.rect.centerx = self.pos.x
+		self.rect.centery = self.pos.y
+		
+	def update(self):
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y

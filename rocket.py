@@ -26,6 +26,9 @@ class Rocket(Movingobject):
 		self.speedBreak = False
 		self.score = 0
 		self.mass = 5
+		self.shield = False
+		self.missiles = 0
+		self.shieldTimer = 0
 		if self.uid == 1:
 			self.spawn = Vector2D(150,SCREEN_Y-145) #Calc this from the players platform later, no magic numbers
 			self.pos = self.spawn
@@ -35,6 +38,13 @@ class Rocket(Movingobject):
 
 	def update(self):
 		"""Runs what is needed for the class"""
+		if self.shield:
+			self.shieldTimer += 1
+		if self.shieldTimer > 250:
+			self.shield = False
+			self.shieldTimer = 0
+
+		#print (self.shieldTimer)
 
 		if self.dead:
 			self.despawn()
@@ -54,30 +64,22 @@ class Rocket(Movingobject):
 		if self.uid is 1:
 			#ENGINE ON SPRITES (PLAYER1)
 			if self.engineOn:
-				if self.health is 75:	self.new_sprite(RED_ENGINE_ON_75)
-				elif self.health is 50:	self.new_sprite(RED_ENGINE_ON_50)
-				elif self.health is 25:	self.new_sprite(RED_ENGINE_ON_25)
-				else:					self.new_sprite(RED_ENGINE_ON)
+				if self.shield:		self.new_sprite(RED_ENGINE_ON_SHIELD)
+				else:				self.new_sprite(RED_ENGINE_ON)
 			#ENGINE OFF SPRITES (PLAYER1)
 			else:
-				if self.health is 75:	self.new_sprite(RED_ENGINE_OFF_75)
-				elif self.health is 50:	self.new_sprite(RED_ENGINE_OFF_50)
-				elif self.health is 25:	self.new_sprite(RED_ENGINE_OFF_25)
-				else:					self.new_sprite(RED_ENGINE_OFF)
+				if self.shield:		self.new_sprite(RED_ENGINE_OFF_SHIELD)
+				else:				self.new_sprite(RED_ENGINE_OFF)
 
 		else:
 			#ENGINE ON SPRITES (PLAYER2)
 			if self.engineOn:
-				if self.health is 75:	self.new_sprite(BLUE_ENGINE_ON_75)
-				elif self.health is 50:	self.new_sprite(BLUE_ENGINE_ON_50)
-				elif self.health is 25:	self.new_sprite(BLUE_ENGINE_ON_25)
-				else:					self.new_sprite(BLUE_ENGINE_ON)
+				if self.shield:		self.new_sprite(BLUE_ENGINE_ON_SHIELD)
+				else:				self.new_sprite(BLUE_ENGINE_ON)
 			#ENGINE OFF SPRITES (PLAYER2)
 			else:
-				if self.health is 75:	self.new_sprite(BLUE_ENGINE_OFF_75)
-				elif self.health is 50:	self.new_sprite(BLUE_ENGINE_OFF_50)
-				elif self.health is 25:	self.new_sprite(BLUE_ENGINE_OFF_25)
-				else:					self.new_sprite(BLUE_ENGINE_OFF)
+				if self.shield:		self.new_sprite(BLUE_ENGINE_OFF_SHIELD)
+				else:				self.new_sprite(BLUE_ENGINE_OFF)
 
 	def move(self):
 		"""Move method of rocket"""
@@ -107,7 +109,11 @@ class Rocket(Movingobject):
 	def shoot(self, wing):
 		"""Shoot method of rocket"""
 		#Create a bullet object with the ships position and user id
-		return Bullet(self.rect, self.speed, self.angle, self.uid, wing)
+		if self.missiles > 0:
+			self.missiles -= 1
+			return Missile(self.rect, self.speed, self.angle, self.uid, wing, self.spritesheet)
+		else:
+			return Bullet(self.rect, self.speed, self.angle, self.uid, wing, self.spritesheet)
 
 
 	def bullet_impact(self):
@@ -120,6 +126,9 @@ class Rocket(Movingobject):
 		self.speed = Vector2D(0,-1)
 		self.pos = self.spawn
 		self.health = 0
+		self.fuel = 0
+		self.shield = False
+		self.missiles = 0
 
 		self.new_sprite(BLANK_SPRITE)
 		pygame.time.set_timer(RESPAWN_TIMER, 1500)
@@ -138,5 +147,5 @@ class Rocket(Movingobject):
 		"""fuel method"""
 		if self.fuel > self.maxfuel:
 			self.fuel = self.maxfuel
-		if self.refuel and self.fuel < self.maxfuel:
+		if self.refuel and self.fuel < self.maxfuel and self.invisible is False:
 			self.fuel += 5

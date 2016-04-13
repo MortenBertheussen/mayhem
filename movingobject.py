@@ -51,6 +51,9 @@ class Movingobject(pygame.sprite.Sprite):
 		self.image = pygame.transform.rotate(self.image, self.angle)
 		self.rect = self.image.get_rect(center=oldrect.center)			#Realign the image to be at the center where the old image was
 
+	def resize_sprite(self, w, h):
+		self.image = pygame.transform.scale(self.image, (w, h))
+
 	def rotate_left(self):
 		"""
 		Rotate the speed vector left 4 degrees

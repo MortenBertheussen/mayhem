@@ -10,6 +10,7 @@ class Bullet(Movingobject):
 	def __init__(self, position, speed, angle, uid, wing, spritesheet):
 		super().__init__()
 		self.uid = uid
+		self.type = "bullet"
 		self.speed = speed
 		self.angle = angle
 		if uid is 1:	self.spriterect = RED_LASER
@@ -34,3 +35,33 @@ class Bullet(Movingobject):
 		self.pos += self.speed.normalized() * 17
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
+
+class Missile(Bullet):
+	def __init__(self, position, speed, angle, uid, wing, spritesheet):
+		super().__init__(position, speed, angle, uid, wing, spritesheet)
+		self.type = "missile"
+		self.pos = Vector2D(position.centerx, position.centery)
+		self.target = Vector2D(SCREEN_X/2, SCREEN_Y/2)
+		self.spriterect = SUPER_BULLET
+		self.new_sprite(self.spriterect)
+		self.maxspeed = 10
+
+	def update(self):
+		self.calc_angle()
+		self.speed_limit()
+		self.new_sprite(self.spriterect) #Rotate image
+
+		distance = (self.pos - self.target).magnitude()
+		f = (300 * 100) / (distance ** 2)
+
+		gravity_direction = Vector2D((self.target.x - self.pos.x),(self.target.y - self.pos.y)).normalized()
+		gravity_force = gravity_direction * f
+		self.speed += gravity_force
+
+		self.pos += self.speed
+		self.rect.center = (self.pos.x, self.pos.y)
+
+	def update_target(self, pos):
+		self.target = pos
+		print ("Got target")
+
