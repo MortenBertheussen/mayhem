@@ -210,10 +210,10 @@ class Engine:
 			for rocket in self.rockets:
 				if pygame.sprite.collide_mask(rocket, bullet) and bullet.uid != rocket.uid:
 					if rocket.shield is False: rocket.bullet_impact() #No shield, so take damage
-					self.kill_object(bullet, 30)
 					if rocket.health <= 0:
 						self.kill_player(rocket, 75)
 						self.give_score(bullet.uid, 100)
+					self.kill_object(bullet, 30)
 
 			#Astroid
 			for astroid in self.astroids:
@@ -223,7 +223,7 @@ class Engine:
 					if astroid.life is 0: #Astroid is killed
 						self.give_score(bullet.uid, 10)
 						self.kill_object(astroid, 75)
-						self.astroids.remove(astroid)
+
 			#Planet
 			for planet in self.planets:
 				if pygame.sprite.collide_mask(planet, bullet):
@@ -239,14 +239,14 @@ class Engine:
 		player.score += score
 		player.dead = True
 
-	def explode(self, obj, size):
-		"""Adds a explotion to the objects position"""
-		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
-
 	def kill_object(self, obj, size):
 		"""Adds a explotion and removes it from its groups."""
 		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
 		obj.kill()
+
+	def explode(self, obj, size):
+		"""Adds a explotion to the objects position"""
+		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
 
 	def give_score(self, player, score):
 		if player is 1: self.player1.score += score
@@ -271,71 +271,18 @@ class Engine:
 			#Astroid -> Astroid
 			for astroid2 in self.astroids:
 				if (astroid != astroid2) and (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
-					if astroid.type is 1:
-						self.kill_object(astroid, 60)
-					elif astroid.type is 2:
-						self.kill_object(astroid, 40)
-					else:
-						self.kill_object(astroid, 30)
-						self.kill_object(astroid, 30)
-					if astroid.type != astroid2.type:
-						#Collision between big astroid and smaller
-						if astroid.type is 1:
-							if astroid2.type is 2:
-								new_astroid = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_2, self.spritesheet, astroid.speed*0.7)
-								new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_2, self.spritesheet, astroid.speed*0.7*-1)
-								self.astroids.remove(astroid2)
-								self.astroids.remove(astroid)
-								self.astroids.add(new_astroid)
-								self.astroids.add(new_astroid2)
-							#Collision between big and smallest
-							if astroid2.type is 3:
-								astroid.speed *= ENERGY_LOSS_SMALL
-								self.astroids.remove(astroid2)
-						#Collision between smaller and smallest
-						if astroid.type is 2 and astroid2.type is 3:
-							new_astroid = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS)
-							new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS*-1)
-							self.astroids.remove(astroid)
-							self.astroids.remove(astroid2)
-							self.astroids.add(new_astroid)
-							self.astroids.add(new_astroid2)
-
-					else:
-						#Collision between big and big
-						if astroid.type is 1:
-							new_astroid1 = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_2, self.spritesheet, astroid.speed*ENERGY_LOSS )
-							new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_2, self.spritesheet, astroid.speed*ENERGY_LOSS*-1 )
-							self.astroids.add(new_astroid1)
-							self.astroids.add(new_astroid2)
-						#Collision between smaller and smaller
-						elif astroid.type is 2:
-							new_astroid1 = Astroid( (astroid.pos.x-20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS)
-							new_astroid2 = Astroid( (astroid.pos.x+20, astroid.pos.y), ASTROID_3, self.spritesheet, astroid.speed*ENERGY_LOSS*-1)
-							self.astroids.add(new_astroid1)
-							self.astroids.add(new_astroid2)
-
-						self.astroids.remove(astroid)
-						self.astroids.remove(astroid2)
+					self.destroy_astroid(astroid, astroid2)
 					
 			#Astroid -> Platform
 			for platform in self.platforms:
-				hit = pygame.sprite.collide_rect(astroid, platform)
-				if hit and pygame.sprite.collide_mask(astroid, platform):
-					explotion = Explotion(astroid.rect.centerx, astroid.rect.centery, 30)
-					self.explotions.add(explotion)
-					self.astroids.remove(astroid)
+				if pygame.sprite.collide_mask(astroid, platform):
+					self.kill_object(astroid, 40)
 
 		for rocket in self.rockets:
 			#Ship -> Planet
 			for planet in self.planets:
-				hit = pygame.sprite.collide_rect(rocket, planet)
-				if hit and pygame.sprite.collide_mask(rocket, planet):
-					explotion = Explotion(rocket.rect.centerx, rocket.rect.centery, 30)
-					self.explotions.add(explotion)
-					rocket.score -= 20
-					rocket.health = 100
-					rocket.dead = True
+				if pygame.sprite.collide_mask(rocket, planet):
+					self.kill_player(rocket, 50, -20)
 			#Ship -> Platform
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
@@ -344,32 +291,32 @@ class Engine:
 			#Ship -> Ship 
 			for rocket2 in self.rockets:
 				if rocket != rocket2:
-					hit = pygame.sprite.collide_rect(rocket, rocket2)
-					if hit and pygame.sprite.collide_mask(rocket,rocket2):
-						explotion1 = Explotion(rocket.rect.centerx, rocket.rect.centery, 50)
-						explotion2 = Explotion(rocket2.rect.centerx, rocket2.rect.centery, 50)
-						self.explotions.add(explotion1)
-						self.explotions.add(explotion2)
-						if rocket.shield is False:
-							rocket.dead = True
-						else:
-							rocket.score += 50
-						if rocket2.shield is False:
-							rocket2.dead = True
-						else:
-							rocket.score += 50
+					if pygame.sprite.collide_mask(rocket,rocket2):
+						if rocket.shield is False: self.kill_player(rocket, 50, 0)
+						else: self.give_score(rocket.uid, 50)
+						if rocket2.shield is False: self.kill_player(rocket2, 50, 0)
+						else: self.give_score(rocket.uid, 50)
+
 			#Ship -> Powerup
 			for powerup in self.powerups:
-				hit = pygame.sprite.collide_rect(rocket,powerup)
-				if hit and rocket.dead is False:
-					if powerup.type is "hp":
-						rocket.health += 100
-					if powerup.type is "missile":
-						rocket.missiles += 3
+				if pygame.sprite.collide_rect(rocket,powerup) and rocket.dead is False:
+					if powerup.type is "hp": rocket.health += 100
+					if powerup.type is "missile": rocket.missiles += 3
 					if powerup.type is "shield":
 						rocket.shield = True
 						rocket.shieldTimer = 0
 					self.powerups.remove(powerup)
+
+	def destroy_astroid(self, astroid1, astroid2):
+		if astroid1.mass > astroid2.mass:
+			if astroid2.type is 2: self.kill_object(astroid2, 50)
+			if astroid2.type is 3: self.kill_object(astroid2, 30)
+		elif astroid1.mass < astroid2.mass:
+			if astroid1.type is 2: self.kill_object(astroid1, 50)
+			if astroid1.type is 3: self.kill_object(astroid1, 30)
+		else:
+			self.kill_object(astroid1, 50)
+			self.kill_object(astroid2, 50)
 
 	def bullet_out_of_screen(self):
 		"""
@@ -385,7 +332,6 @@ class Engine:
 		"""
 		Generates platforms.
 		"""
-
 		#Generate platform for players with id
 		for rocket in self.rockets:
 			platform = Platform(rocket.uid, self.spritesheet)
@@ -401,7 +347,7 @@ class Engine:
 		"""
 		Spawn astroid if we havent reached the limit.
 		"""
-		if len(self.astroids) < 6:
+		if len(self.astroids) < 8:
 			astroid = Astroid(	ASTROID_SPAWNS[random.randint(0,7)],
 								random.choice([ASTROID_1, ASTROID_2, ASTROID_3]),
 								self.spritesheet  )
