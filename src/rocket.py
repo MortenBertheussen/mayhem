@@ -72,28 +72,26 @@ class Rocket(Movingobject):
 
 	def move(self):
 		"""Move method of rocket"""
-		if self.turnLeft: self.rotate(-4)
-		if self.turnRight: self.rotate(4)
-
-		if self.speedBreak and self.speed.magnitude() > 1:
-			self.speed /= 1.04
+		if self.fuel <= 0: self.fuel = 0	#Set fuel not to go under 0
 
 		#ENGINE ON
 		if self.engineOn and self.fuel>0:
 			self.speed *= 1.25
-			self.pos += self.speed
-			self.rect.center = (self.pos.x, self.pos.y)
 			self.refuel = False
 			self.fuel -=1
-			
-			if self.fuel <= 0: self.fuel = 0	#Set fuel not to go under 0
 
-		#ENGINE OFF
-		else:
-			if self.speed.magnitude() > 1:
-				#self.speed /= 1.04
-				self.pos += self.speed
-			self.rect.center = (self.pos.x, self.pos.y)
+		#Turning
+		if self.turnLeft: self.rotate(-4)
+		if self.turnRight: self.rotate(4)
+
+		#Break
+		if self.speedBreak and self.speed.magnitude() > 1:
+			self.speed /= 1.04
+
+		#Movement
+		if self.speed.magnitude() > 1:	#Only move with speed if speed is big enough
+			self.pos += self.speed
+		self.rect.center = (self.pos.x, self.pos.y)
 
 	def shoot(self, wing):
 		"""Shoot method of rocket"""
