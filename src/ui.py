@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from gameconstants import *
+from config import *
 from spritesheet import *
 from Vector2D import *
 import math

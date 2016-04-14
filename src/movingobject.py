@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from gameconstants import *
+from config import *
 from Vector2D import *
 from spritesheet import *
 import math
@@ -10,16 +11,19 @@ class Movingobject(pygame.sprite.Sprite):
 	"""
 	Superclass for all moving objects.
 	"""
-	def __init__(self):
+	def __init__(self, uid, spritesheet, spawn, speed = Vector2D(0,-1)):
 		super().__init__()
-		self.pos = Vector2D(0, 0)
-		self.speed = Vector2D(0,-1)		#Initial direction pointing upwards
-		self.angle = 0
-		self.maxspeed = 5				#Default maxspeed if not redefined by child
+		self.uid = uid
+		self.spritesheet = spritesheet
+		self.spawn = spawn
+		self.pos = Vector2D(spawn[0], spawn[1])
+		self.speed = speed										#Initial direction pointing upwards 0 deg
+		self.angle = 0											#Default angle
+		self.maxspeed = 5										#Default maxspeed if not redefined by child
 
 	def screen_wrap(self):
 		"""
-		Makes the object wrap if it goes outside the screen border.
+		Makes the object wrap if it goes outsidsae the screen border.
 		"""
 		if self.pos.x <= 0: 		self.pos.x = SCREEN_X - 1	#Left
 		if self.pos.x >= SCREEN_X:	self.pos.x = 1				#Right
@@ -28,8 +32,9 @@ class Movingobject(pygame.sprite.Sprite):
 
 	def rotate_point(self, point, center, angle):
 		"""
-		Rotate a point with a set angle around a center point. Returns a vector for the new point.
- 		Usage: newpoint = rotate_point( (Vector2D)oldpoint, (Vector2D)centerpoint, (int)angle)
+		Rotate a point with a set angle around a center point.
+ 		Usage: rotate_point( (Vector2D)oldpoint, (Vector2D)centerpoint, (int)angle)
+ 		Returns a vector for the new point.
 		"""
 		ang = math.radians(-angle)
 		x1 = point.x - center.x
@@ -54,30 +59,9 @@ class Movingobject(pygame.sprite.Sprite):
 	def resize_sprite(self, w, h):
 		self.image = pygame.transform.scale(self.image, (w, h))
 
-	def rotate_left(self):
-		"""
-		Rotate the speed vector left 4 degrees
-		"""
-		rad = math.radians(-4)
-		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
-		y = self.speed.x * math.sin(rad) + self.speed.y * math.cos(rad)
-		self.speed = Vector2D(x, y)
-		self.calc_angle()
-
-	def rotate_right(self):
-		"""
-		Rotate the speed vector right 4 degrees
-		"""
-		rad = math.radians(4)
-		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
-		y = self.speed.x * math.sin(rad) + self.speed.y * math.cos(rad)
-		self.speed = Vector2D(x, y)
-		self.calc_angle()
-
 	def calc_angle(self):
 		"""
 		Calculates the angle for the speed vector if it has been modified slightly by gravity.
-		If this is not done the image angle and the speed vector angle will be slightly off.
 		"""
 		baseline = Vector2D(0,-1) #Vector pointing upwards
 		dot = (self.speed.x * baseline.x) + (self.speed.y * baseline.y)
@@ -91,3 +75,6 @@ class Movingobject(pygame.sprite.Sprite):
 		"""
 		if self.speed.magnitude() > self.maxspeed:
 			self.speed = self.speed.normalized() * self.maxspeed
+
+	def update(self):
+		return NotImplemented

@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module mayhem</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>mayhem</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Ccygwin64%5Ckoder%5Cmayhem%5Csrc%5Cmayhem.py">c:\cygwin64\koder\mayhem\src\mayhem.py</a></font></td></tr></table>
+    <p><tt>###Space&nbsp;Lazer&nbsp;Wars###<br>
+This&nbsp;is&nbsp;a&nbsp;2&nbsp;player&nbsp;arcade&nbsp;shooting&nbsp;game&nbsp;where&nbsp;both&nbsp;players&nbsp;<br>
+control&nbsp;a&nbsp;rocket&nbsp;and&nbsp;try&nbsp;to&nbsp;shoot&nbsp;eachother&nbsp;with&nbsp;bullets.<br>
+&nbsp;<br>
+Created&nbsp;by:<br>
+Lars&nbsp;Karlsen&nbsp;and&nbsp;Mellet&nbsp;Solbakk</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="cProfile.html">cProfile</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="pygame.html">pygame</a><br>
+</td><td width="25%" valign=top><a href="random.html">random</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="mayhem.html#Engine">Engine</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Engine">class <strong>Engine</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Engine">Engine</a>&nbsp;class&nbsp;to&nbsp;initialize&nbsp;all&nbsp;game&nbsp;assets&nbsp;and&nbsp;instance&nbsp;variables.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Engine-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Engine-bullet_impact"><strong>bullet_impact</strong></a>(self)</dt><dd><tt>Check&nbsp;if&nbsp;any&nbsp;bullet&nbsp;has&nbsp;collided&nbsp;with&nbsp;a&nbsp;rocket,&nbsp;platform,&nbsp;planet&nbsp;or&nbsp;a&nbsp;astroid.</tt></dd></dl>
+
+<dl><dt><a name="Engine-bullet_out_of_screen"><strong>bullet_out_of_screen</strong></a>(self)</dt><dd><tt>Removed&nbsp;bullets&nbsp;that&nbsp;exit&nbsp;the&nbsp;screen<br>
+&nbsp;<br>
+<a href="#Engine-bullet_out_of_screen">bullet_out_of_screen</a>()&nbsp;-&gt;&nbsp;none</tt></dd></dl>
+
+<dl><dt><a name="Engine-destroy_astroid"><strong>destroy_astroid</strong></a>(self, astroid1, astroid2)</dt><dd><tt>Takes&nbsp;in&nbsp;two&nbsp;astroid&nbsp;objects&nbsp;and&nbsp;decides&nbsp;who&nbsp;will&nbsp;be&nbsp;destroyed.<br>
+Destroyes&nbsp;the&nbsp;smallest,&nbsp;or&nbsp;if&nbsp;the&nbsp;same&nbsp;size&nbsp;both.<br>
+&nbsp;<br>
+<a href="#Engine-destroy_astroid">destroy_astroid</a>(astroid1,&nbsp;astroid2)&nbsp;-&gt;&nbsp;none<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+astroid1&nbsp;:&nbsp;astroid&nbsp;<a href="builtins.html#object">object</a><br>
+astroid2&nbsp;:&nbsp;astroid&nbsp;<a href="builtins.html#object">object</a></tt></dd></dl>
+
+<dl><dt><a name="Engine-environment_impact"><strong>environment_impact</strong></a>(self)</dt><dd><tt>Colision&nbsp;detection&nbsp;between&nbsp;astroids,&nbsp;planets,&nbsp;ships&nbsp;and&nbsp;platforms.</tt></dd></dl>
+
+<dl><dt><a name="Engine-eventhandler"><strong>eventhandler</strong></a>(self)</dt><dd><tt>Handles&nbsp;all&nbsp;user&nbsp;input&nbsp;and&nbsp;custom&nbsp;userevents.</tt></dd></dl>
+
+<dl><dt><a name="Engine-explode"><strong>explode</strong></a>(self, obj, explotionsize, hploss=None, scoreloss=None, kill=False)</dt><dd><tt>Kills&nbsp;and&nbsp;adds&nbsp;a&nbsp;explotion&nbsp;to&nbsp;the&nbsp;objects&nbsp;position.<br>
+If&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;is&nbsp;a&nbsp;player&nbsp;it&nbsp;will&nbsp;not&nbsp;remove&nbsp;it,&nbsp;only&nbsp;take&nbsp;away&nbsp;hp.<br>
+This&nbsp;method&nbsp;also&nbsp;checks&nbsp;if&nbsp;the&nbsp;player&nbsp;has&nbsp;a&nbsp;shield.<br>
+&nbsp;<br>
+<a href="#Engine-explode">explode</a>(obj,&nbsp;explotionsize,&nbsp;hploss)&nbsp;-&gt;&nbsp;none<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+obj&nbsp;:&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object&nbsp;to&nbsp;get&nbsp;the&nbsp;position&nbsp;to&nbsp;create&nbsp;a&nbsp;explotion.<br>
+explotionsize&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;size&nbsp;of&nbsp;the&nbsp;explotion.<br>
+hploss&nbsp;:&nbsp;int,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change&nbsp;in&nbsp;hp&nbsp;for&nbsp;a&nbsp;player&nbsp;<a href="builtins.html#object">object</a>.<br>
+scoreloss&nbsp;:&nbsp;int,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change&nbsp;in&nbsp;score&nbsp;a&nbsp;player&nbsp;<a href="builtins.html#object">object</a>.<br>
+kill&nbsp;:&nbsp;bool,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pass&nbsp;in&nbsp;to&nbsp;kill&nbsp;no&nbsp;matter&nbsp;what.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Used&nbsp;to&nbsp;kill&nbsp;a&nbsp;player&nbsp;if&nbsp;it&nbsp;collides&nbsp;with&nbsp;a&nbsp;planet,&nbsp;even&nbsp;if&nbsp;it&nbsp;has&nbsp;a&nbsp;shield.)<br>
+&nbsp;<br>
+Examples<br>
+--------<br>
+Exploding&nbsp;and&nbsp;removing&nbsp;a&nbsp;bullet:&nbsp;<a href="#Engine-explode">explode</a>(bullet,&nbsp;50,&nbsp;True)<br>
+Exploding&nbsp;and&nbsp;killing&nbsp;a&nbsp;player&nbsp;with&nbsp;no&nbsp;score&nbsp;loss:&nbsp;<a href="#Engine-explode">explode</a>(player,&nbsp;50,&nbsp;100,&nbsp;0)<br>
+Killing&nbsp;a&nbsp;player&nbsp;no&nbsp;matter&nbsp;what:&nbsp;<a href="#Engine-explode">explode</a>(player,&nbsp;50,&nbsp;0,&nbsp;0,&nbsp;True)</tt></dd></dl>
+
+<dl><dt><a name="Engine-generate_platforms"><strong>generate_platforms</strong></a>(self)</dt><dd><tt>Generates&nbsp;platforms&nbsp;for&nbsp;every&nbsp;player&nbsp;in&nbsp;the&nbsp;player&nbsp;group.<br>
+&nbsp;<br>
+<a href="#Engine-generate_platforms">generate_platforms</a>()&nbsp;-&gt;&nbsp;none</tt></dd></dl>
+
+<dl><dt><a name="Engine-give_score"><strong>give_score</strong></a>(self, playerid, score)</dt><dd><tt>Give&nbsp;a&nbsp;playerid&nbsp;score.<br>
+&nbsp;<br>
+<a href="#Engine-give_score">give_score</a>(playerid,&nbsp;score)&nbsp;-&gt;&nbsp;none<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+playerid&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Userid&nbsp;to&nbsp;give&nbsp;score.<br>
+score&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ammoutn&nbsp;of&nbsp;score.<br>
+&nbsp;<br>
+Examples<br>
+--------<br>
+Give&nbsp;player1&nbsp;50&nbsp;in&nbsp;score:&nbsp;<a href="#Engine-give_score">give_score</a>(1,&nbsp;50)</tt></dd></dl>
+
+<dl><dt><a name="Engine-gravity_field"><strong>gravity_field</strong></a>(self)</dt><dd><tt>Controls&nbsp;virtual&nbsp;gravity&nbsp;from&nbsp;planets.<br>
+Working&nbsp;on&nbsp;astroids&nbsp;and&nbsp;rockets.</tt></dd></dl>
+
+<dl><dt><a name="Engine-gravity_force"><strong>gravity_force</strong></a>(self, object1, object2)</dt><dd><tt>Calculates&nbsp;the&nbsp;strenght&nbsp;of&nbsp;gravity&nbsp;between&nbsp;two&nbsp;objects.<br>
+A&nbsp;simplified&nbsp;version&nbsp;of&nbsp;Newton's&nbsp;Law&nbsp;of&nbsp;Universal&nbsp;Gravitation.</tt></dd></dl>
+
+<dl><dt><a name="Engine-logic"><strong>logic</strong></a>(self, screen)</dt><dd><tt>Logic&nbsp;method&nbsp;that&nbsp;runs&nbsp;all&nbsp;the&nbsp;engines&nbsp;methods&nbsp;needed&nbsp;for&nbsp;each&nbsp;frame.<br>
+&nbsp;<br>
+login(Screen)&nbsp;-&gt;&nbsp;none</tt></dd></dl>
+
+<dl><dt><a name="Engine-missile_guidance"><strong>missile_guidance</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Engine-render_text"><strong>render_text</strong></a>(self, screen, pos, message)</dt><dd><tt>Method&nbsp;to&nbsp;render&nbsp;text.<br>
+Takes&nbsp;in&nbsp;screen,&nbsp;pos(tuple),&nbsp;message(string)&nbsp;as&nbsp;parameter.<br>
+<a href="#Engine-render_text">render_text</a>(screen,&nbsp;(x,y),&nbsp;"message")</tt></dd></dl>
+
+<dl><dt><a name="Engine-respawn_ships"><strong>respawn_ships</strong></a>(self)</dt><dd><tt>Respawnes&nbsp;a&nbsp;ship&nbsp;if&nbsp;it&nbsp;is&nbsp;set&nbsp;to&nbsp;invisible.<br>
+&nbsp;<br>
+<a href="#Engine-respawn_ships">respawn_ships</a>()&nbsp;-&gt;&nbsp;none</tt></dd></dl>
+
+<dl><dt><a name="Engine-spawn_astroid"><strong>spawn_astroid</strong></a>(self)</dt><dd><tt>Spawns&nbsp;a&nbsp;astroid&nbsp;if&nbsp;the&nbsp;limit&nbsp;of&nbsp;astroids&nbsp;is&nbsp;not&nbsp;exceeded.<br>
+&nbsp;<br>
+<a href="#Engine-spawn_astroid">spawn_astroid</a>()&nbsp;-&gt;&nbsp;none</tt></dd></dl>
+
+<dl><dt><a name="Engine-spawn_powerups"><strong>spawn_powerups</strong></a>(self)</dt><dd><tt>Spawns&nbsp;powerups&nbsp;20s.&nbsp;When&nbsp;a&nbsp;powerup&nbsp;is&nbsp;taken,&nbsp;a&nbsp;new&nbsp;one&nbsp;spawns&nbsp;20s&nbsp;later.</tt></dd></dl>
+
+<dl><dt><a name="Engine-stats"><strong>stats</strong></a>(self, screen)</dt><dd><tt>Display&nbsp;stats&nbsp;on&nbsp;the&nbsp;hud&nbsp;for&nbsp;the&nbsp;ships.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Creates&nbsp;a&nbsp;screen,&nbsp;clock,&nbsp;creates&nbsp;a&nbsp;instance&nbsp;of&nbsp;the&nbsp;engine&nbsp;and&nbsp;starts&nbsp;the&nbsp;game&nbsp;loop.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ASTROID_1</strong> = (0, 200, 40, 40)<br>
+<strong>ASTROID_2</strong> = (40, 200, 40, 40)<br>
+<strong>ASTROID_3</strong> = (80, 200, 40, 40)<br>
+<strong>ASTROID_BIG_MASS</strong> = 20<br>
+<strong>ASTROID_MEDIUM_MASS</strong> = 10<br>
+<strong>ASTROID_SMALL_MASS</strong> = 5<br>
+<strong>ASTROID_SPAWN</strong> = 25<br>
+<strong>ASTROID_SPAWNS</strong> = [(-50, -50), (-50, 400.0), (-50, 850), (600.0, 850), (1250, 850), (1250, 400.0), (1250, -50), (600.0, -50)]<br>
+<strong>BLACK</strong> = (0, 0, 0)<br>
+<strong>BLACK_HOLE</strong> = (300, 0, 150, 150)<br>
+<strong>BLANK_SPRITE</strong> = (0, 600, 35, 35)<br>
+<strong>BLUE</strong> = (0, 50, 255)<br>
+<strong>BLUE_ENGINE_OFF</strong> = (0, 45, 45, 45)<br>
+<strong>BLUE_ENGINE_OFF_SHIELD</strong> = (90, 45, 45, 45)<br>
+<strong>BLUE_ENGINE_ON</strong> = (45, 45, 45, 45)<br>
+<strong>BLUE_ENGINE_ON_SHIELD</strong> = (135, 45, 45, 45)<br>
+<strong>BLUE_LASER</strong> = (3, 150, 3, 20)<br>
+<strong>BLUE_PLATFORM</strong> = (90, 300, 90, 90)<br>
+<strong>ENERGY_LOSS</strong> = 0.7<br>
+<strong>ENERGY_LOSS_SMALL</strong> = 0.9<br>
+<strong>FPS</strong> = 60<br>
+<strong>HP_BUFF</strong> = (0, 400, 40, 40)<br>
+<strong>HP_INCREASE</strong> = 100<br>
+<strong>MAX_FUEL</strong> = 1000<br>
+<strong>MISSILES</strong> = 6<br>
+<strong>MISSILE_BUFF</strong> = (80, 400, 40, 40)<br>
+<strong>PLANET_MASS</strong> = 100<br>
+<strong>PLAYER1_SPAWN</strong> = (150, 655)<br>
+<strong>PLAYER2_SPAWN</strong> = (1050, 155)<br>
+<strong>PLAYER_MASS</strong> = 10<br>
+<strong>POWERUP_SPAWN</strong> = 26<br>
+<strong>POWERUP_SPAWNS</strong> = [(150, 150), (1050, 650), (600.0, 150), (600.0, 650), (150, 400.0), (1050, 400.0), (400, 400.0), (800, 400.0)]<br>
+<strong>POWERUP_TYPES</strong> = {'hp': (0, 400, 40, 40), 'missile': (80, 400, 40, 40), 'shield': (40, 400, 40, 40)}<br>
+<strong>RED</strong> = (204, 0, 0)<br>
+<strong>RED_ENGINE_OFF</strong> = (0, 0, 45, 45)<br>
+<strong>RED_ENGINE_OFF_SHIELD</strong> = (90, 0, 45, 45)<br>
+<strong>RED_ENGINE_ON</strong> = (45, 0, 45, 45)<br>
+<strong>RED_ENGINE_ON_SHIELD</strong> = (135, 0, 45, 45)<br>
+<strong>RED_LASER</strong> = (0, 150, 3, 20)<br>
+<strong>RED_PLATFORM</strong> = (0, 300, 90, 90)<br>
+<strong>RESPAWN_PLAYER1</strong> = 27<br>
+<strong>RESPAWN_PLAYER2</strong> = 28<br>
+<strong>RESPAWN_TIMER</strong> = 26<br>
+<strong>SCREEN</strong> = (1200, 800)<br>
+<strong>SCREEN_X</strong> = 1200<br>
+<strong>SCREEN_Y</strong> = 800<br>
+<strong>SHIELD_BUFF</strong> = (40, 400, 40, 40)<br>
+<strong>SHIELD_DURATION</strong> = 5000<br>
+<strong>SHIELD_PLAYER1</strong> = 29<br>
+<strong>SHIELD_PLAYER2</strong> = 30<br>
+<strong>STARTING_FUEL</strong> = 1000<br>
+<strong>STARTING_HP</strong> = 100<br>
+<strong>SUPER_BULLET</strong> = (0, 450, 8, 30)<br>
+<strong>WHITE</strong> = (255, 255, 255)<br>
+<strong>YELLOW</strong> = (230, 230, 30)</td></tr></table>
+</body></html>

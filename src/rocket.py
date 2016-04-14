@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from gameconstants import *
+from config import *
 from Vector2D import *
 from spritesheet import *
 from movingobject import *
@@ -8,48 +9,30 @@ import math
 
 class Rocket(Movingobject): 
 	"""The class for rocket"""
-	def __init__(self, uid, spritesheet):
-		super().__init__()
-		self.uid = uid
-		self.spritesheet = spritesheet
-		self.image = self.spritesheet.get_image((0,0,30,30))
+	def __init__(self, uid, spritesheet, sprite_rect, spawn):
+		super().__init__(uid, spritesheet, spawn)
+		self.image = self.spritesheet.get_image(sprite_rect)
 		self.rect = self.image.get_rect()
 		self.engineOn = False
 		self.turnLeft = False
 		self.turnRight = False
 		self.dead = False
 		self.refuel = False
-		self.fuel = 1000
-		self.health = 100
-		self.maxfuel = 1000
 		self.invisible = False
 		self.speedBreak = False
-		self.score = 0
-		self.mass = 5
 		self.shield = False
+		self.fuel = STARTING_FUEL
+		self.maxfuel = MAX_FUEL
+		self.health = STARTING_HP
+		self.score = 0
+		self.mass = PLAYER_MASS
 		self.missiles = 0
-		self.shieldTimer = 0
-		if self.uid == 1:
-			self.spawn = Vector2D(150,SCREEN_Y-145) #Calc this from the players platform later, no magic numbers
-			self.pos = self.spawn
-		elif self.uid == 2:
-			self.spawn = Vector2D(SCREEN_X-150, 155) #Calc this from the players platform later, no magic numbers
-			self.pos = self.spawn
 
 	def update(self):
 		"""Runs what is needed for the class"""
-		if self.shield:
-			self.shieldTimer += 1
-		if self.shieldTimer > 250:
-			self.shield = False
-			self.shieldTimer = 0
-
-		#print (self.shieldTimer)
-
 		if self.dead:
 			self.despawn()
 		else:
-			#print("Doing stuff")
 			self.current_sprite()
 			self.speed_limit()
 			self.move()
@@ -83,65 +66,81 @@ class Rocket(Movingobject):
 
 	def move(self):
 		"""Move method of rocket"""
-		if self.turnLeft: self.rotate_left()
-		if self.turnRight: self.rotate_right()
-
-		if self.speedBreak and self.speed.magnitude() > 1:
-			self.speed /= 1.04
+		if self.fuel <= 0: self.fuel = 0	#Set fuel not to go under 0
 
 		#ENGINE ON
 		if self.engineOn and self.fuel>0:
 			self.speed *= 1.25
-			self.pos += self.speed
-			self.rect.center = (self.pos.x, self.pos.y)
 			self.refuel = False
 			self.fuel -=1
-			
-			if self.fuel <= 0: self.fuel = 0	#Set fuel not to go under 0
 
-		#ENGINE OFF
-		else:
-			if self.speed.magnitude() > 1:
-				#self.speed /= 1.04
-				self.pos += self.speed
-			self.rect.center = (self.pos.x, self.pos.y)
+		#Turning
+		if self.turnLeft: self.rotate(-4)
+		if self.turnRight: self.rotate(4)
+
+		#Break
+		if self.speedBreak and self.speed.magnitude() > 1:
+			self.speed /= 1.04
+
+		#Movement
+		if self.speed.magnitude() > 1:	#Only move with speed if speed is big enough
+			self.pos += self.speed
+		self.rect.center = (self.pos.x, self.pos.y)
 
 	def shoot(self, wing):
 		"""Shoot method of rocket"""
 		#Create a bullet object with the ships position and user id
 		if self.missiles > 0:
 			self.missiles -= 1
-			return Missile(self.rect, self.speed, self.angle, self.uid, wing, self.spritesheet)
+			return Missile(self.uid, self.spritesheet, (self.pos.x, self.pos.y), self.speed, self.angle, wing)
 		else:
-			return Bullet(self.rect, self.speed, self.angle, self.uid, wing, self.spritesheet)
+			return Bullet(self.uid, self.spritesheet, (self.pos.x, self.pos.y), self.speed, self.angle, wing)
 
+	def rotate(self, angle):
+		"""
+		Rotate the speed vector left 4 degrees
+		"""
+		rad = math.radians(angle)
+		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
+		y = self.speed.x * math.sin(rad) + self.speed.y * math.cos(rad)
+		self.speed = Vector2D(x, y)
+		self.calc_angle()
 
-	def bullet_impact(self):
-		"""Method when ship is hit by a bullet"""
-		self.health -= 25
+	def shield_down(self):
+		self.shield = False
+		if self.uid is 1: pygame.time.set_timer(SHIELD_PLAYER1, 0)	#Stop timer
+		if self.uid is 2: pygame.time.set_timer(SHIELD_PLAYER2, 0)	#Stop timer
+
+	def shield_up(self):
+		self.shield = True
+		if self.uid is 1: pygame.time.set_timer(SHIELD_PLAYER1, SHIELD_DURATION)	#Start timer
+		if self.uid is 2: pygame.time.set_timer(SHIELD_PLAYER2, SHIELD_DURATION)	#Start timer
 	
 	def despawn(self):
 		self.invisible = True
 		self.dead = False
 		self.speed = Vector2D(0,-1)
-		self.pos = self.spawn
+		self.pos = Vector2D(self.spawn[0], self.spawn[1])
 		self.health = 0
 		self.fuel = 0
 		self.shield = False
 		self.missiles = 0
 
 		self.new_sprite(BLANK_SPRITE)
-		pygame.time.set_timer(RESPAWN_TIMER, 1500)
+		if self.uid is 1: pygame.time.set_timer(RESPAWN_PLAYER1, 1500)	#Start timer
+		if self.uid is 2: pygame.time.set_timer(RESPAWN_PLAYER2, 1500)	#Start timer
 
 	def respawn(self):
 		"""Method to respawn the ship.
 		Used when coliding with the environment or when health is 0"""
-		self.pos = self.spawn
+		self.pos = Vector2D(self.spawn[0], self.spawn[1])
 		self.fuel = 1000
 		self.angle = 0
 		self.health = 100
 		self.speed = Vector2D(0,-1)
 		self.invisible = False
+		if self.uid is 1: pygame.time.set_timer(RESPAWN_PLAYER1, 0)	#Stop timer
+		if self.uid is 2: pygame.time.set_timer(RESPAWN_PLAYER2, 0)	#Stop timer
 
 	def fuel_up(self):
 		"""fuel method"""
