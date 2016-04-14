@@ -22,7 +22,7 @@ POWERUP_SPAWN = pygame.USEREVENT + 3
 
 class Engine:
 	"""
-	Engine class to iniziale all game assets and variables.
+	Engine class to initialize all game assets and instance variables.
 	"""
 
 	def __init__(self):
@@ -53,8 +53,8 @@ class Engine:
 	def logic(self, screen):
 		"""
 		Logic method that runs all the engines methods needed for each frame.
-		Takes in a screen as a parameter to draw the game.
-		Engine.login(screen)
+
+		login(Screen) -> none
 		"""
 		self.eventhandler()				#Handle game events
 		self.missile_guidance()			#Give missiles coordinates of target ship
@@ -265,8 +265,8 @@ class Engine:
 			for rocket2 in self.rockets:
 				if rocket != rocket2:
 					if pygame.sprite.collide_mask(rocket,rocket2):
-						self.explode(rocket, 50, 100, 50)
-						self.explode(rocket2, 50, 100, 50)
+						self.explode(rocket, 50, 1000, 50) #-1000hp, -50score and explode.
+						self.explode(rocket2, 50, 1000, 50) #-1000hp, -50score and explode.
 
 			#Ship -> Powerup
 			for powerup in self.powerups:
@@ -297,18 +297,20 @@ class Engine:
 		scoreloss : int, optional
 			Change in score a player object.
 		kill : bool, optional
-		Pass in to kill no matter what.
+			Pass in to kill no matter what.
+			(Used to kill a player if it collides with a planet, even if it has a shield.)
 
 		Examples
 		--------
 		Exploding and removing a bullet: explode(bullet, 50, True)
-		Exploding and killing a player: explode(player, 50, False, -50, True)
-		Exploding a player that has a shield: explode(player, 25, False, 0, False)
+		Exploding and killing a player with no score loss: explode(player, 50, 100, 0)
+		Killing a player no matter what: explode(player, 50, 0, 0, True)
 		"""
 		#If the passed in object is a player
 		if hasattr(obj, 'shield'):
 			if kill:
 				self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, explotionsize) )
+				obj.score -=scoreloss
 				obj.dead = True
 			else:
 				if obj.shield is False:
@@ -322,11 +324,38 @@ class Engine:
 			obj.kill()
 			
 
-	def give_score(self, player, score):
-		if player is 1: self.player1.score += score
-		if player is 2: self.player2.score += score
+	def give_score(self, playerid, score):
+		"""
+		Give a playerid score.
+
+		give_score(playerid, score) -> none
+
+		Parameters
+		----------
+		playerid : int
+			Userid to give score.
+		score : int
+			Ammoutn of score.
+
+		Examples
+		--------
+		Give player1 50 in score: give_score(1, 50)
+		"""
+		if playerid is 1: self.player1.score += score
+		if playerid is 2: self.player2.score += score
 
 	def destroy_astroid(self, astroid1, astroid2):
+		"""
+		Takes in two astroid objects and decides who will be destroyed.
+		Destroyes the smallest, or if the same size both.
+
+		destroy_astroid(astroid1, astroid2) -> none
+
+		Parameters
+		----------
+		astroid1 : astroid object
+		astroid2 : astroid object
+		"""
 		if astroid1.mass > astroid2.mass:
 			if astroid2.type is 2: self.explode(astroid2, 50)
 			if astroid2.type is 3: self.explode(astroid2, 30)
@@ -339,7 +368,9 @@ class Engine:
 
 	def bullet_out_of_screen(self):
 		"""
-		Removed bullets if they exit the screen.
+		Removed bullets that exit the screen
+
+		bullet_out_of_screen() -> none
 		"""
 		for bullet in self.bullet_sprites:
 			if bullet.pos.x <= 0:			self.bullet_sprites.remove(bullet)	#Left wall
@@ -349,7 +380,9 @@ class Engine:
 
 	def generate_platforms(self):
 		"""
-		Generates platforms.
+		Generates platforms for every player in the player group.
+
+		generate_platforms() -> none
 		"""
 		for rocket in self.rockets:
 			platform = Platform(rocket.uid, self.spritesheet)
@@ -357,15 +390,18 @@ class Engine:
 
 	def respawn_ships(self):
 		"""
-		Method to respawn rocket if destroyed.
-		Will run on custom userevent to respawn a rocket that has been destroyed.
+		Respawnes a ship if it is set to invisible.
+
+		respawn_ships() -> none
 		"""
 		if self.player1.invisible: self.player1.respawn()
 		if self.player2.invisible: self.player2.respawn()
 		
 	def spawn_astroid(self):
 		"""
-		Spawn astroid if we havent reached the limit.
+		Spawns a astroid if the limit of astroids is not exceeded.
+
+		spawn_astroid() -> none
 		"""
 		if len(self.astroids) < 8:
 			astroid = Astroid(	ASTROID_SPAWNS[random.randint(0,7)],
@@ -412,8 +448,7 @@ class Engine:
 
 def main():
 	"""
-	Runs the game.
-	Sets up the engine and starts the game loop.
+	Creates a screen, clock, creates a instance of the engine and starts the game loop.
 	"""
 	pygame.init()
 	pygame.display.set_caption("Space Lazer Wars")
