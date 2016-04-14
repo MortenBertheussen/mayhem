@@ -49,13 +49,13 @@ control&nbsp;a&nbsp;rocket&nbsp;and&nbsp;try&nbsp;to&nbsp;shoot&nbsp;eachother&n
 
 <dl><dt><a name="Engine-bullet_out_of_screen"><strong>bullet_out_of_screen</strong></a>(self)</dt><dd><tt>Removed&nbsp;bullets&nbsp;if&nbsp;they&nbsp;exit&nbsp;the&nbsp;screen.</tt></dd></dl>
 
+<dl><dt><a name="Engine-destroy_astroid"><strong>destroy_astroid</strong></a>(self, astroid1, astroid2)</dt></dl>
+
 <dl><dt><a name="Engine-environment_impact"><strong>environment_impact</strong></a>(self)</dt><dd><tt>Colision&nbsp;detection&nbsp;between&nbsp;astroids,&nbsp;planets,&nbsp;ships&nbsp;and&nbsp;platforms.</tt></dd></dl>
 
 <dl><dt><a name="Engine-eventhandler"><strong>eventhandler</strong></a>(self)</dt><dd><tt>Handles&nbsp;all&nbsp;user&nbsp;input&nbsp;and&nbsp;custom&nbsp;userevents.</tt></dd></dl>
 
 <dl><dt><a name="Engine-explode"><strong>explode</strong></a>(self, obj, size)</dt><dd><tt>Adds&nbsp;a&nbsp;explotion&nbsp;to&nbsp;the&nbsp;objects&nbsp;position</tt></dd></dl>
-
-<dl><dt><a name="Engine-generate_planets"><strong>generate_planets</strong></a>(self)</dt><dd><tt>Generate&nbsp;planets&nbsp;for&nbsp;the&nbsp;map.</tt></dd></dl>
 
 <dl><dt><a name="Engine-generate_platforms"><strong>generate_platforms</strong></a>(self)</dt><dd><tt>Generates&nbsp;platforms.</tt></dd></dl>
 
@@ -69,7 +69,19 @@ A&nbsp;simplified&nbsp;version&nbsp;of&nbsp;Newton's&nbsp;Law&nbsp;of&nbsp;Unive
 
 <dl><dt><a name="Engine-kill_object"><strong>kill_object</strong></a>(self, obj, size)</dt><dd><tt>Adds&nbsp;a&nbsp;explotion&nbsp;and&nbsp;removes&nbsp;it&nbsp;from&nbsp;its&nbsp;groups.</tt></dd></dl>
 
-<dl><dt><a name="Engine-kill_player"><strong>kill_player</strong></a>(self, player, size, score<font color="#909090">=0</font>)</dt><dd><tt>Adds&nbsp;a&nbsp;explotion&nbsp;to&nbsp;the&nbsp;position&nbsp;of&nbsp;the&nbsp;object.</tt></dd></dl>
+<dl><dt><a name="Engine-kill_player"><strong>kill_player</strong></a>(self, player, explotionsize, scorechange<font color="#909090">=0</font>)</dt><dd><tt>Kills&nbsp;a&nbsp;player&nbsp;and&nbsp;creates&nbsp;a&nbsp;explotion&nbsp;at&nbsp;its&nbsp;position.<br>
+&nbsp;<br>
+<a href="#Engine-kill_player">kill_player</a>(player,&nbsp;explotionsize,&nbsp;scorechange&nbsp;-&gt;&nbsp;none<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+player&nbsp;:&nbsp;object<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Player&nbsp;object&nbsp;to&nbsp;get&nbsp;the&nbsp;position&nbsp;to&nbsp;create&nbsp;a&nbsp;explotion.<br>
+explotionsize:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;size&nbsp;of&nbsp;the&nbsp;explotion.<br>
+scorechange&nbsp;:&nbsp;int,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Optional&nbsp;argument&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;change&nbsp;the&nbsp;score&nbsp;of&nbsp;the&nbsp;player&nbsp;that&nbsp;is&nbsp;killed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;will&nbsp;usually&nbsp;be&nbsp;a&nbsp;negative&nbsp;integer.</tt></dd></dl>
 
 <dl><dt><a name="Engine-logic"><strong>logic</strong></a>(self, screen)</dt><dd><tt>Logic&nbsp;method&nbsp;that&nbsp;runs&nbsp;all&nbsp;the&nbsp;engines&nbsp;methods&nbsp;needed&nbsp;for&nbsp;each&nbsp;frame.<br>
 Takes&nbsp;in&nbsp;a&nbsp;screen&nbsp;as&nbsp;a&nbsp;parameter&nbsp;to&nbsp;draw&nbsp;the&nbsp;game.<br>

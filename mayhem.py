@@ -41,11 +41,11 @@ class Engine:
 		#Create players
 		self.player1 = Rocket(1, self.spritesheet)
 		self.player2 = Rocket(2, self.spritesheet)
-		self.rockets.add(self.player1)
-		self.rockets.add(self.player2)
+		self.rockets.add(self.player1)	#Player1
+		self.rockets.add(self.player2)	#Player2
+		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE,self.spritesheet))	#Add our black hole.
 
 		self.generate_platforms()					#Generate platforms
-		self.generate_planets()						#Genereate all planets
 		self.spawn_powerups()						#Generate powerup
 		self.bg.add(Background())					#Add background
 		self.hud.add(Hud())							#Add hud
@@ -56,9 +56,8 @@ class Engine:
 		Takes in a screen as a parameter to draw the game.
 		Engine.login(screen)
 		"""
-		self.eventhandler()
-
-		self.missile_guidance()	#Give missiles coordinates of target ship
+		self.eventhandler()				#Handle game events
+		self.missile_guidance()			#Give missiles coordinates of target ship
 
 		#Update all spritegroups
 		self.bg.update()
@@ -94,14 +93,6 @@ class Engine:
 				self.explotions.remove(explotion)
 
 		pygame.display.update()
-
-	def respawn_ships(self):
-		"""
-		Method to respawn rocket if destroyed.
-		Will run on custom userevent to respawn a rocket that has been destroyed.
-		"""
-		if self.player1.invisible: self.player1.respawn()
-		if self.player2.invisible: self.player2.respawn()
 
 	def eventhandler(self):
 		"""
@@ -209,48 +200,29 @@ class Engine:
 			#Rocket
 			for rocket in self.rockets:
 				if pygame.sprite.collide_mask(rocket, bullet) and bullet.uid != rocket.uid:
-					if rocket.shield is False: rocket.bullet_impact() #No shield, so take damage
-					if rocket.health <= 0:
-						self.kill_player(rocket, 75)
+					self.explode(rocket, 75, 25, 0)
+					if rocket.dead:
 						self.give_score(bullet.uid, 100)
-					self.kill_object(bullet, 30)
+					self.explode(bullet, 20)
 
 			#Astroid
 			for astroid in self.astroids:
 				if pygame.sprite.collide_mask(bullet, astroid):
 					astroid.life -=1
-					self.kill_object(bullet, 30)
+					self.explode(bullet, 20)
 					if astroid.life is 0: #Astroid is killed
 						self.give_score(bullet.uid, 10)
-						self.kill_object(astroid, 75)
+						self.explode(astroid, 75)
 
 			#Planet
 			for planet in self.planets:
 				if pygame.sprite.collide_mask(planet, bullet):
-					self.kill_object(bullet, 30)
+					self.explode(bullet, 20)
 
+			#Platform
 			for platform in self.platforms:
 				if pygame.sprite.collide_mask(platform, bullet) and bullet.uid is not platform.uid:
-					self.kill_object(bullet, 20)
-
-	def kill_player(self, player, size, score = 0):
-		"""Adds a explotion to the position of the object."""
-		self.explotions.add( Explotion(player.rect.centerx, player.rect.centery, size) )
-		player.score += score
-		player.dead = True
-
-	def kill_object(self, obj, size):
-		"""Adds a explotion and removes it from its groups."""
-		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
-		obj.kill()
-
-	def explode(self, obj, size):
-		"""Adds a explotion to the objects position"""
-		self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, size) )
-
-	def give_score(self, player, score):
-		if player is 1: self.player1.score += score
-		if player is 2: self.player2.score += score
+					self.explode(bullet, 20)
 
 	def environment_impact(self):
 		"""
@@ -260,13 +232,13 @@ class Engine:
 			#Astroid -> Planet
 			for planet in self.planets:
 				if pygame.sprite.collide_mask(astroid, planet):
-					self.kill_object(astroid, 30)
+					self.explode(astroid, 30)
 
 			#Astroid -> Ship
 			for rocket in self.rockets:
 				if pygame.sprite.collide_mask(astroid, rocket):
-					if rocket.shield is False:	self.kill_player(rocket, 30, -10)
-					else:						self.kill_object(astroid, 30)
+					if rocket.shield is False:	self.explode(rocket, 50, 100, 10) #-100hp, -20score
+					else:						self.explode(astroid, 30)
 
 			#Astroid -> Astroid
 			for astroid2 in self.astroids:
@@ -276,13 +248,14 @@ class Engine:
 			#Astroid -> Platform
 			for platform in self.platforms:
 				if pygame.sprite.collide_mask(astroid, platform):
-					self.kill_object(astroid, 40)
+					self.explode(astroid, 40)
 
 		for rocket in self.rockets:
 			#Ship -> Planet
 			for planet in self.planets:
 				if pygame.sprite.collide_mask(rocket, planet):
-					self.kill_player(rocket, 50, -20)
+					self.explode(rocket, 50, 100, 20, True)	#-100hp, -20score and explode.
+
 			#Ship -> Platform
 			for platform in self.platforms:
 				hit = pygame.sprite.collide_rect(rocket, platform)
@@ -292,10 +265,8 @@ class Engine:
 			for rocket2 in self.rockets:
 				if rocket != rocket2:
 					if pygame.sprite.collide_mask(rocket,rocket2):
-						if rocket.shield is False: self.kill_player(rocket, 50, 0)
-						else: self.give_score(rocket.uid, 50)
-						if rocket2.shield is False: self.kill_player(rocket2, 50, 0)
-						else: self.give_score(rocket.uid, 50)
+						self.explode(rocket, 50, 100, 50)
+						self.explode(rocket2, 50, 100, 50)
 
 			#Ship -> Powerup
 			for powerup in self.powerups:
@@ -307,16 +278,64 @@ class Engine:
 						rocket.shieldTimer = 0
 					self.powerups.remove(powerup)
 
+	def explode(self, obj, explotionsize, hploss = None, scoreloss = None, kill = False):
+		"""
+		Kills and adds a explotion to the objects position.
+		If the object is a player it will not remove it, only take away hp.
+		This method also checks if the player has a shield.
+
+		explode(obj, explotionsize, hploss) -> none
+
+		Parameters
+		----------
+		obj : object
+			Object to get the position to create a explotion.
+		explotionsize : int
+			The size of the explotion.
+		hploss : int, optional
+			Change in hp for a player object.
+		scoreloss : int, optional
+			Change in score a player object.
+		kill : bool, optional
+		Pass in to kill no matter what.
+
+		Examples
+		--------
+		Exploding and removing a bullet: explode(bullet, 50, True)
+		Exploding and killing a player: explode(player, 50, False, -50, True)
+		Exploding a player that has a shield: explode(player, 25, False, 0, False)
+		"""
+		#If the passed in object is a player
+		if hasattr(obj, 'shield'):
+			if kill:
+				self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, explotionsize) )
+				obj.dead = True
+			else:
+				if obj.shield is False:
+					self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, explotionsize) )
+					obj.health -= hploss
+					obj.score -= scoreloss
+					if obj.health <= 0: obj.dead = True
+		#Object is a astroid or a bullet
+		else:
+			self.explotions.add( Explotion(obj.rect.centerx, obj.rect.centery, explotionsize) )
+			obj.kill()
+			
+
+	def give_score(self, player, score):
+		if player is 1: self.player1.score += score
+		if player is 2: self.player2.score += score
+
 	def destroy_astroid(self, astroid1, astroid2):
 		if astroid1.mass > astroid2.mass:
-			if astroid2.type is 2: self.kill_object(astroid2, 50)
-			if astroid2.type is 3: self.kill_object(astroid2, 30)
+			if astroid2.type is 2: self.explode(astroid2, 50)
+			if astroid2.type is 3: self.explode(astroid2, 30)
 		elif astroid1.mass < astroid2.mass:
-			if astroid1.type is 2: self.kill_object(astroid1, 50)
-			if astroid1.type is 3: self.kill_object(astroid1, 30)
+			if astroid1.type is 2: self.explode(astroid1, 50)
+			if astroid1.type is 3: self.explode(astroid2, 30)
 		else:
-			self.kill_object(astroid1, 50)
-			self.kill_object(astroid2, 50)
+			self.explode(astroid1, 50)
+			self.explode(astroid2, 50)
 
 	def bullet_out_of_screen(self):
 		"""
@@ -332,16 +351,17 @@ class Engine:
 		"""
 		Generates platforms.
 		"""
-		#Generate platform for players with id
 		for rocket in self.rockets:
 			platform = Platform(rocket.uid, self.spritesheet)
 			self.platforms.add(platform)
 
-	def generate_planets(self):
+	def respawn_ships(self):
 		"""
-		Generate planets for the map.
+		Method to respawn rocket if destroyed.
+		Will run on custom userevent to respawn a rocket that has been destroyed.
 		"""
-		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE,self.spritesheet))
+		if self.player1.invisible: self.player1.respawn()
+		if self.player2.invisible: self.player2.respawn()
 		
 	def spawn_astroid(self):
 		"""
