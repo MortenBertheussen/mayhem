@@ -27,15 +27,9 @@ class Rocket(Movingobject):
 		self.score = 0
 		self.mass = PLAYER_MASS
 		self.missiles = 0
-		self.shieldTimer = 0
 
 	def update(self):
 		"""Runs what is needed for the class"""
-		if self.shield:
-			self.shieldTimer += 1
-		if self.shieldTimer > 250:
-			self.shield = False
-			self.shieldTimer = 0
 		if self.dead:
 			self.despawn()
 		else:
