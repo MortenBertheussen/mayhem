@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from gameconstants import *
+from config import *
 from Vector2D import *
 from spritesheet import *
 import math
@@ -10,12 +11,15 @@ class Movingobject(pygame.sprite.Sprite):
 	"""
 	Superclass for all moving objects.
 	"""
-	def __init__(self):
+	def __init__(self, uid, spritesheet, spawn, speed = Vector2D(0,-1)):
 		super().__init__()
-		self.pos = Vector2D(0, 0)
-		self.speed = Vector2D(0,-1)		#Initial direction pointing upwards
-		self.angle = 0
-		self.maxspeed = 5				#Default maxspeed if not redefined by child
+		self.uid = uid
+		self.spritesheet = spritesheet
+		self.spawn = spawn
+		self.pos = Vector2D(spawn[0], spawn[1])
+		self.speed = speed										#Initial direction pointing upwards 0 deg
+		self.angle = 0											#Default angle
+		self.maxspeed = 5										#Default maxspeed if not redefined by child
 
 	def screen_wrap(self):
 		"""
@@ -71,3 +75,6 @@ class Movingobject(pygame.sprite.Sprite):
 		"""
 		if self.speed.magnitude() > self.maxspeed:
 			self.speed = self.speed.normalized() * self.maxspeed
+
+	def update(self):
+		return NotImplemented

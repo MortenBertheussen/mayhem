@@ -12,19 +12,18 @@ import pygame
 import random
 import math
 import cProfile
+from config import *
 from gameconstants import *
+from config import *
 from Vector2D import *
 from movingobject import *
-from staticobjects import *
+from staticobject import *
+from ui import *
 from astroid import *
 from planet import *
 from rocket import *
 from bullet import *
 from powerup import *
-
-ASTROID_SPAWN = pygame.USEREVENT + 1
-RESPAWN_TIMER = pygame.USEREVENT + 2
-POWERUP_SPAWN = pygame.USEREVENT + 3
 
 class Engine:
 	"""
@@ -45,8 +44,8 @@ class Engine:
 		self.spritesheet = Spritesheet("sprites/spritesheet.png")
 
 		#Create players
-		self.player1 = Rocket(1, self.spritesheet)
-		self.player2 = Rocket(2, self.spritesheet)
+		self.player1 = Rocket(1, self.spritesheet, RED_ENGINE_OFF, PLAYER1_SPAWN)
+		self.player2 = Rocket(2, self.spritesheet, BLUE_ENGINE_OFF, PLAYER2_SPAWN)
 		self.rockets.add(self.player1)	#Player1
 		self.rockets.add(self.player2)	#Player2
 		self.planets.add(Planet((SCREEN_X/2,SCREEN_Y/2),BLACK_HOLE,self.spritesheet))	#Add our black hole.
@@ -70,6 +69,7 @@ class Engine:
 		self.hud.update()
 		self.explotions.update()
 		self.rockets.update()
+		self.powerups.update()
 		self.bullet_sprites.update()
 		self.platforms.update()
 		self.planets.update()
@@ -105,9 +105,18 @@ class Engine:
 		Handles all user input and custom userevents.
 		"""
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT: exit()					#Exit when clicking to close window			if event.type == ASTROID_SPAWN: self.spawn_astroid()	#EVENT FOR SPAWNING NEW ASTROIDS
-			if event.type == RESPAWN_TIMER: self.respawn_ships()	#Event for respawning dead ships
-			if event.type == ASTROID_SPAWN: self.spawn_astroid()	#Event for respawning dead ships
+			if event.type == pygame.QUIT:
+				exit()
+			if event.type == ASTROID_SPAWN:
+				self.spawn_astroid()
+			if event.type == RESPAWN_PLAYER1 or event.type == RESPAWN_PLAYER2:
+				self.respawn_ships()
+			if event.type == ASTROID_SPAWN:
+				self.spawn_astroid()
+			if event.type == SHIELD_PLAYER1:
+				self.player1.shield_down()
+			if event.type == SHIELD_PLAYER2:
+				self.player2.shield_down()
 			
 			if event.type == POWERUP_SPAWN and len(self.powerups) < 2:
 				poweruptype = random.choice(list(POWERUP_TYPES.keys()))
@@ -122,12 +131,8 @@ class Engine:
 					if event.key == pygame.K_d: self.player1.turnRight = True
 					if event.key == pygame.K_s: self.player1.speedBreak = True
 					if event.key == pygame.K_SPACE:
-						if self.player1.missiles > 0:
-							bullet = self.player1.shoot(1)
-							self.bullet_sprites.add(bullet)
-						else:
-							bullet1 = self.player1.shoot(1)
-							bullet2 = self.player1.shoot(2)
+							bullet1 = self.player1.shoot("left")
+							bullet2 = self.player1.shoot("right")
 							self.bullet_sprites.add(bullet1)
 							self.bullet_sprites.add(bullet2)
 				#Player 2
@@ -137,12 +142,8 @@ class Engine:
 					if event.key == pygame.K_RIGHT:	self.player2.turnRight = True
 					if event.key == pygame.K_DOWN: self.player2.speedBreak = True
 					if event.key == pygame.K_PERIOD:
-						if self.player2.missiles > 0:
-							bullet = self.player2.shoot(1)
-							self.bullet_sprites.add(bullet)
-						else:
-							bullet1 = self.player2.shoot(1)
-							bullet2 = self.player2.shoot(2)
+							bullet1 = self.player2.shoot("left")
+							bullet2 = self.player2.shoot("right")
 							self.bullet_sprites.add(bullet1)
 							self.bullet_sprites.add(bullet2)
 
@@ -277,11 +278,10 @@ class Engine:
 			#Ship -> Powerup
 			for powerup in self.powerups:
 				if pygame.sprite.collide_rect(rocket,powerup) and rocket.dead is False:
-					if powerup.type is "hp": rocket.health += 100
-					if powerup.type is "missile": rocket.missiles += 3
+					if powerup.type is "hp": rocket.health += HP_INCREASE
+					if powerup.type is "missile": rocket.missiles += MISSILES
 					if powerup.type is "shield":
-						rocket.shield = True
-						rocket.shieldTimer = 0
+						rocket.shield_up()
 					self.powerups.remove(powerup)
 
 	def explode(self, obj, explotionsize, hploss = None, scoreloss = None, kill = False):

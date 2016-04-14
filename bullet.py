@@ -7,28 +7,23 @@ import math
 
 class Bullet(Movingobject):
 	"""The bullet class"""
-	def __init__(self, position, speed, angle, uid, wing, spritesheet):
-		super().__init__()
-		self.uid = uid
-		self.type = "bullet"
-		self.speed = speed
-		self.angle = angle
-		if uid is 1:	self.spriterect = RED_LASER
-		else:			self.spriterect = BLUE_LASER
-		self.spritesheet = spritesheet
-		self.image = self.spritesheet.get_image((self.spriterect))
+	def __init__(self, uid, spritesheet, spawn, speed, angle, wing):
+		super().__init__(uid, spritesheet, spawn, speed)
+		if uid is 1:	self.image = self.spritesheet.get_image(RED_LASER)
+		else:			self.image = self.spritesheet.get_image(BLUE_LASER)
 		self.rect = self.image.get_rect()
-		#self.pos.x = position.centerx
-		#self.pos.y = position.centery
-		self.center = Vector2D(position.centerx, position.centery)
-		if wing is 1:
-			point = Vector2D(position.centerx-7, position.centery-10)
-			self.pos = self.rotate_point(point, self.center, angle)
-		else:
-			point = Vector2D(position.centerx+7, position.centery-10)
-			self.pos = self.rotate_point(point, self.center, angle)
+		self.type = "bullet"
+		self.angle = angle
+		if uid is 1:	self.new_sprite(RED_LASER)
+		else:			self.new_sprite(BLUE_LASER)
 
-		self.new_sprite(self.spriterect)
+		if wing is "left":
+			point = Vector2D(self.pos.x-7, self.pos.y-10)
+			self.pos = self.rotate_point(point, self.pos, self.angle)
+		else:
+			point = Vector2D(self.pos.x+7, self.pos.y-10)
+			self.pos = self.rotate_point(point, self.pos, self.angle)
+		
 
 	def update(self):
 		"""Runs what is needed for the class"""
@@ -36,20 +31,29 @@ class Bullet(Movingobject):
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
 
-class Missile(Bullet):
-	def __init__(self, position, speed, angle, uid, wing, spritesheet):
-		super().__init__(position, speed, angle, uid, wing, spritesheet)
+class Missile(Movingobject):
+	def __init__(self, uid, spritesheet, spawn, speed, angle, wing):
+		super().__init__(uid, spritesheet, spawn, speed)
+		self.speed = speed.normalized()
+		self.image = self.spritesheet.get_image(RED_LASER)
+		self.rect = self.image.get_rect()
 		self.type = "missile"
-		self.pos = Vector2D(position.centerx, position.centery)
-		self.target = Vector2D(SCREEN_X/2, SCREEN_Y/2)
-		self.spriterect = SUPER_BULLET
-		self.new_sprite(self.spriterect)
+		self.target = self.pos #No target to begin with
+		self.angle = angle
+		self.new_sprite(SUPER_BULLET)
 		self.maxspeed = 10
+
+		if wing is "left":
+			point = Vector2D(self.pos.x-20, self.pos.y-10)
+			self.pos = self.rotate_point(point, self.pos, self.angle)
+		else:
+			point = Vector2D(self.pos.x+20, self.pos.y-10)
+			self.pos = self.rotate_point(point, self.pos, self.angle)
 
 	def update(self):
 		self.calc_angle()
 		self.speed_limit()
-		self.new_sprite(self.spriterect) #Rotate image
+		self.new_sprite(SUPER_BULLET) #Rotate image
 
 		distance = (self.pos - self.target).magnitude()
 		f = (300 * 100) / (distance ** 2)
@@ -63,4 +67,3 @@ class Missile(Bullet):
 
 	def update_target(self, pos):
 		self.target = pos
-		print ("Got target")

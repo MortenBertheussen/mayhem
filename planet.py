@@ -2,32 +2,17 @@
 from gameconstants import *
 from Vector2D import *
 from spritesheet import *
-from movingobject import *
+from staticobject import *
 import math
 
-class Planet(Movingobject):
+class Planet(StaticObject):
 	"""The class for planet"""
-	def __init__(self, pos, rect, spritesheet):
-		super().__init__()
-		self.pos = Vector2D(pos[0], pos[1])
-		self.spritesheet = spritesheet
-		self.image = self.spritesheet.get_image((rect))
-		self.image_pos = rect
-		self.rect = self.image.get_rect()
-		self.angle = 0
-		self.gravity = 10 
-		self.rect.centerx = self.pos.x
-		self.rect.centery = self.pos.y
-		self.mass = 100
+	def __init__(self, spawn, spriterect, spritesheet):
+		super().__init__(spawn, spriterect, spritesheet)
+		self.mass = PLANET_MASS
 
 	def update(self):
 		"""Runs what is needed for the class"""
+		self.rect.center = (self.pos.x, self.pos.y)
 		self.angle += 0.5
-		self.new_sprite(self.image_pos)
-
-	def new_sprite(self, rect):
-		"""Fetches a new sprite from the spritesheet and keep its rotation"""
-		oldrect = self.rect
-		self.image = self.spritesheet.get_image(rect)
-		self.image = pygame.transform.rotate(self.image, self.angle)
-		self.rect = self.image.get_rect(center=oldrect.center)
+		self.rotate_image()
