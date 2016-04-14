@@ -19,7 +19,7 @@ class Movingobject(pygame.sprite.Sprite):
 
 	def screen_wrap(self):
 		"""
-		Makes the object wrap if it goes outside the screen border.
+		Makes the object wrap if it goes outsidsae the screen border.
 		"""
 		if self.pos.x <= 0: 		self.pos.x = SCREEN_X - 1	#Left
 		if self.pos.x >= SCREEN_X:	self.pos.x = 1				#Right
@@ -55,30 +55,9 @@ class Movingobject(pygame.sprite.Sprite):
 	def resize_sprite(self, w, h):
 		self.image = pygame.transform.scale(self.image, (w, h))
 
-	def rotate_left(self):
-		"""
-		Rotate the speed vector left 4 degrees
-		"""
-		rad = math.radians(-4)
-		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
-		y = self.speed.x * math.sin(rad) + self.speed.y * math.cos(rad)
-		self.speed = Vector2D(x, y)
-		self.calc_angle()
-
-	def rotate_right(self):
-		"""
-		Rotate the speed vector right 4 degrees
-		"""
-		rad = math.radians(4)
-		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
-		y = self.speed.x * math.sin(rad) + self.speed.y * math.cos(rad)
-		self.speed = Vector2D(x, y)
-		self.calc_angle()
-
 	def calc_angle(self):
 		"""
 		Calculates the angle for the speed vector if it has been modified slightly by gravity.
-		If this is not done the image angle and the speed vector angle will be slightly off.
 		"""
 		baseline = Vector2D(0,-1) #Vector pointing upwards
 		dot = (self.speed.x * baseline.x) + (self.speed.y * baseline.y)

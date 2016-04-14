@@ -43,13 +43,9 @@ class Rocket(Movingobject):
 		if self.shieldTimer > 250:
 			self.shield = False
 			self.shieldTimer = 0
-
-		#print (self.shieldTimer)
-
 		if self.dead:
 			self.despawn()
 		else:
-			#print("Doing stuff")
 			self.current_sprite()
 			self.speed_limit()
 			self.move()
@@ -83,8 +79,8 @@ class Rocket(Movingobject):
 
 	def move(self):
 		"""Move method of rocket"""
-		if self.turnLeft: self.rotate_left()
-		if self.turnRight: self.rotate_right()
+		if self.turnLeft: self.rotate(-4)
+		if self.turnRight: self.rotate(4)
 
 		if self.speedBreak and self.speed.magnitude() > 1:
 			self.speed /= 1.04
@@ -115,10 +111,15 @@ class Rocket(Movingobject):
 		else:
 			return Bullet(self.rect, self.speed, self.angle, self.uid, wing, self.spritesheet)
 
-
-	def bullet_impact(self):
-		"""Method when ship is hit by a bullet"""
-		self.health -= 25
+	def rotate(self, angle):
+		"""
+		Rotate the speed vector left 4 degrees
+		"""
+		rad = math.radians(angle)
+		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
+		y = self.speed.x * math.sin(rad) + self.speed.y * math.cos(rad)
+		self.speed = Vector2D(x, y)
+		self.calc_angle()
 	
 	def despawn(self):
 		self.invisible = True
