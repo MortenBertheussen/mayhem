@@ -51,10 +51,3 @@ class Astroid(Movingobject):
 		self.pos += self.speed
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
-
-	def new_sprite(self, rect):
-		"""Fetches a new sprite from the spritesheet and keep its rotation"""
-		oldrect = self.rect
-		self.image = self.spritesheet.get_image(rect)
-		self.image = pygame.transform.rotate(self.image, self.angle)
-		self.rect = self.image.get_rect(center=oldrect.center)
