@@ -1,5 +1,11 @@
-"""This is a 2 player arcade shooting game where both players 
-control a rocket and try to shoot eachother with bullets."""
+"""
+###Space Lazer Wars###
+This is a 2 player arcade shooting game where both players 
+control a rocket and try to shoot eachother with bullets.
+
+Created by:
+Lars Karlsen and Mellet Solbakk
+"""
 
 #!/usr/bin/env python3
 import pygame
