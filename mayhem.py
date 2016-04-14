@@ -206,30 +206,33 @@ class Engine:
 		for bullet in self.bullet_sprites:
 			#Rocket
 			for rocket in self.rockets:
-				if pygame.sprite.collide_mask(rocket, bullet) and bullet.uid != rocket.uid:
-					self.explode(rocket, 75, 25, 0)
-					if rocket.dead:
-						self.give_score(bullet.uid, 100)
-					self.explode(bullet, 20)
+				if bullet.uid != rocket.uid and pygame.sprite.collide_rect(rocket, bullet) and pygame.sprite.collide_mask(rocket, bullet):
+						self.explode(rocket, 75, 25, 0)
+						if rocket.dead:
+							self.give_score(bullet.uid, 100)
+						self.explode(bullet, 20)
 
 			#Astroid
 			for astroid in self.astroids:
-				if pygame.sprite.collide_mask(bullet, astroid):
-					astroid.life -=1
-					self.explode(bullet, 20)
-					if astroid.life is 0: #Astroid is killed
-						self.give_score(bullet.uid, 10)
-						self.explode(astroid, 75)
+				if pygame.sprite.collide_rect(bullet, astroid):
+					if pygame.sprite.collide_mask(bullet, astroid):
+						astroid.life -=1
+						self.explode(bullet, 20)
+						if astroid.life is 0: #Astroid is killed
+							self.give_score(bullet.uid, 10)
+							self.explode(astroid, 75)
 
 			#Planet
 			for planet in self.planets:
-				if pygame.sprite.collide_mask(planet, bullet):
-					self.explode(bullet, 20)
+				if pygame.sprite.collide_rect(planet, bullet):
+					if pygame.sprite.collide_mask(planet, bullet):
+						self.explode(bullet, 20)
 
 			#Platform
 			for platform in self.platforms:
-				if pygame.sprite.collide_mask(platform, bullet) and bullet.uid is not platform.uid:
-					self.explode(bullet, 20)
+				if pygame.sprite.collide_rect(platform, bullet):
+					if pygame.sprite.collide_mask(platform, bullet) and bullet.uid is not platform.uid:
+						self.explode(bullet, 20)
 
 	def environment_impact(self):
 		"""
@@ -238,51 +241,58 @@ class Engine:
 		for astroid in self.astroids:
 			#Astroid -> Planet
 			for planet in self.planets:
-				if pygame.sprite.collide_mask(astroid, planet):
-					self.explode(astroid, 30)
+				if pygame.sprite.collide_rect(astroid, planet):
+					if pygame.sprite.collide_mask(astroid, planet):
+						self.explode(astroid, 30)
 
 			#Astroid -> Ship
 			for rocket in self.rockets:
-				if pygame.sprite.collide_mask(astroid, rocket):
-					if rocket.shield is False:	self.explode(rocket, 50, 100, 10) #-100hp, -20score
-					else:						self.explode(astroid, 30)
+				if pygame.sprite.collide_rect(astroid, rocket):
+					if pygame.sprite.collide_mask(astroid, rocket):
+						if rocket.shield is False:	self.explode(rocket, 50, 100, 10) #-100hp, -20score
+						else:						self.explode(astroid, 30)
 
 			#Astroid -> Astroid
 			for astroid2 in self.astroids:
-				if (astroid != astroid2) and (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
-					self.destroy_astroid(astroid, astroid2)
+				if (astroid != astroid2) and pygame.sprite.collide_rect(astroid, astroid2):
+					if (SCREEN_X -50 > astroid.rect.x > 50) and ( SCREEN_Y - 50 > astroid.rect.y > 50) and pygame.sprite.collide_mask(astroid, astroid2):
+						self.destroy_astroid(astroid, astroid2)
 					
 			#Astroid -> Platform
 			for platform in self.platforms:
-				if pygame.sprite.collide_mask(astroid, platform):
-					self.explode(astroid, 40)
+				if pygame.sprite.collide_rect(astroid, platform):
+					if pygame.sprite.collide_mask(astroid, platform):
+						self.explode(astroid, 40)
 
 		for rocket in self.rockets:
 			#Ship -> Planet
 			for planet in self.planets:
-				if pygame.sprite.collide_mask(rocket, planet):
-					self.explode(rocket, 50, 100, 20, True)	#-100hp, -20score and explode.
+				if pygame.sprite.collide_rect(rocket, planet):
+					if pygame.sprite.collide_mask(rocket, planet):
+						self.explode(rocket, 50, 100, 20, True)	#-100hp, -20score and explode.
 
 			#Ship -> Platform
 			for platform in self.platforms:
-				hit = pygame.sprite.collide_rect(rocket, platform)
-				if hit and (platform.uid == rocket.uid):
-					rocket.refuel = True
+				if pygame.sprite.collide_rect(rocket, platform):
+					if pygame.sprite.collide_rect(rocket, platform) and (platform.uid == rocket.uid):
+						rocket.refuel = True
 			#Ship -> Ship 
 			for rocket2 in self.rockets:
 				if rocket != rocket2:
-					if pygame.sprite.collide_mask(rocket,rocket2):
-						self.explode(rocket, 50, 1000, 50) #-1000hp, -50score and explode.
-						self.explode(rocket2, 50, 1000, 50) #-1000hp, -50score and explode.
+					if pygame.sprite.collide_rect(rocket, rocket2):
+						if pygame.sprite.collide_mask(rocket,rocket2):
+							self.explode(rocket, 50, 1000, 50) #-1000hp, -50score and explode.
+							self.explode(rocket2, 50, 1000, 50) #-1000hp, -50score and explode.
 
 			#Ship -> Powerup
 			for powerup in self.powerups:
-				if pygame.sprite.collide_rect(rocket,powerup) and rocket.dead is False:
-					if powerup.type is "hp": rocket.health += HP_INCREASE
-					if powerup.type is "missile": rocket.missiles += MISSILES
-					if powerup.type is "shield":
-						rocket.shield_up()
-					self.powerups.remove(powerup)
+				if pygame.sprite.collide_rect(rocket, powerup):
+					if pygame.sprite.collide_rect(rocket,powerup) and rocket.dead is False:
+						if powerup.type is "hp": rocket.health += HP_INCREASE
+						if powerup.type is "missile": rocket.missiles += MISSILES
+						if powerup.type is "shield":
+							rocket.shield_up()
+						self.powerups.remove(powerup)
 
 	def explode(self, obj, explotionsize, hploss = None, scoreloss = None, kill = False):
 		"""
