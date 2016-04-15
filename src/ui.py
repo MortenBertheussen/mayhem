@@ -6,7 +6,11 @@ from Vector2D import *
 import math
 
 class Background(pygame.sprite.Sprite):
-	"""The class for background"""
+	"""
+	Creates a background object.
+
+	Background() -> object
+	"""
 	def __init__(self):
 		super().__init__()
 		self.image = pygame.image.load("sprites/bg.png").convert_alpha()
@@ -16,6 +20,11 @@ class Background(pygame.sprite.Sprite):
 		self.moveleft = True
 
 	def update(self):
+		"""
+		Updates the position of the background, slight paralaxing effect.
+
+		update() -> none
+		"""
 		if self.moveleft:
 			self.paralax -= 0.1
 		else:
@@ -28,14 +37,29 @@ class Background(pygame.sprite.Sprite):
 		self.rect.y = self.paralax
 
 class Hud(pygame.sprite.Sprite):
-	"""The class for the hud"""
+	"""
+	Creates a hud object.
+
+	Hud() -> object
+	"""
 	def __init__(self):
 		super().__init__()
 		self.image = pygame.image.load("sprites/hud.png").convert_alpha()
 		self.rect = self.image.get_rect()
 
 class Platform(pygame.sprite.Sprite):
-	"""platform station"""
+	"""
+	Creates a platform object.
+
+	Platform() -> object
+
+	Parameters:
+	-----------
+	uid: int
+		Player identifier.
+	spritesheet: object
+		Pointer to spritesheet object.
+	"""
 	def __init__(self, uid, spritesheet):
 		super().__init__()
 		self.uid = uid
@@ -44,11 +68,24 @@ class Platform(pygame.sprite.Sprite):
 		self.spritesheet = spritesheet
 		self.image = self.spritesheet.get_image((self.spriterect))
 		self.rect = self.image.get_rect()
-		if self.uid is 1:	self.rect.center = (150, SCREEN_Y - 150)
-		elif self.uid is 2: self.rect.center = (SCREEN_X - 150, 150)
+		if self.uid is 1:	self.rect.center = PLAYER1_SPAWN
+		elif self.uid is 2: self.rect.center = PLAYER2_SPAWN
 
 class Explotion(pygame.sprite.Sprite):
-	"""The class for the explotion"""
+	"""
+	Creates a explotion object.
+
+	Explotion() -> object
+
+	Parameters:
+	-----------
+	x: int
+		x position.
+	y: int
+		y position.
+	size: int
+		Size of explotion.
+	"""
 	def __init__(self, x, y, size):
 		super().__init__()
 		self.size = size
@@ -74,12 +111,27 @@ class Explotion(pygame.sprite.Sprite):
 		self.timer = 0
 
 	def handle_img(self, path):
+		"""
+		Loads image and scales it.
+
+		handle_img(path) -> image (pygame.image object)
+
+		Parameters:
+		-----------
+		path: string
+			Path to image.
+		"""
 		image = pygame.image.load(path).convert_alpha()
 		image = pygame.transform.scale(image,(self.size,self.size))
 		return image
 
 
 	def update(self):
+		"""
+		Update method for sprite group.
+
+		update() -> none
+		"""
 		self.index += 1
 		self.timer += 1
 		if self.timer % 1 == 0:

@@ -6,7 +6,23 @@ from movingobject import *
 import math
 
 class Bullet(Movingobject):
-	"""The bullet class"""
+	"""
+	Creates a bullet object.
+
+	Bullet(uid, spritesheet, spawn, speed, angle, wing) -> object
+
+	Parameters
+	----------
+	uid : int
+		Identified for who shot the bullet.
+	spritesheet : spritesheet object
+		Pointer to spritesheet object.
+	spawn : touple
+		Initial spawn position.
+	angle : int
+	wing : string, "left" or "right"
+		What wing the bullet should spawn on.
+	"""
 	def __init__(self, uid, spritesheet, spawn, speed, angle, wing):
 		super().__init__(uid, spritesheet, spawn, speed)
 		if uid is 1:	self.image = self.spritesheet.get_image(RED_LASER)
@@ -26,12 +42,34 @@ class Bullet(Movingobject):
 		
 
 	def update(self):
-		"""Runs what is needed for the class"""
+		"""
+		Update method for sprite group.
+
+		update() -> none
+		"""
 		self.pos += self.speed.normalized() * 17
 		self.rect.centerx = self.pos.x
 		self.rect.centery = self.pos.y
 
 class Missile(Movingobject):
+	"""
+	Creates a missile object.
+
+	Missile(uid, spritesheet, spawn, speed, angle, wing) -> object
+
+	Parameters
+	----------
+	uid : int
+		Identified for who shot the bullet.
+	spritesheet : spritesheet object
+		Pointer to spritesheet object.
+	spawn : touple
+		Initial spawn position.
+	angle : int
+	wing : string, "left" or "right"
+		What wing the bullet should spawn on.
+	"""
+	
 	def __init__(self, uid, spritesheet, spawn, speed, angle, wing):
 		super().__init__(uid, spritesheet, spawn, speed)
 		self.speed = speed.normalized()
@@ -51,6 +89,11 @@ class Missile(Movingobject):
 			self.pos = self.rotate_point(point, self.pos, self.angle)
 
 	def update(self):
+		"""
+		Update method for sprite group.
+
+		update() -> none
+		"""
 		self.calc_angle()
 		self.speed_limit()
 		self.new_sprite(SUPER_BULLET) #Rotate image
@@ -66,4 +109,9 @@ class Missile(Movingobject):
 		self.rect.center = (self.pos.x, self.pos.y)
 
 	def update_target(self, pos):
+		"""
+		Updates the target the missile should travel towards.
+
+		update_target() -> none
+		"""
 		self.target = pos

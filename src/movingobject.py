@@ -9,7 +9,8 @@ RESPAWN_TIMER = pygame.USEREVENT + 2
 
 class Movingobject(pygame.sprite.Sprite):
 	"""
-	Superclass for all moving objects.
+	Superclass for all objects that move on the screen.
+	NB! Do not create objects out of this class, only inherit.
 	"""
 	def __init__(self, uid, spritesheet, spawn, speed = Vector2D(0,-1)):
 		super().__init__()
@@ -24,6 +25,8 @@ class Movingobject(pygame.sprite.Sprite):
 	def screen_wrap(self):
 		"""
 		Makes the object wrap if it goes outsidsae the screen border.
+
+		screen_wrap() -> none
 		"""
 		if self.pos.x <= 0: 		self.pos.x = SCREEN_X - 1	#Left
 		if self.pos.x >= SCREEN_X:	self.pos.x = 1				#Right
@@ -33,8 +36,16 @@ class Movingobject(pygame.sprite.Sprite):
 	def rotate_point(self, point, center, angle):
 		"""
 		Rotate a point with a set angle around a center point.
- 		Usage: rotate_point( (Vector2D)oldpoint, (Vector2D)centerpoint, (int)angle)
- 		Returns a vector for the new point.
+
+		rotate_point(point, center, angle) -> Vector2D object
+
+		Parameters
+		----------
+		point : Vector2D
+		center : Vector2D
+			Center point to rotate the point around.
+		angle : int
+			Ammount to rotate.
 		"""
 		ang = math.radians(-angle)
 		x1 = point.x - center.x
@@ -49,7 +60,13 @@ class Movingobject(pygame.sprite.Sprite):
 	def new_sprite(self, rect):
 		"""
 		Fetches a new sprite from the spritesheet and rotates it to the angle stored by the object.
-		Usage: image = new_sprite( (x,y,w,h) )
+		
+		new_sprite(rect) -> none
+
+		Parameters
+		----------
+		rect : (x,y,w,h)
+			Position on spritesheet to get image.
 		"""
 		oldrect = self.rect
 		self.image = self.spritesheet.get_image(rect)
@@ -57,11 +74,18 @@ class Movingobject(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(center=oldrect.center)			#Realign the image to be at the center where the old image was
 
 	def resize_sprite(self, w, h):
+		"""
+		Resize its image.
+
+		resize_sprite(w,h) -> none
+		"""
 		self.image = pygame.transform.scale(self.image, (w, h))
 
 	def calc_angle(self):
 		"""
 		Calculates the angle for the speed vector if it has been modified slightly by gravity.
+
+		calc_angle() -> none
 		"""
 		baseline = Vector2D(0,-1) #Vector pointing upwards
 		dot = (self.speed.x * baseline.x) + (self.speed.y * baseline.y)
@@ -72,9 +96,8 @@ class Movingobject(pygame.sprite.Sprite):
 	def speed_limit(self):
 		"""
 		Universal speed limit for moving objects.
+
+		speed_limit() -> none
 		"""
 		if self.speed.magnitude() > self.maxspeed:
 			self.speed = self.speed.normalized() * self.maxspeed
-
-	def update(self):
-		return NotImplemented

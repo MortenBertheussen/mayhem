@@ -8,7 +8,23 @@ from bullet import *
 import math
 
 class Rocket(Movingobject): 
-	"""The class for rocket"""
+	"""
+	Creates a rocket object.
+
+	Rocket(uid, spritesheet, sprite_rect, spawn) -> object
+
+	Parameters
+	----------
+	uid : int
+		Identified for who shot the bullet.
+	spritesheet : spritesheet object
+		Pointer to spritesheet object.
+	sprite_rect : (x,y,w,h)
+		Position on spritesheet to get image.
+	spawn : touple
+		Initial spawn position.
+	"""
+
 	def __init__(self, uid, spritesheet, sprite_rect, spawn):
 		super().__init__(uid, spritesheet, spawn)
 		self.image = self.spritesheet.get_image(sprite_rect)
@@ -29,7 +45,11 @@ class Rocket(Movingobject):
 		self.missiles = 0
 
 	def update(self):
-		"""Runs what is needed for the class"""
+		"""
+		Update method for sprite group.
+
+		update() -> none
+		"""
 		if self.dead:
 			self.despawn()
 		else:
@@ -41,7 +61,11 @@ class Rocket(Movingobject):
 				self.fuel_up()
 
 	def current_sprite(self):
-		"""Set image to right sprite from the spritesheet"""
+		"""
+		Set image to correct sprite for the current state of the rocket from the spritesheet.
+
+		current_sprite() -> none
+		"""
 		if self.invisible:
 			return
 		if self.uid is 1:
@@ -65,7 +89,11 @@ class Rocket(Movingobject):
 				else:				self.new_sprite(BLUE_ENGINE_OFF)
 
 	def move(self):
-		"""Move method of rocket"""
+		"""
+		Moves the rocket.
+
+		move() -> none
+		"""
 		if self.fuel <= 0: self.fuel = 0	#Set fuel not to go under 0
 
 		#ENGINE ON
@@ -88,7 +116,16 @@ class Rocket(Movingobject):
 		self.rect.center = (self.pos.x, self.pos.y)
 
 	def shoot(self, wing):
-		"""Shoot method of rocket"""
+		"""
+		Rocket fires.
+
+		shoot(wing) -> object
+
+		Parameters:
+		-----------
+		wing: string, "left" or "right"
+			What wing the bullet should spawn on.
+		"""
 		#Create a bullet object with the ships position and user id
 		if self.missiles > 0:
 			self.missiles -= 1
@@ -98,7 +135,12 @@ class Rocket(Movingobject):
 
 	def rotate(self, angle):
 		"""
-		Rotate the speed vector left 4 degrees
+		Rotate the speed vector by an angle.
+		rotate(angle) -> none
+
+		Parameters:
+		-----------
+		angle: int
 		"""
 		rad = math.radians(angle)
 		x = self.speed.x * math.cos(rad) - self.speed.y * math.sin(rad)
@@ -107,44 +149,62 @@ class Rocket(Movingobject):
 		self.calc_angle()
 
 	def shield_down(self):
+		"""
+		Disables the shield on the rocket and stops timer.
+		
+		shield_down() -> none
+		"""
 		self.shield = False
 		if self.uid is 1: pygame.time.set_timer(SHIELD_PLAYER1, 0)	#Stop timer
 		if self.uid is 2: pygame.time.set_timer(SHIELD_PLAYER2, 0)	#Stop timer
 
 	def shield_up(self):
+		"""
+		Enbles the shield on the rocket and starts timer.
+		
+		shield_up() -> none
+		"""
 		self.shield = True
 		if self.uid is 1: pygame.time.set_timer(SHIELD_PLAYER1, SHIELD_DURATION)	#Start timer
 		if self.uid is 2: pygame.time.set_timer(SHIELD_PLAYER2, SHIELD_DURATION)	#Start timer
 	
 	def despawn(self):
-		self.invisible = True
-		self.dead = False
-		self.speed = Vector2D(0,-1)
-		self.pos = Vector2D(self.spawn[0], self.spawn[1])
-		self.health = 0
-		self.fuel = 0
-		self.shield = False
-		self.missiles = 0
+		"""
+		Despawns rocket.
+		
+		despawn() -> none
+		"""
+		self.invisible = True 								#Set rocket to invisible
+		self.dead = False									#No longer dead
+		self.speed = Vector2D(0,-1)							#Reset speed vector
+		self.pos = Vector2D(self.spawn[0], self.spawn[1])	#Reset positon
+		self.health = 0										#Health 0 when dead
+		self.fuel = 0										#Fuel 0 when dead
+		self.shield = False									#Disable shield
+		self.missiles = 0									#Reset missiles
+		self.angle = 0										#Reset angle
 
-		self.new_sprite(BLANK_SPRITE)
+		self.new_sprite(BLANK_SPRITE)						#Sprite is blank, no collision
 		if self.uid is 1: pygame.time.set_timer(RESPAWN_PLAYER1, 1500)	#Start timer
 		if self.uid is 2: pygame.time.set_timer(RESPAWN_PLAYER2, 1500)	#Start timer
 
 	def respawn(self):
-		"""Method to respawn the ship.
-		Used when coliding with the environment or when health is 0"""
-		self.pos = Vector2D(self.spawn[0], self.spawn[1])
-		self.fuel = 1000
-		self.angle = 0
-		self.health = 100
-		self.speed = Vector2D(0,-1)
+		"""
+		Respawns rocket.
+		
+		respawn() -> none
+		"""
 		self.invisible = False
 		if self.uid is 1: pygame.time.set_timer(RESPAWN_PLAYER1, 0)	#Stop timer
 		if self.uid is 2: pygame.time.set_timer(RESPAWN_PLAYER2, 0)	#Stop timer
 
 	def fuel_up(self):
-		"""fuel method"""
-		if self.fuel > self.maxfuel:
+		"""
+		Increase fuel on rocket.
+		
+		fuel_up() -> none
+		"""
+		if self.fuel > self.maxfuel:	#Dont allow over maxfuel
 			self.fuel = self.maxfuel
 		if self.refuel and self.fuel < self.maxfuel and self.invisible is False:
-			self.fuel += 5
+			self.fuel += 5 #Refueling

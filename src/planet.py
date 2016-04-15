@@ -6,13 +6,30 @@ from staticobject import *
 import math
 
 class Planet(StaticObject):
-	"""The class for planet"""
+	"""
+	Creates a planet object.
+
+	Planet(spawn, spriterect, spritesheet) -> object
+
+	Parameters
+	----------
+	spawn : touple
+		Initial spawn location.
+	spritesheet : spritesheet object
+		Pointer to spritesheet object.
+	spriterect : (x,y,w,h)
+		Position where image is located on spritesheet.
+	"""
 	def __init__(self, spawn, spriterect, spritesheet):
 		super().__init__(spawn, spriterect, spritesheet)
 		self.mass = PLANET_MASS
 
 	def update(self):
-		"""Runs what is needed for the class"""
+		"""
+		Update method for sprite group.
+
+		update() -> none
+		"""
 		self.rect.center = (self.pos.x, self.pos.y)
 		self.angle += 0.5
 		self.rotate_image()
